@@ -189,7 +189,7 @@ Once a level is complete, a screen will show up congratulating the player and di
 *Each frog is a different color and will interact with the player before each level to explain the new feature that is being implemented that round. The frog will offer a brief explanation of the new concept, after which the round will begin. If players feel like they need more guidance, they can refer to the help button in the level.*
 
 *Here's the title screen of the game:*
-![assets/title-screen.jpeg](Title Screen)
+![Title Screen](../assets/title-screen.jpeg)
 
 *This is the level select screen, where players can choose their round. Notice how the third level is locked because they haven't finished the second level yet:*
 ![Level Select Screen](assets/level-select.jpeg)
