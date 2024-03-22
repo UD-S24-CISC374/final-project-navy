@@ -192,26 +192,26 @@ Once a level is complete, a screen will show up congratulating the player and di
 ![Title Screen](../assets/title-screen.jpeg)
 
 *This is the level select screen, where players can choose their round. Notice how the third level is locked because they haven't finished the second level yet:*
-![Level Select Screen](assets/level-select.jpeg)
+![Level Select Screen](../assets/level-select.jpeg)
 
 *Players can see a brief overview of what to expect before starting a level:*
-![Level Info Screen](assets/level-info.jpeg)
+![Level Info Screen](../assets/level-info.jpeg)
 
 *This is an example of how the board on the first level may look:*
-![Level 1 Screen](assets/level-start.jpeg)
+![Level 1 Screen](../assets/level-start.jpeg)
 
 *This is an example of how the player can shift the value of a selected block:*
-![Level 1 Normal Screen](assets/new-row.jpeg)
-![Level 1 Shift Screen](assets/level-switch.jpeg)
+![Level 1 Normal Screen](../assets/new-row.jpeg)
+![Level 1 Shift Screen](../assets/level-switch.jpeg)
 
 *Here is an example of what happens when a match is made:*
-![Level 1 Match Screen](assets/match-made.jpeg)
+![Level 1 Match Screen](../assets/match-made.jpeg)
 
 *After completing a level, the following screen is shown:*
-![Level Complete Screen](assets/level-complete.jpeg)
+![Level Complete Screen](../assets/level-complete.jpeg)
 
 *If a level is not successfully completed, here is the screen:*
-![Level Incomplete Screen](assets/level-incomplete.jpeg)
+![Level Incomplete Screen](../assets/level-incomplete.jpeg)
 
 *If players complete all the levels, they can see the ending where the decorations are successfully lit up and the frogs are celebrating the festival:*
 
@@ -246,9 +246,9 @@ Once a level is complete, a screen will show up congratulating the player and di
   - Game End Scene: *The backgrond would most likely be very similar to the first, but would show the pond during a later time of day (i.e evening or night), and would show the decorations lit up and all the frogs from the previous level together and happy*
 
   Inspirations:
-  ![Frog design](assets/frog.jpeg)
-  ![Background design](assets/pond.png)
-  ![Machinery design](assets/robot-claws.jpeg)
+  ![Frog design](../assets/frog.jpeg)
+  ![Background design](../assets/pond.png)
+  ![Machinery design](../assets/robot-claws.jpeg)
 
 ## Audio
 
