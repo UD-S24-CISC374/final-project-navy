@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import FpsText from "../objects/fpsText";
 
-export default class selectScene extends Phaser.Scene {
+export default class SelectScene extends Phaser.Scene {
     fpsText: FpsText;
 
     constructor() {
@@ -34,7 +34,7 @@ export default class selectScene extends Phaser.Scene {
             .on("pointerover", () => {
                 console.log("pointerover");
             })
-            .on("pointerdown", () => this.scene.start("Level1"));
+            .on("pointerdown", () => this.scene.start("Level1Scene"));
         level1Button.setInteractive();
 
         const level2Button = this.add
