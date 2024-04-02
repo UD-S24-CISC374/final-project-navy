@@ -1,5 +1,4 @@
 import Phaser from "phaser";
-import PhaserLogo from "../objects/phaserLogo";
 import FpsText from "../objects/fpsText";
 
 export default class MainScene extends Phaser.Scene {
@@ -10,7 +9,6 @@ export default class MainScene extends Phaser.Scene {
     }
 
     create() {
-        new PhaserLogo(this, this.cameras.main.width / 2, 0);
         this.fpsText = new FpsText(this);
 
         const message = `Phaser v${Phaser.VERSION}`;
