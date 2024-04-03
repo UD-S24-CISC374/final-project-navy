@@ -36,7 +36,6 @@ export default class Level1PlayScene extends Phaser.Scene {
 
         const numRows = 5;
         const numCols = 5;
-        const tileSize = 32;
         const tileTypes = [
             "And",
             "Or",
@@ -106,9 +105,7 @@ export default class Level1PlayScene extends Phaser.Scene {
             this.tilesGroup.getChildren()[0] as Phaser.GameObjects.Sprite;
 
         // Highlights selected tile
-        if (this.selectedTile) {
-            this.selectedTile.setTint(0xff0000);
-        }
+        this.selectedTile.setTint(0xff0000);
 
         // Enables WASD key input
         this.keyW = this.input.keyboard?.addKey(
