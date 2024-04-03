@@ -6,9 +6,9 @@ export default class PreloadScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image("&&", "assets/&block.png");
-        this.load.image("||", "assets/orblock.png");
-        this.load.image("!", "assets/!block.png");
+        this.load.image("And", "assets/&block.png");
+        this.load.image("Or", "assets/orblock.png");
+        this.load.image("Not", "assets/!block.png");
         this.load.image("True", "assets/Tblock.png");
         this.load.image("False", "assets/Fblock.png");
     }
