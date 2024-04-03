@@ -1,17 +1,26 @@
 import Phaser from "phaser";
 
-export default class Level1Scene extends Phaser.Scene {
+export default class Level1PlayScene extends Phaser.Scene {
     constructor() {
-        super({ key: "Level1Scene" });
+        super({ key: "Level1PlayScene" });
     }
 
     create() {
-        this.add
-            .text(75, 100, "Level 1", {
-                fontSize: "35px",
-                color: "black",
+        const backButton = this.add
+            .text(50, 35, "Back To Levels", {
+                fontSize: "25px",
+                color: "red",
             })
-            .setOrigin(-1.7, 0);
+            .on("pointerover", () => {
+                console.log("pointerover");
+            })
+            .on("pointerdown", () => this.scene.start("SelectScene"));
+        backButton.setInteractive();
+
+        this.add.text(330, 100, "Level 1", {
+            fontSize: "35px",
+            color: "black",
+        });
 
         //NOTE: Each block is 32x32px
         //The padding between each block should be at least 26px (works for 9x9 board)

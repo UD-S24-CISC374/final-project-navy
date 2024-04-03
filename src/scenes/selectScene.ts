@@ -20,7 +20,7 @@ export default class SelectScene extends Phaser.Scene {
             .on("pointerover", () => {
                 console.log("pointerover");
             })
-            .on("pointerdown", () => this.scene.start("Level1Scene"));
+            .on("pointerdown", () => this.scene.start("Level1InfoScene"));
         level1Button.setInteractive();
 
         const level2Button = this.add
