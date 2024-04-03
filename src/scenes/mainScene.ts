@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { Button } from "../objects/button";
 
 export default class MainScene extends Phaser.Scene {
     constructor() {
@@ -14,16 +15,19 @@ export default class MainScene extends Phaser.Scene {
         //Possible reference for some features: https://www.youtube.com/watch?v=OS7neDUUhPE&ab_channel=jestarray
 
         //Pointerover useful for when implementing hover effects, pointerout is for when it's not hovering on it
-        const startButton = this.add
-            .text(275, 400, "Start", {
+
+        // start button
+        new Button(
+            this,
+            275,
+            400,
+            "Start",
+            {
                 fontSize: "25px",
                 color: "red",
-            })
-            .on("pointerover", () => {
-                console.log("pointerover");
-            })
-            .on("pointerdown", () => this.scene.start("SelectScene"));
-        startButton.setInteractive();
+            },
+            () => this.scene.start("SelectScene")
+        );
 
         const htpButton = this.add
             .text(400, 400, "How to Play", {

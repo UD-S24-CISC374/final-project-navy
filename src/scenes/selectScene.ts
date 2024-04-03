@@ -1,4 +1,6 @@
 import Phaser from "phaser";
+import { Button } from "../objects/button";
+
 export default class SelectScene extends Phaser.Scene {
     constructor() {
         super({ key: "SelectScene" });
@@ -11,83 +13,56 @@ export default class SelectScene extends Phaser.Scene {
         });
 
         //TODO: create button class and handle all this in there to make simpler
-        //NOTE: None of the scenes for the levels have been made yet
-        const level1Button = this.add
-            .text(150, 200, "Level 1", {
-                fontSize: "25px",
-                color: "red",
-            })
-            .on("pointerover", () => {
-                console.log("pointerover");
-            })
-            .on("pointerdown", () => this.scene.start("Level1InfoScene"));
-        level1Button.setInteractive();
+        //NOTE: None of the scenes for the levels 2-6 have been made yet
 
-        const level2Button = this.add
-            .text(350, 200, "Level 2", {
-                fontSize: "25px",
-                color: "red",
-            })
-            .on("pointerover", () => {
-                console.log("pointerover");
-            })
-            .on("pointerdown", () => this.scene.start("Level2"));
-        level2Button.setInteractive();
+        const levelButtons = [];
+        const levels = [
+            { text: "Level 1", sceneKey: "Level1InfoScene" },
+            { text: "Level 2", sceneKey: "Level2" },
+            { text: "Level 3", sceneKey: "Level3" },
+            { text: "Level 4", sceneKey: "Level4" },
+            { text: "Level 5", sceneKey: "Level5" },
+            { text: "Level 6", sceneKey: "Level6" },
+        ];
 
-        const level3Button = this.add
-            .text(550, 200, "Level 3", {
-                fontSize: "25px",
-                color: "red",
-            })
-            .on("pointerover", () => {
-                console.log("pointerover");
-            })
-            .on("pointerdown", () => this.scene.start("Level3"));
-        level3Button.setInteractive();
+        let x = 150;
+        let y = 200;
 
-        const level4Button = this.add
-            .text(150, 350, "Level 4", {
-                fontSize: "25px",
-                color: "red",
-            })
-            .on("pointerover", () => {
-                console.log("pointerover");
-            })
-            .on("pointerdown", () => this.scene.start("Level4"));
-        level4Button.setInteractive();
+        levels.forEach((level, index) => {
+            const button = new Button(
+                this,
+                x,
+                y,
+                level.text,
+                {
+                    fontSize: "25px",
+                    color: "red",
+                },
+                () => this.scene.start(level.sceneKey)
+            );
 
-        const level5Button = this.add
-            .text(350, 350, "Level 5", {
-                fontSize: "25px",
-                color: "red",
-            })
-            .on("pointerover", () => {
-                console.log("pointerover");
-            })
-            .on("pointerdown", () => this.scene.start("Level5"));
-        level5Button.setInteractive();
+            levelButtons.push(button);
 
-        const level6Button = this.add
-            .text(550, 350, "Level 6", {
-                fontSize: "25px",
-                color: "red",
-            })
-            .on("pointerover", () => {
-                console.log("pointerover");
-            })
-            .on("pointerdown", () => this.scene.start("Level6"));
-        level6Button.setInteractive();
+            x += 200;
+            if ((index + 1) % 3 === 0) {
+                x = 150;
+                y += 150;
+            }
+        });
 
-        const mmButton = this.add
-            .text(350, 450, "Main Menu", {
+        // main menu button
+        // had "const mmButton = new Button" but it never got read so I removed it for now
+        new Button(
+            this,
+            350,
+            450,
+            "Main Menu",
+            {
                 fontSize: "25px",
                 color: "red",
-            })
-            .on("pointerover", () => {
-                console.log("pointerover");
-            })
-            .on("pointerdown", () => this.scene.start("MainScene"));
-        mmButton.setInteractive();
+            },
+            () => this.scene.start("MainScene")
+        );
     }
 
     update() {}

@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { Button } from "../objects/button";
 
 export default class Level1PlayScene extends Phaser.Scene {
     constructor() {
@@ -6,16 +7,18 @@ export default class Level1PlayScene extends Phaser.Scene {
     }
 
     create() {
-        const backButton = this.add
-            .text(50, 35, "Back To Levels", {
+        // back to levels button
+        new Button(
+            this,
+            50,
+            35,
+            "Back to Levels",
+            {
                 fontSize: "25px",
                 color: "red",
-            })
-            .on("pointerover", () => {
-                console.log("pointerover");
-            })
-            .on("pointerdown", () => this.scene.start("SelectScene"));
-        backButton.setInteractive();
+            },
+            () => this.scene.start("SelectScene")
+        );
 
         this.add.text(330, 100, "Level 1", {
             fontSize: "35px",
