@@ -13,6 +13,7 @@ export default class Level1PlayScene extends Phaser.Scene {
     private keyA?: Phaser.Input.Keyboard.Key;
     private keyS?: Phaser.Input.Keyboard.Key;
     private keyD?: Phaser.Input.Keyboard.Key;
+    private cursors?: Phaser.Types.Input.Keyboard.CursorKeys;
     private prevKeyState: { [key: string]: boolean } = {};
 
     private rowSelector: Phaser.GameObjects.Image;
@@ -132,6 +133,8 @@ export default class Level1PlayScene extends Phaser.Scene {
         this.keyD = this.input.keyboard?.addKey(
             Phaser.Input.Keyboard.KeyCodes.D
         );
+
+        this.cursors = this.input.keyboard?.createCursorKeys();
     }
 
     update() {
@@ -158,6 +161,75 @@ export default class Level1PlayScene extends Phaser.Scene {
         this.prevKeyState["S"] = this.keyS?.isDown || false;
         this.prevKeyState["A"] = this.keyA?.isDown || false;
         this.prevKeyState["D"] = this.keyD?.isDown || false;
+
+        if (this.cursors?.right?.isDown && !this.prevKeyState["right"]) {
+            console.log("Pressing Right Arrow");
+            this.shiftValues(-1, 0);
+        } else if (this.cursors?.left?.isDown && !this.prevKeyState["left"]) {
+            console.log("Pressing Left Arrow");
+            this.shiftValues(1, 0);
+        } else if (this.cursors?.down?.isDown && !this.prevKeyState["down"]) {
+            console.log("Pressing Down Arrow");
+            this.shiftValues(0, -1);
+        } else if (this.cursors?.up?.isDown && !this.prevKeyState["up"]) {
+            console.log("Pressing Up Arrow");
+            this.shiftValues(0, 1);
+        }
+
+        this.prevKeyState["right"] = this.cursors?.right?.isDown || false;
+        this.prevKeyState["left"] = this.cursors?.left?.isDown || false;
+        this.prevKeyState["down"] = this.cursors?.down?.isDown || false;
+        this.prevKeyState["up"] = this.cursors?.up?.isDown || false;
+    }
+
+    shiftValues(deltaX: number, deltaY: number) {
+        const numRows = 5;
+        const numCols = 5;
+        const totalTiles = numRows * numCols;
+
+        const tiles =
+            this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[];
+
+        const currentIndex = this.selectedTileIndex;
+        const selectedRow = Math.floor(currentIndex / numCols);
+        const selectedCol = currentIndex % numCols;
+
+        const newTileTypes = [];
+
+        // Shift values in the row
+        if (deltaX !== 0) {
+            for (let col = 0; col < numCols; col++) {
+                const tileIndex = selectedRow * numCols + col;
+                const shiftedIndex =
+                    ((tileIndex + deltaX + numCols) % numCols) +
+                    selectedRow * numCols;
+                const tileType = tiles[shiftedIndex].getData("tileType");
+                newTileTypes.push(tileType);
+            }
+            // Update tiles in the row with new values
+            for (let col = 0; col < numCols; col++) {
+                const tileIndex = selectedRow * numCols + col;
+                tiles[tileIndex].setData("tileType", newTileTypes[col]);
+                tiles[tileIndex].setTexture(newTileTypes[col]);
+            }
+        }
+
+        // Shift values in the column
+        if (deltaY !== 0) {
+            for (let row = 0; row < numRows; row++) {
+                const tileIndex = row * numCols + selectedCol;
+                const shiftedIndex =
+                    (tileIndex + deltaY * numCols + totalTiles) % totalTiles;
+                const tileType = tiles[shiftedIndex].getData("tileType");
+                newTileTypes.push(tileType);
+            }
+            // Update tiles in the column with new values
+            for (let row = 0; row < numRows; row++) {
+                const tileIndex = row * numCols + selectedCol;
+                tiles[tileIndex].setData("tileType", newTileTypes[row]);
+                tiles[tileIndex].setTexture(newTileTypes[row]);
+            }
+        }
     }
 
     //TODO: Make moveSelection its own file that can be called for diff levels
