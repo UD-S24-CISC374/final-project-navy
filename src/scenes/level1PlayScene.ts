@@ -15,7 +15,15 @@ export default class Level1PlayScene extends Phaser.Scene {
     private keyD?: Phaser.Input.Keyboard.Key;
     private prevKeyState: { [key: string]: boolean } = {};
 
+    private rowSelector: Phaser.GameObjects.Image;
+    private colSelector: Phaser.GameObjects.Image;
+
     create() {
+        this.rowSelector = this.add.image(400, 220, "Row Selector");
+        this.colSelector = this.add.image(320, 300, "Col Selector");
+        this.rowSelector.setVisible(false);
+        this.colSelector.setVisible(false);
+
         // back to levels button
         new Button(
             this,
@@ -106,6 +114,10 @@ export default class Level1PlayScene extends Phaser.Scene {
 
         // Highlights selected tile
         this.selectedTile.setTint(0xff0000);
+        this.rowSelector.setPosition(400, this.selectedTile.y);
+        this.colSelector.setPosition(this.selectedTile.x, 300);
+        this.rowSelector.setVisible(true);
+        this.colSelector.setVisible(true);
 
         // Enables WASD key input
         this.keyW = this.input.keyboard?.addKey(
@@ -185,6 +197,10 @@ export default class Level1PlayScene extends Phaser.Scene {
 
         // Highlight newly selected tile (red tint)
         this.selectedTile.setTint(0xff0000);
+        this.rowSelector.setPosition(400, this.selectedTile.y);
+        this.colSelector.setPosition(this.selectedTile.x, 300);
+        this.rowSelector.setVisible(true);
+        this.colSelector.setVisible(true);
     }
 
     /*
