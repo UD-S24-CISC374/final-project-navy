@@ -162,24 +162,24 @@ export default class Level1PlayScene extends Phaser.Scene {
         this.prevKeyState["A"] = this.keyA?.isDown || false;
         this.prevKeyState["D"] = this.keyD?.isDown || false;
 
-        if (this.cursors?.right?.isDown && !this.prevKeyState["right"]) {
+        if (this.cursors?.right.isDown && !this.prevKeyState["right"]) {
             console.log("Pressing Right Arrow");
             this.shiftValues(-1, 0);
-        } else if (this.cursors?.left?.isDown && !this.prevKeyState["left"]) {
+        } else if (this.cursors?.left.isDown && !this.prevKeyState["left"]) {
             console.log("Pressing Left Arrow");
             this.shiftValues(1, 0);
-        } else if (this.cursors?.down?.isDown && !this.prevKeyState["down"]) {
+        } else if (this.cursors?.down.isDown && !this.prevKeyState["down"]) {
             console.log("Pressing Down Arrow");
             this.shiftValues(0, -1);
-        } else if (this.cursors?.up?.isDown && !this.prevKeyState["up"]) {
+        } else if (this.cursors?.up.isDown && !this.prevKeyState["up"]) {
             console.log("Pressing Up Arrow");
             this.shiftValues(0, 1);
         }
 
-        this.prevKeyState["right"] = this.cursors?.right?.isDown || false;
-        this.prevKeyState["left"] = this.cursors?.left?.isDown || false;
-        this.prevKeyState["down"] = this.cursors?.down?.isDown || false;
-        this.prevKeyState["up"] = this.cursors?.up?.isDown || false;
+        this.prevKeyState["right"] = this.cursors?.right.isDown || false;
+        this.prevKeyState["left"] = this.cursors?.left.isDown || false;
+        this.prevKeyState["down"] = this.cursors?.down.isDown || false;
+        this.prevKeyState["up"] = this.cursors?.up.isDown || false;
     }
 
     shiftValues(deltaX: number, deltaY: number) {
