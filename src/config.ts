@@ -4,6 +4,10 @@ import PreloadScene from "./scenes/preloadScene";
 import SelectScene from "./scenes/selectScene";
 import Level1PlayScene from "./scenes/level1PlayScene";
 import Level1InfoScene from "./scenes/level1InfoScene";
+import Level2PlayScene from "./scenes/level2PlayScene";
+import Level2InfoScene from "./scenes/level2InfoScene";
+import Level3PlayScene from "./scenes/level3PlayScene";
+import Level3InfoScene from "./scenes/level3InfoScene";
 
 const DEFAULT_WIDTH = 800;
 const DEFAULT_HEIGHT = 600;
@@ -26,6 +30,10 @@ export const CONFIG = {
         SelectScene,
         Level1PlayScene,
         Level1InfoScene,
+        Level2PlayScene,
+        Level2InfoScene,
+        Level3PlayScene,
+        Level3InfoScene,
     ],
     physics: {
         default: "arcade",

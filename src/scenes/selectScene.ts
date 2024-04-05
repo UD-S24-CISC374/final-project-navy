@@ -18,8 +18,8 @@ export default class SelectScene extends Phaser.Scene {
         const levelButtons = [];
         const levels = [
             { text: "Level 1", sceneKey: "Level1InfoScene" },
-            { text: "Level 2", sceneKey: "Level2" },
-            { text: "Level 3", sceneKey: "Level3" },
+            { text: "Level 2", sceneKey: "Level2InfoScene" },
+            { text: "Level 3", sceneKey: "Level3InfoScene" },
             { text: "Level 4", sceneKey: "Level4" },
             { text: "Level 5", sceneKey: "Level5" },
             { text: "Level 6", sceneKey: "Level6" },
