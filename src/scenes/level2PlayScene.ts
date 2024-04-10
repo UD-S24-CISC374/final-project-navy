@@ -20,7 +20,7 @@ export default class Level2PlayScene extends Phaser.Scene {
     private colSelector: Phaser.GameObjects.Image;
 
     create() {
-        this.rowSelector = this.add.image(400, 220, "Row Selector");
+        this.rowSelector = this.add.image(360, 220, "Row Selector");
         this.colSelector = this.add.image(320, 300, "Col Selector");
         this.rowSelector.setVisible(false);
         this.colSelector.setVisible(false);
@@ -38,19 +38,19 @@ export default class Level2PlayScene extends Phaser.Scene {
             () => this.scene.start("SelectScene")
         );
 
-        this.add.text(330, 100, "Level 2", {
+        this.add.text(330, 100, "Level 3", {
             fontSize: "35px",
             color: "black",
         });
 
-        const numRows = 5;
-        const numCols = 5;
+        const numRows = 7;
+        const numCols = 7;
         const tileTypes = [
+            "True",
+            "False",
             "And",
             "Or",
             "Not",
-            "True",
-            "False",
             "True",
             "False",
         ];
@@ -62,13 +62,18 @@ export default class Level2PlayScene extends Phaser.Scene {
         ) {
             //TODO?: create board class and make smarter generations
             // Also TODO: make it so same board remains when exiting level
+            // SLIGHT DIFFERENT RANDOMIZATION
             const board = [];
             for (let row = 0; row < numRows; row++) {
                 const newRow = [];
                 for (let col = 0; col < numCols; col++) {
-                    const randomIndex = Math.floor(
+                    /* const randomIndex = Math.floor(
                         Math.random() * tileTypes.length
-                    );
+                    ); */
+
+                    const randomIndex =
+                        Math.floor(Math.random() * (tileTypes.length + 1)) %
+                        tileTypes.length;
                     newRow.push(tileTypes[randomIndex]);
                 }
                 board.push(newRow);
@@ -77,8 +82,8 @@ export default class Level2PlayScene extends Phaser.Scene {
         }
 
         const board = generateRandomBoard(numRows, numCols, tileTypes);
-        // These coordinates are for 5x5 board to ensre it's centered
-        let startx = 280;
+        // These coordinates are for 7x7 board to ensure it's centered
+        let startx = 240;
         let starty = 180;
 
         // These values will be updated in loop
@@ -114,8 +119,9 @@ export default class Level2PlayScene extends Phaser.Scene {
             this.tilesGroup.getChildren()[0] as Phaser.GameObjects.Sprite;
 
         // Highlights selected tile
+        //TODO: adjust row and coloum selectors for bigger board
         this.selectedTile.setTint(0xff0000);
-        this.rowSelector.setPosition(400, this.selectedTile.y);
+        this.rowSelector.setPosition(360, this.selectedTile.y);
         this.colSelector.setPosition(this.selectedTile.x, 300);
         this.rowSelector.setVisible(true);
         this.colSelector.setVisible(true);
@@ -183,8 +189,8 @@ export default class Level2PlayScene extends Phaser.Scene {
     }
 
     shiftValues(deltaX: number, deltaY: number) {
-        const numRows = 5;
-        const numCols = 5;
+        const numRows = 7;
+        const numCols = 7;
         const totalTiles = numRows * numCols;
 
         const tiles =
@@ -234,8 +240,8 @@ export default class Level2PlayScene extends Phaser.Scene {
 
     //TODO: Make moveSelection its own file that can be called for diff levels
     moveSelection(deltaX: number, deltaY: number) {
-        const numRows = 5;
-        const numCols = 5;
+        const numRows = 7;
+        const numCols = 7;
         const totalTiles = numRows * numCols;
 
         const currentIndex = this.selectedTileIndex;
@@ -269,7 +275,7 @@ export default class Level2PlayScene extends Phaser.Scene {
 
         // Highlight newly selected tile (red tint)
         this.selectedTile.setTint(0xff0000);
-        this.rowSelector.setPosition(400, this.selectedTile.y);
+        this.rowSelector.setPosition(360, this.selectedTile.y);
         this.colSelector.setPosition(this.selectedTile.x, 300);
         this.rowSelector.setVisible(true);
         this.colSelector.setVisible(true);

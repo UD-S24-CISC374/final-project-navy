@@ -43,8 +43,8 @@ export default class Level3PlayScene extends Phaser.Scene {
             color: "black",
         });
 
-        const numRows = 7;
-        const numCols = 7;
+        const numRows = 9;
+        const numCols = 9;
         const tileTypes = [
             "True",
             "False",
@@ -82,9 +82,9 @@ export default class Level3PlayScene extends Phaser.Scene {
         }
 
         const board = generateRandomBoard(numRows, numCols, tileTypes);
-        // These coordinates are for 7x7 board to ensure it's centered
-        let startx = 240;
-        let starty = 180;
+        // These coordinates are for 9x9 board to ensure it's centered
+        let startx = 200;
+        let starty = 150;
 
         // These values will be updated in loop
         let newx = startx;
@@ -121,8 +121,8 @@ export default class Level3PlayScene extends Phaser.Scene {
         // Highlights selected tile
         //TODO: adjust row and coloum selectors for bigger board
         this.selectedTile.setTint(0xff0000);
-        this.rowSelector.setPosition(360, this.selectedTile.y);
-        this.colSelector.setPosition(this.selectedTile.x, 300);
+        this.rowSelector.setPosition(320, this.selectedTile.y);
+        this.colSelector.setPosition(this.selectedTile.x, 270);
         this.rowSelector.setVisible(true);
         this.colSelector.setVisible(true);
 
@@ -189,8 +189,8 @@ export default class Level3PlayScene extends Phaser.Scene {
     }
 
     shiftValues(deltaX: number, deltaY: number) {
-        const numRows = 7;
-        const numCols = 7;
+        const numRows = 9;
+        const numCols = 9;
         const totalTiles = numRows * numCols;
 
         const tiles =
@@ -240,8 +240,8 @@ export default class Level3PlayScene extends Phaser.Scene {
 
     //TODO: Make moveSelection its own file that can be called for diff levels
     moveSelection(deltaX: number, deltaY: number) {
-        const numRows = 7;
-        const numCols = 7;
+        const numRows = 9;
+        const numCols = 9;
         const totalTiles = numRows * numCols;
 
         const currentIndex = this.selectedTileIndex;
@@ -275,8 +275,8 @@ export default class Level3PlayScene extends Phaser.Scene {
 
         // Highlight newly selected tile (red tint)
         this.selectedTile.setTint(0xff0000);
-        this.rowSelector.setPosition(360, this.selectedTile.y);
-        this.colSelector.setPosition(this.selectedTile.x, 300);
+        this.rowSelector.setPosition(320, this.selectedTile.y);
+        this.colSelector.setPosition(this.selectedTile.x, 270);
         this.rowSelector.setVisible(true);
         this.colSelector.setVisible(true);
     }
