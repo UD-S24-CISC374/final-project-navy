@@ -6,6 +6,11 @@ export default class Level1PlayScene extends Phaser.Scene {
         super({ key: "Level1PlayScene" });
     }
 
+    /* 
+    MATCHCODE
+    private board: string[][]; 
+    */
+
     private tilesGroup: Phaser.GameObjects.Group;
     private selectedTile: Phaser.GameObjects.Sprite;
     private selectedTileIndex: number;
@@ -75,6 +80,12 @@ export default class Level1PlayScene extends Phaser.Scene {
             }
             return board;
         }
+
+        /* 
+        MATCHCODE
+        this.board = generateRandomBoard(numRows, numCols, tileTypes);
+        this would replace line 90 and places using "board" would need to then be "this.board"
+        */
 
         const board = generateRandomBoard(numRows, numCols, tileTypes);
         // These coordinates are for 5x5 board to ensre it's centered
@@ -180,6 +191,16 @@ export default class Level1PlayScene extends Phaser.Scene {
         this.prevKeyState["left"] = this.cursors?.left.isDown || false;
         this.prevKeyState["down"] = this.cursors?.down.isDown || false;
         this.prevKeyState["up"] = this.cursors?.up.isDown || false;
+
+        /* 
+        MATCHCODE
+        const numRows = 5;
+        for (let row = 0; row < numRows; row++) {
+            if (this.evaluateRowExpression(this.board[row])) {
+                console.log("Found a match!")
+            }
+        } 
+        */
     }
 
     shiftValues(deltaX: number, deltaY: number) {
@@ -274,6 +295,34 @@ export default class Level1PlayScene extends Phaser.Scene {
         this.rowSelector.setVisible(true);
         this.colSelector.setVisible(true);
     }
+
+    /* 
+    MATCHCODE
+
+    logicalOperators: { [key: string]: string } = {
+        And: "&&",
+        Or: "||",
+        Not: "!",
+        True: "true",
+        False: "false",
+    };
+    
+    evaluateRowExpression(row: string[]): boolean {
+        let expression = "";
+        for (const tileType of row) {
+            expression += this.logicalOperators[tileType];
+        }
+        return eval(expression) as boolean;
+    }
+
+    evaluateColumnExpression(column: string[]): boolean {
+        let expression = "";
+        for (const tileType of column) {
+            expression += this.logicalOperators[tileType];
+        }
+        return eval(expression) as boolean;
+    } 
+    */
 
     /*
     MORE COMPLEX VERSION OF GENERATE RANDOM BOARD
