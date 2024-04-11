@@ -20,8 +20,8 @@ export default class Level2PlayScene extends Phaser.Scene {
     private colSelector: Phaser.GameObjects.Image;
 
     create() {
-        this.rowSelector = this.add.image(360, 220, "Row Selector");
-        this.colSelector = this.add.image(320, 300, "Col Selector");
+        this.rowSelector = this.add.image(400, 220, "RS 7x7");
+        this.colSelector = this.add.image(320, 340, "CS 7x7");
         this.rowSelector.setVisible(false);
         this.colSelector.setVisible(false);
 
@@ -51,6 +51,7 @@ export default class Level2PlayScene extends Phaser.Scene {
             "And",
             "Or",
             "Not",
+            "Equals",
             "True",
             "False",
         ];
@@ -121,8 +122,8 @@ export default class Level2PlayScene extends Phaser.Scene {
         // Highlights selected tile
         //TODO: adjust row and coloum selectors for bigger board
         this.selectedTile.setTint(0xff0000);
-        this.rowSelector.setPosition(360, this.selectedTile.y);
-        this.colSelector.setPosition(this.selectedTile.x, 300);
+        this.rowSelector.setPosition(400, this.selectedTile.y);
+        this.colSelector.setPosition(this.selectedTile.x, 340);
         this.rowSelector.setVisible(true);
         this.colSelector.setVisible(true);
 
@@ -275,8 +276,8 @@ export default class Level2PlayScene extends Phaser.Scene {
 
         // Highlight newly selected tile (red tint)
         this.selectedTile.setTint(0xff0000);
-        this.rowSelector.setPosition(360, this.selectedTile.y);
-        this.colSelector.setPosition(this.selectedTile.x, 300);
+        this.rowSelector.setPosition(400, this.selectedTile.y);
+        this.colSelector.setPosition(this.selectedTile.x, 340);
         this.rowSelector.setVisible(true);
         this.colSelector.setVisible(true);
     }

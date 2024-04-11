@@ -11,8 +11,15 @@ export default class PreloadScene extends Phaser.Scene {
         this.load.image("Not", "assets/!block.png");
         this.load.image("True", "assets/Tblock.png");
         this.load.image("False", "assets/Fblock.png");
+        this.load.image("Equals", "assets/=block.png");
+        this.load.image("LParen", "assets/Lparen.png");
+        this.load.image("RParen", "assets/Rparen.png");
         this.load.image("Row Selector", "assets/RowSelector.png");
         this.load.image("Col Selector", "assets/ColSelector.png");
+        this.load.image("RS 7x7", "assets/RowSelector7x7.png");
+        this.load.image("CS 7x7", "assets/ColSelector7x7.png");
+        this.load.image("RS 9x9", "assets/RowSelector9x9.png");
+        this.load.image("CS 9x9", "assets/ColSelector9x9.png");
     }
 
     create() {
