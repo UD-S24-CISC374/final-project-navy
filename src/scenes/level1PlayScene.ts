@@ -207,46 +207,35 @@ export default class Level1PlayScene extends Phaser.Scene {
         const tiles =
             this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[];
 
-        // Update the data and textures of the sprites in the matched row
-        for (let col = 0; col < numCols; col++) {
-            const spriteIndex = row * numCols + col;
-            const tileSprite = tiles[spriteIndex];
-
-            const randomIndex = Math.floor(
-                Math.random() * this.tileTypes.length
-            );
-            const newTileType = this.tileTypes[randomIndex];
-
-            tileSprite.setData("tileType", newTileType);
-            tileSprite.setTexture(newTileType);
-        }
-
-        // Shift values down for all rows above the removed row
+        // Shift the rows down in the data and update their corresponding sprites.
         for (let i = row; i > 0; i--) {
+            this.board[i] = this.board[i - 1].slice(); // Getting row above
             for (let col = 0; col < numCols; col++) {
-                const spriteIndex = i * numCols + col;
-                const tileSprite = tiles[spriteIndex];
+                const currentSpriteIndex = i * numCols + col;
                 const aboveSpriteIndex = (i - 1) * numCols + col;
-                const aboveTileType =
-                    tiles[aboveSpriteIndex].getData("tileType");
-
-                tileSprite.setData("tileType", aboveTileType);
-                tileSprite.setTexture(aboveTileType);
+                tiles[currentSpriteIndex].setData(
+                    "tileType",
+                    tiles[aboveSpriteIndex].getData("tileType")
+                );
+                tiles[currentSpriteIndex].setTexture(
+                    tiles[aboveSpriteIndex].getData("tileType")
+                );
             }
-
-            // Update the board data accordingly
-            this.board[i] = this.board[i - 1].slice();
         }
 
-        // Generate completely new random blocks for the top row
-        const randomRow = [];
+        // Generate a new random top row for the board data
+        this.board[0] = [];
         for (let col = 0; col < numCols; col++) {
             const randomIndex = Math.floor(
                 Math.random() * this.tileTypes.length
             );
-            randomRow.push(this.tileTypes[randomIndex]);
+            this.board[0][col] = this.tileTypes[randomIndex];
+
+            // Update the data and texture for the new top row
+            const tileSprite = tiles[col];
+            tileSprite.setData("tileType", this.tileTypes[randomIndex]);
+            tileSprite.setTexture(this.tileTypes[randomIndex]);
         }
-        this.board[0] = randomRow;
     }
 
     removeColumn(col: number) {
