@@ -49,7 +49,28 @@ export default class Level1PlayScene extends Phaser.Scene {
 
         const numRows = 5;
         const numCols = 5;
-        this.tileTypes = ["And", "Or", "Not", "True", "False", "True", "False"];
+        /* added multiples 
+        true, false are weight .25 
+        and, or are weight .1875 
+        not is weight .125 */
+        this.tileTypes = [
+            "True",
+            "True",
+            "True",
+            "True",
+            "False",
+            "False",
+            "False",
+            "False",
+            "And",
+            "And",
+            "And",
+            "Or",
+            "Or",
+            "Or",
+            "Not",
+            "Not",
+        ];
 
         function generateRandomBoard(
             numRows: number,
