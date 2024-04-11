@@ -316,63 +316,84 @@ export default class Level1PlayScene extends Phaser.Scene {
 
     evaluateExpression(expression: string[]): boolean {
         // Check if the expression starts or ends with invalid operators
+        const firstElement = expression[0];
+        const lastElement = expression[expression.length - 1];
+
         if (
-            ["And", "Or"].includes(expression[0]) ||
-            ["And", "Or", "Not"].includes(expression[expression.length - 1])
+            !(
+                firstElement === "True" ||
+                firstElement === "False" ||
+                firstElement === "Not"
+            )
         ) {
+            //console.error("Invalid expression: Starts with invalid operator");
             return false;
         }
 
-        let result = "";
-        let prevIsBool = false;
-        let prevIsOperator = false;
-        let prevIsNot = false;
+        if (
+            lastElement === "Not" ||
+            lastElement === "And" ||
+            lastElement === "Or"
+        ) {
+            //console.error("Invalid expression: Ends with invalid operator");
+            return false;
+        }
 
-        for (let i = 0; i < expression.length; i++) {
-            const tileType = expression[i];
-            // Check for consecutive boolean values
-            if (["True", "False"].includes(tileType)) {
-                if (prevIsBool) {
-                    return false;
-                }
-                prevIsBool = true;
-            } else {
-                prevIsBool = false;
+        // Check for consecutive operands and operators
+        for (let i = 0; i < expression.length - 1; i++) {
+            const currentElement = expression[i];
+            const nextElement = expression[i + 1];
+
+            // Check for consecutive operands
+            if (
+                (currentElement === "True" || currentElement === "False") &&
+                (nextElement === "True" || nextElement === "False")
+            ) {
+                //console.error("Invalid expression: Consecutive operands");
+                return false;
             }
 
             // Check for consecutive operators
-            if (["And", "Or"].includes(tileType)) {
-                if (prevIsOperator) {
-                    return false;
-                }
-                prevIsOperator = true;
-            } else {
-                prevIsOperator = false;
-            }
-            // Check for consecutive "Not"
-            // PROBLEM: Doesn't seem to be counted as a valid expression with statements like "!F & !T"
-            // Every other expression works fine except for NOT, its constraints need work
-            if (tileType === "Not") {
-                if (
-                    prevIsNot || // Check if there are consecutive "Not" operators
-                    (i > 0 &&
-                        (expression[i - 1] === "And" ||
-                            expression[i - 1] === "Or")) || // Check if "Not" follows "And" or "Or"
-                    (i < expression.length - 1 &&
-                        (expression[i + 1] === "True" ||
-                            expression[i + 1] === "False")) // Check if "Not" is followed by "True" or "False"
-                ) {
-                    return false;
-                }
-                prevIsNot = true;
-            } else {
-                prevIsNot = false;
+            if (
+                (currentElement === "And" || currentElement === "Or") &&
+                (nextElement === "And" || nextElement === "Or")
+            ) {
+                //console.error("Invalid expression: Consecutive operators");
+                return false;
             }
 
-            // Append logical operator or boolean value to the result
+            // Check consecutive operators
+            if (currentElement === "Not" && nextElement === "Not") {
+                return false;
+            }
+
+            // Check if &/| comes after T/F
+            if (
+                (currentElement === "True" || currentElement === "False") &&
+                nextElement !== "And" &&
+                nextElement !== "Or"
+            ) {
+                //console.error("Invalid expression: Consecutive operands");
+                return false;
+            }
+
+            // Check if T/F comes after !
+            if (
+                currentElement === "Not" &&
+                nextElement !== "True" &&
+                nextElement !== "False"
+            ) {
+                return false;
+            }
+        }
+
+        // Construct the expression string
+        let result = "";
+        for (let i = 0; i < expression.length; i++) {
+            const tileType = expression[i];
             result += this.logicalOperators[tileType];
         }
-        console.log("result is " + result);
+        console.log("result is: " + result);
         // Evaluate the expression using eval() and return the result
         return eval(result) as boolean;
     }
