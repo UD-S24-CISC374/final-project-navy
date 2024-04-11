@@ -6,12 +6,12 @@ export default class Level1PlayScene extends Phaser.Scene {
         super({ key: "Level1PlayScene" });
     }
 
-    //MATCHCODE
     private board: string[][];
 
     private tilesGroup: Phaser.GameObjects.Group;
     private selectedTile: Phaser.GameObjects.Sprite;
     private selectedTileIndex: number;
+
     private keyW?: Phaser.Input.Keyboard.Key;
     private keyA?: Phaser.Input.Keyboard.Key;
     private keyS?: Phaser.Input.Keyboard.Key;
@@ -47,6 +47,8 @@ export default class Level1PlayScene extends Phaser.Scene {
             color: "black",
         });
 
+        // Creating Randomized Board
+        //-----------------------------------------------------------------------------
         const numRows = 5;
         const numCols = 5;
         /* added multiples 
@@ -93,11 +95,7 @@ export default class Level1PlayScene extends Phaser.Scene {
             return board;
         }
 
-        //MATCHCODE
         this.board = generateRandomBoard(numRows, numCols, this.tileTypes);
-        //this would replace line 90 and places using "board" would need to then be "this.board"
-
-        //const board = generateRandomBoard(numRows, numCols, tileTypes);
         // These coordinates are for 5x5 board to ensre it's centered
         let startx = 280;
         let starty = 180;
@@ -128,6 +126,8 @@ export default class Level1PlayScene extends Phaser.Scene {
             newy += 40;
         }
 
+        // Deals with highlighting currently selected block and placing selectors
+        //-----------------------------------------------------------------------------
         //Selected tile (initially the one at row 0 col 0)
         this.selectedTileIndex = 0;
 
@@ -141,7 +141,8 @@ export default class Level1PlayScene extends Phaser.Scene {
         this.rowSelector.setVisible(true);
         this.colSelector.setVisible(true);
 
-        // Enables WASD key input
+        // Key/WASD commands
+        //-----------------------------------------------------------------------------
         this.keyW = this.input.keyboard?.addKey(
             Phaser.Input.Keyboard.KeyCodes.W
         );
@@ -160,10 +161,10 @@ export default class Level1PlayScene extends Phaser.Scene {
     }
 
     update() {
+        // Board movement
+        //-----------------------------------------------------------------------------
         // Had to check key state otherwise clicking once would make it move like 3 or 5 blocks
         // Has to do with update being called so many times per second, need a workaround
-
-        //TODO: Make it so holding down a key moves you multiple times instead of pressing each time
         if (this.keyW?.isDown && !this.prevKeyState["W"]) {
             this.moveSelection(0, -1);
         } else if (this.keyS?.isDown && !this.prevKeyState["S"]) {
@@ -180,6 +181,8 @@ export default class Level1PlayScene extends Phaser.Scene {
         this.prevKeyState["A"] = this.keyA?.isDown || false;
         this.prevKeyState["D"] = this.keyD?.isDown || false;
 
+        // Block Movement
+        //-----------------------------------------------------------------------------
         if (this.cursors?.right.isDown && !this.prevKeyState["right"]) {
             this.shiftValues(-1, 0);
             this.evaluateRowsAndColumns();
@@ -200,6 +203,8 @@ export default class Level1PlayScene extends Phaser.Scene {
         this.prevKeyState["up"] = this.cursors?.up.isDown || false;
     }
 
+    // FUNCTIONS THAT CAN BE PUT INTO SEPARATE FILES
+    //-----------------------------------------------------------------------------
     evaluateRowsAndColumns() {
         // Evaluate all rows
         const numRows = 5;
@@ -387,7 +392,7 @@ export default class Level1PlayScene extends Phaser.Scene {
     //MATCHCODE
     safeEval(expression: string): boolean {
         try {
-            return eval(expression);
+            return eval(expression) as boolean;
         } catch (error) {
             // Handle the error here, or simply return null if you want to ignore it
             //console.error("Error evaluating expression:", error);
@@ -405,7 +410,6 @@ export default class Level1PlayScene extends Phaser.Scene {
 
     evaluateExpression(expression: string[]): boolean {
         // Check if the expression starts or ends with invalid operators
-
         // Construct the expression string
         let result = "";
         for (let i = 0; i < expression.length; i++) {
@@ -416,39 +420,4 @@ export default class Level1PlayScene extends Phaser.Scene {
         // Evaluate the expression using eval() and return the result
         return this.safeEval(result) as boolean;
     }
-
-    /*
-    MORE COMPLEX VERSION OF GENERATE RANDOM BOARD
-    NOTE: DOES NOT WORK AT THE MOMENT
-        function generateRandomBoard(
-            numRows: number,
-            numCols: number,
-            tileTypes: string[]
-        ) {
-            const board = [];
-
-            const tileWeight: { [key: string]: number } = {
-                And: 0.1,
-                Or: 0.1,
-                Not: 0.1,
-                True: 0.35,
-                False: 0.35,
-            };
-
-            for (let row = 0; row < numRows; row++) {
-                const newRow = [];
-                for (let col = 0; col < numCols; col++) {
-                    //Use instead of random index?
-                    const randomBlock = Math.random();
-
-                    const randomIndex = Math.floor(
-                        Math.random() * tileTypes.length
-                    );
-                    newRow.push(tileTypes[randomIndex]);
-                }
-                board.push(newRow);
-            }
-            return board;
-        }
-        */
 }
