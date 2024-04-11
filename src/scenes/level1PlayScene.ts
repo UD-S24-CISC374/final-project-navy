@@ -21,6 +21,7 @@ export default class Level1PlayScene extends Phaser.Scene {
 
     private rowSelector: Phaser.GameObjects.Image;
     private colSelector: Phaser.GameObjects.Image;
+    private tileTypes: string[];
 
     create() {
         this.rowSelector = this.add.image(400, 220, "Row Selector");
@@ -48,15 +49,7 @@ export default class Level1PlayScene extends Phaser.Scene {
 
         const numRows = 5;
         const numCols = 5;
-        const tileTypes = [
-            "And",
-            "Or",
-            "Not",
-            "True",
-            "False",
-            "True",
-            "False",
-        ];
+        this.tileTypes = ["And", "Or", "Not", "True", "False", "True", "False"];
 
         function generateRandomBoard(
             numRows: number,
@@ -80,7 +73,7 @@ export default class Level1PlayScene extends Phaser.Scene {
         }
 
         //MATCHCODE
-        this.board = generateRandomBoard(numRows, numCols, tileTypes);
+        this.board = generateRandomBoard(numRows, numCols, this.tileTypes);
         //this would replace line 90 and places using "board" would need to then be "this.board"
 
         //const board = generateRandomBoard(numRows, numCols, tileTypes);
@@ -192,6 +185,8 @@ export default class Level1PlayScene extends Phaser.Scene {
         for (let row = 0; row < numRows; row++) {
             if (this.evaluateExpression(this.board[row])) {
                 console.log("Found a match in row", row);
+                this.removeRow(row);
+                //this.moveBlocksDown(row); Maybe use a diff function for moving blocks down?
             }
         }
 
@@ -201,10 +196,85 @@ export default class Level1PlayScene extends Phaser.Scene {
             const column = this.board.map((row) => row[col]);
             if (this.evaluateExpression(column)) {
                 console.log("Found a match in column", col);
+                this.removeColumn(col);
             }
         }
     }
+    //---------------------------------------------------------------------
+    // THIS CODE SEGMENT DEALS WITH SHIFTING BLOCKS WHEN MATCHES ARE MADE
+    removeRow(row: number) {
+        const numCols = this.board[0].length;
+        const tiles =
+            this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[];
 
+        // Update the data and textures of the sprites in the matched row
+        for (let col = 0; col < numCols; col++) {
+            const spriteIndex = row * numCols + col;
+            const tileSprite = tiles[spriteIndex];
+
+            const randomIndex = Math.floor(
+                Math.random() * this.tileTypes.length
+            );
+            const newTileType = this.tileTypes[randomIndex];
+
+            tileSprite.setData("tileType", newTileType);
+            tileSprite.setTexture(newTileType);
+        }
+
+        // Shift values down for all rows above the removed row
+        for (let i = row; i > 0; i--) {
+            for (let col = 0; col < numCols; col++) {
+                const spriteIndex = i * numCols + col;
+                const tileSprite = tiles[spriteIndex];
+                const aboveSpriteIndex = (i - 1) * numCols + col;
+                const aboveTileType =
+                    tiles[aboveSpriteIndex].getData("tileType");
+
+                tileSprite.setData("tileType", aboveTileType);
+                tileSprite.setTexture(aboveTileType);
+            }
+
+            // Update the board data accordingly
+            this.board[i] = this.board[i - 1].slice();
+        }
+
+        // Generate completely new random blocks for the top row
+        const randomRow = [];
+        for (let col = 0; col < numCols; col++) {
+            const randomIndex = Math.floor(
+                Math.random() * this.tileTypes.length
+            );
+            randomRow.push(this.tileTypes[randomIndex]);
+        }
+        this.board[0] = randomRow;
+    }
+
+    removeColumn(col: number) {
+        const numCols = this.board[0].length;
+
+        // Remove the column from the board data
+        for (let row = 0; row < this.board.length; row++) {
+            this.board[row].splice(col, 1);
+        }
+
+        // Update the data and textures of the sprites in the matched column
+        const tiles =
+            this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[];
+        for (let row = 0; row < this.board.length; row++) {
+            const spriteIndex = row * numCols + col;
+            const tileSprite = tiles[spriteIndex];
+
+            const randomIndex = Math.floor(
+                Math.random() * this.tileTypes.length
+            );
+            const newTileType = this.tileTypes[randomIndex];
+
+            tileSprite.setData("tileType", newTileType);
+            tileSprite.setTexture(newTileType);
+        }
+    }
+
+    // ----------------------------------------------------------------
     shiftValues(deltaX: number, deltaY: number) {
         const numRows = 5;
         const numCols = 5;
