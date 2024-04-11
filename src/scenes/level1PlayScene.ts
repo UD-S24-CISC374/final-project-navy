@@ -385,6 +385,15 @@ export default class Level1PlayScene extends Phaser.Scene {
     }
 
     //MATCHCODE
+    safeEval(expression: string): boolean {
+        try {
+            return eval(expression);
+        } catch (error) {
+            // Handle the error here, or simply return null if you want to ignore it
+            //console.error("Error evaluating expression:", error);
+            return false;
+        }
+    }
 
     logicalOperators: { [key: string]: string } = {
         And: "&&",
@@ -396,76 +405,6 @@ export default class Level1PlayScene extends Phaser.Scene {
 
     evaluateExpression(expression: string[]): boolean {
         // Check if the expression starts or ends with invalid operators
-        const firstElement = expression[0];
-        const lastElement = expression[expression.length - 1];
-
-        if (
-            !(
-                firstElement === "True" ||
-                firstElement === "False" ||
-                firstElement === "Not"
-            )
-        ) {
-            //console.error("Invalid expression: Starts with invalid operator");
-            return false;
-        }
-
-        if (
-            lastElement === "Not" ||
-            lastElement === "And" ||
-            lastElement === "Or"
-        ) {
-            //console.error("Invalid expression: Ends with invalid operator");
-            return false;
-        }
-
-        // Check for consecutive operands and operators
-        for (let i = 0; i < expression.length - 1; i++) {
-            const currentElement = expression[i];
-            const nextElement = expression[i + 1];
-
-            // Check for consecutive operands
-            if (
-                (currentElement === "True" || currentElement === "False") &&
-                (nextElement === "True" || nextElement === "False")
-            ) {
-                //console.error("Invalid expression: Consecutive operands");
-                return false;
-            }
-
-            // Check for consecutive operators
-            if (
-                (currentElement === "And" || currentElement === "Or") &&
-                (nextElement === "And" || nextElement === "Or")
-            ) {
-                //console.error("Invalid expression: Consecutive operators");
-                return false;
-            }
-
-            // Check consecutive operators
-            if (currentElement === "Not" && nextElement === "Not") {
-                return false;
-            }
-
-            // Check if &/| comes after T/F
-            if (
-                (currentElement === "True" || currentElement === "False") &&
-                nextElement !== "And" &&
-                nextElement !== "Or"
-            ) {
-                //console.error("Invalid expression: Consecutive operands");
-                return false;
-            }
-
-            // Check if T/F comes after !
-            if (
-                currentElement === "Not" &&
-                nextElement !== "True" &&
-                nextElement !== "False"
-            ) {
-                return false;
-            }
-        }
 
         // Construct the expression string
         let result = "";
@@ -475,7 +414,7 @@ export default class Level1PlayScene extends Phaser.Scene {
         }
         console.log("result is: " + result);
         // Evaluate the expression using eval() and return the result
-        return eval(result) as boolean;
+        return this.safeEval(result) as boolean;
     }
 
     /*
