@@ -6,10 +6,8 @@ export default class Level1PlayScene extends Phaser.Scene {
         super({ key: "Level1PlayScene" });
     }
 
-    /* 
-    MATCHCODE
-    private board: string[][]; 
-    */
+    //MATCHCODE
+    private board: string[][];
 
     private tilesGroup: Phaser.GameObjects.Group;
     private selectedTile: Phaser.GameObjects.Sprite;
@@ -81,13 +79,11 @@ export default class Level1PlayScene extends Phaser.Scene {
             return board;
         }
 
-        /* 
-        MATCHCODE
+        //MATCHCODE
         this.board = generateRandomBoard(numRows, numCols, tileTypes);
-        this would replace line 90 and places using "board" would need to then be "this.board"
-        */
+        //this would replace line 90 and places using "board" would need to then be "this.board"
 
-        const board = generateRandomBoard(numRows, numCols, tileTypes);
+        //const board = generateRandomBoard(numRows, numCols, tileTypes);
         // These coordinates are for 5x5 board to ensre it's centered
         let startx = 280;
         let starty = 180;
@@ -99,9 +95,9 @@ export default class Level1PlayScene extends Phaser.Scene {
         this.tilesGroup = this.add.group();
 
         // Loops through board and creates sprites for each tile
-        for (let row = 0; row < board.length; row++) {
-            for (let col = 0; col < board[row].length; col++) {
-                const tileType = board[row][col];
+        for (let row = 0; row < this.board.length; row++) {
+            for (let col = 0; col < this.board[row].length; col++) {
+                const tileType = this.board[row][col];
                 // the value being added to newx/y depends on board size
                 const xPos = newx + 40;
                 const yPos = newy + 40;
@@ -146,6 +142,7 @@ export default class Level1PlayScene extends Phaser.Scene {
         );
 
         this.cursors = this.input.keyboard?.createCursorKeys();
+        this.evaluateRowsAndColumns();
     }
 
     update() {
@@ -154,16 +151,12 @@ export default class Level1PlayScene extends Phaser.Scene {
 
         //TODO: Make it so holding down a key moves you multiple times instead of pressing each time
         if (this.keyW?.isDown && !this.prevKeyState["W"]) {
-            console.log("Pressing W");
             this.moveSelection(0, -1);
         } else if (this.keyS?.isDown && !this.prevKeyState["S"]) {
-            console.log("Pressing S");
             this.moveSelection(0, 1);
         } else if (this.keyA?.isDown && !this.prevKeyState["A"]) {
-            console.log("Pressing A");
             this.moveSelection(-1, 0);
         } else if (this.keyD?.isDown && !this.prevKeyState["D"]) {
-            console.log("Pressing D");
             this.moveSelection(1, 0);
         }
 
@@ -174,33 +167,42 @@ export default class Level1PlayScene extends Phaser.Scene {
         this.prevKeyState["D"] = this.keyD?.isDown || false;
 
         if (this.cursors?.right.isDown && !this.prevKeyState["right"]) {
-            console.log("Pressing Right Arrow");
             this.shiftValues(-1, 0);
+            this.evaluateRowsAndColumns();
         } else if (this.cursors?.left.isDown && !this.prevKeyState["left"]) {
-            console.log("Pressing Left Arrow");
             this.shiftValues(1, 0);
+            this.evaluateRowsAndColumns();
         } else if (this.cursors?.down.isDown && !this.prevKeyState["down"]) {
-            console.log("Pressing Down Arrow");
             this.shiftValues(0, -1);
+            this.evaluateRowsAndColumns();
         } else if (this.cursors?.up.isDown && !this.prevKeyState["up"]) {
-            console.log("Pressing Up Arrow");
             this.shiftValues(0, 1);
+            this.evaluateRowsAndColumns();
         }
 
         this.prevKeyState["right"] = this.cursors?.right.isDown || false;
         this.prevKeyState["left"] = this.cursors?.left.isDown || false;
         this.prevKeyState["down"] = this.cursors?.down.isDown || false;
         this.prevKeyState["up"] = this.cursors?.up.isDown || false;
+    }
 
-        /* 
-        MATCHCODE
+    evaluateRowsAndColumns() {
+        // Evaluate all rows
         const numRows = 5;
         for (let row = 0; row < numRows; row++) {
-            if (this.evaluateRowExpression(this.board[row])) {
-                console.log("Found a match!")
+            if (this.evaluateExpression(this.board[row])) {
+                console.log("Found a match in row", row);
             }
-        } 
-        */
+        }
+
+        // Evaluate all columns
+        const numCols = 5;
+        for (let col = 0; col < numCols; col++) {
+            const column = this.board.map((row) => row[col]);
+            if (this.evaluateExpression(column)) {
+                console.log("Found a match in column", col);
+            }
+        }
     }
 
     shiftValues(deltaX: number, deltaY: number) {
@@ -233,6 +235,8 @@ export default class Level1PlayScene extends Phaser.Scene {
                 tiles[tileIndex].setData("tileType", newTileTypes[col]);
                 tiles[tileIndex].setTexture(newTileTypes[col]);
             }
+            // Update the board with new tile types
+            this.board[selectedRow] = newTileTypes;
         }
 
         // Shift values in the column
@@ -249,6 +253,10 @@ export default class Level1PlayScene extends Phaser.Scene {
                 const tileIndex = row * numCols + selectedCol;
                 tiles[tileIndex].setData("tileType", newTileTypes[row]);
                 tiles[tileIndex].setTexture(newTileTypes[row]);
+            }
+            // Update the board with new tile types
+            for (let row = 0; row < numRows; row++) {
+                this.board[row][selectedCol] = newTileTypes[row];
             }
         }
     }
@@ -296,8 +304,7 @@ export default class Level1PlayScene extends Phaser.Scene {
         this.colSelector.setVisible(true);
     }
 
-    /* 
-    MATCHCODE
+    //MATCHCODE
 
     logicalOperators: { [key: string]: string } = {
         And: "&&",
@@ -306,23 +313,69 @@ export default class Level1PlayScene extends Phaser.Scene {
         True: "true",
         False: "false",
     };
-    
-    evaluateRowExpression(row: string[]): boolean {
-        let expression = "";
-        for (const tileType of row) {
-            expression += this.logicalOperators[tileType];
-        }
-        return eval(expression) as boolean;
-    }
 
-    evaluateColumnExpression(column: string[]): boolean {
-        let expression = "";
-        for (const tileType of column) {
-            expression += this.logicalOperators[tileType];
+    evaluateExpression(expression: string[]): boolean {
+        // Check if the expression starts or ends with invalid operators
+        if (
+            ["And", "Or"].includes(expression[0]) ||
+            ["And", "Or", "Not"].includes(expression[expression.length - 1])
+        ) {
+            return false;
         }
-        return eval(expression) as boolean;
-    } 
-    */
+
+        let result = "";
+        let prevIsBool = false;
+        let prevIsOperator = false;
+        let prevIsNot = false;
+
+        for (let i = 0; i < expression.length; i++) {
+            const tileType = expression[i];
+            // Check for consecutive boolean values
+            if (["True", "False"].includes(tileType)) {
+                if (prevIsBool) {
+                    return false;
+                }
+                prevIsBool = true;
+            } else {
+                prevIsBool = false;
+            }
+
+            // Check for consecutive operators
+            if (["And", "Or"].includes(tileType)) {
+                if (prevIsOperator) {
+                    return false;
+                }
+                prevIsOperator = true;
+            } else {
+                prevIsOperator = false;
+            }
+            // Check for consecutive "Not"
+            // PROBLEM: Doesn't seem to be counted as a valid expression with statements like "!F & !T"
+            // Every other expression works fine except for NOT, its constraints need work
+            if (tileType === "Not") {
+                if (
+                    prevIsNot || // Check if there are consecutive "Not" operators
+                    (i > 0 &&
+                        (expression[i - 1] === "And" ||
+                            expression[i - 1] === "Or")) || // Check if "Not" follows "And" or "Or"
+                    (i < expression.length - 1 &&
+                        (expression[i + 1] === "True" ||
+                            expression[i + 1] === "False")) // Check if "Not" is followed by "True" or "False"
+                ) {
+                    return false;
+                }
+                prevIsNot = true;
+            } else {
+                prevIsNot = false;
+            }
+
+            // Append logical operator or boolean value to the result
+            result += this.logicalOperators[tileType];
+        }
+        console.log("result is " + result);
+        // Evaluate the expression using eval() and return the result
+        return eval(result) as boolean;
+    }
 
     /*
     MORE COMPLEX VERSION OF GENERATE RANDOM BOARD
