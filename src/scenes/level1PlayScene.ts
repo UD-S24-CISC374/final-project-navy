@@ -265,27 +265,49 @@ export default class Level1PlayScene extends Phaser.Scene {
     }
 
     removeColumn(col: number) {
+        const numRows = this.board.length;
         const numCols = this.board[0].length;
 
-        // Remove the column from the board data
-        for (let row = 0; row < this.board.length; row++) {
-            this.board[row].splice(col, 1);
-        }
-
-        // Update the data and textures of the sprites in the matched column
+        // Update sprites to reflect the changes
         const tiles =
             this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[];
-        for (let row = 0; row < this.board.length; row++) {
-            const spriteIndex = row * numCols + col;
-            const tileSprite = tiles[spriteIndex];
 
-            const randomIndex = Math.floor(
-                Math.random() * this.tileTypes.length
-            );
-            const newTileType = this.tileTypes[randomIndex];
+        if (col === 0) {
+            // Direct replacement of column 0
+            for (let row = 0; row < numRows; row++) {
+                // Generate a new tile at the start of the row for column 0
+                const randomIndex = Math.floor(
+                    Math.random() * this.tileTypes.length
+                );
+                const newTileType = this.tileTypes[randomIndex];
+                this.board[row][col] = newTileType;
 
-            tileSprite.setData("tileType", newTileType);
-            tileSprite.setTexture(newTileType);
+                // Update the sprite for the new tile at the beginning of the row
+                const tileSprite = tiles[row * numCols + col];
+                tileSprite.setData("tileType", newTileType);
+                tileSprite.setTexture(newTileType);
+            }
+        } else {
+            // Shift all columns to the right of the matched column to the left
+            for (let row = 0; row < numRows; row++) {
+                // Remove the matched column and shift columns
+                this.board[row].splice(col, 1);
+
+                // Generate a new tile at the start of the row
+                const randomIndex = Math.floor(
+                    Math.random() * this.tileTypes.length
+                );
+                const newTileType = this.tileTypes[randomIndex];
+                this.board[row].unshift(newTileType); // Adds to the beginning of the array
+
+                // Update sprites from column 0 to col-1 after the shift
+                for (let shiftCol = 0; shiftCol < numCols; shiftCol++) {
+                    const tileSprite = tiles[row * numCols + shiftCol];
+                    const tileType = this.board[row][shiftCol];
+                    tileSprite.setData("tileType", tileType);
+                    tileSprite.setTexture(tileType);
+                }
+            }
         }
     }
 
