@@ -30,6 +30,7 @@ export default class PreloadScene extends Phaser.Scene {
 
     create() {
         playMusic(this, "MainSong");
+        this.sound.pauseOnBlur = false;
         this.scene.start("MainScene");
     }
 }

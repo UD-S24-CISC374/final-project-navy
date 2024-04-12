@@ -7,8 +7,6 @@ export default class MainScene extends Phaser.Scene {
     }
 
     create() {
-        this.sound.pauseOnBlur = false;
-
         this.add.text(180, 200, "Boolean Bonanza (add img)", {
             fontSize: "32px",
             color: "black",
