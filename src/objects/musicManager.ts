@@ -11,7 +11,10 @@ export class MusicManager {
     }
 
     public static getInstance(): MusicManager {
-        return MusicManager.instance;
+        return (
+            MusicManager.instance ??
+            (MusicManager.instance = new MusicManager())
+        );
     }
 
     public playMusic(scene: Phaser.Scene, key: string): void {
