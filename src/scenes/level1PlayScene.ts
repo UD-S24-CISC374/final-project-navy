@@ -24,7 +24,9 @@ export default class Level1PlayScene extends Phaser.Scene {
     private colSelector: Phaser.GameObjects.Image;
     private tileTypes: string[];
 
+    private recentMatch: string = "";
     private score: number = 0;
+    private recentMatchText: Phaser.GameObjects.Text;
     scoreText?: Phaser.GameObjects.Text;
     private match: Phaser.Sound.BaseSound;
 
@@ -38,6 +40,15 @@ export default class Level1PlayScene extends Phaser.Scene {
             fontSize: "25px",
             color: "black",
         });
+        this.recentMatchText = this.add.text(
+            50,
+            130,
+            "Most Recent Match: " + this.recentMatch,
+            {
+                fontSize: "25px",
+                color: "black",
+            }
+        );
 
         this.rowSelector = this.add.image(400, 220, "Row Selector");
         this.colSelector = this.add.image(320, 300, "Col Selector");
@@ -57,6 +68,7 @@ export default class Level1PlayScene extends Phaser.Scene {
             () => {
                 stopMusic("L1Song");
                 playMusic(this, "MainSong");
+                this.score = 0;
                 this.scene.start("SelectScene");
             }
         );
@@ -230,9 +242,13 @@ export default class Level1PlayScene extends Phaser.Scene {
         for (let row = 0; row < numRows; row++) {
             if (this.evaluateExpression(this.board[row])) {
                 console.log("Found a match in row", row);
+                this.recentMatch = this.board[row].join(" ");
                 this.removeRow(row);
                 this.score += 1;
                 this.scoreText?.setText("Matches: " + this.score);
+                this.recentMatchText.setText(
+                    "Most Recent Match: " + this.recentMatch
+                );
                 this.match.play();
                 //this.moveBlocksDown(row); Maybe use a diff function for moving blocks down?
             }
@@ -244,9 +260,13 @@ export default class Level1PlayScene extends Phaser.Scene {
             const column = this.board.map((row) => row[col]);
             if (this.evaluateExpression(column)) {
                 console.log("Found a match in column", col);
+                this.recentMatch = column.join(" ");
                 this.removeColumn(col);
                 this.score += 1;
                 this.scoreText?.setText("Matches: " + this.score);
+                this.recentMatchText.setText(
+                    "Most Recent Match: " + this.recentMatch
+                );
                 this.match.play();
             }
         }
