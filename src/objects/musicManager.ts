@@ -11,9 +11,6 @@ export class MusicManager {
     }
 
     public static getInstance(): MusicManager {
-        if (!MusicManager.instance) {
-            MusicManager.instance = new MusicManager();
-        }
         return MusicManager.instance;
     }
 
