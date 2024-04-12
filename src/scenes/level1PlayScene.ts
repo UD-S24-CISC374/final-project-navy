@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { Button } from "../objects/button";
+import { playMusic, stopMusic } from "../objects/musicManager";
 
 export default class Level1PlayScene extends Phaser.Scene {
     constructor() {
@@ -24,6 +25,10 @@ export default class Level1PlayScene extends Phaser.Scene {
     private tileTypes: string[];
 
     create() {
+        stopMusic("MainSong");
+        playMusic(this, "L1Song");
+        this.sound.pauseOnBlur = false;
+
         this.rowSelector = this.add.image(400, 220, "Row Selector");
         this.colSelector = this.add.image(320, 300, "Col Selector");
         this.rowSelector.setVisible(false);
@@ -39,7 +44,11 @@ export default class Level1PlayScene extends Phaser.Scene {
                 fontSize: "25px",
                 color: "red",
             },
-            () => this.scene.start("SelectScene")
+            () => {
+                stopMusic("L1Song");
+                playMusic(this, "MainSong");
+                this.scene.start("SelectScene");
+            }
         );
 
         this.add.text(330, 100, "Level 1", {

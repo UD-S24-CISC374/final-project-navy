@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { Button } from "../objects/button";
+import { playMusic } from "../objects/musicManager";
 
 export default class SelectScene extends Phaser.Scene {
     constructor() {
@@ -20,9 +21,9 @@ export default class SelectScene extends Phaser.Scene {
             { text: "Level 1", sceneKey: "Level1InfoScene" },
             { text: "Level 2", sceneKey: "Level2InfoScene" },
             { text: "Level 3", sceneKey: "Level3InfoScene" },
-            { text: "Level 4", sceneKey: "Level4" },
-            { text: "Level 5", sceneKey: "Level5" },
-            { text: "Level 6", sceneKey: "Level6" },
+            { text: "Practice 1", sceneKey: "Practice1" },
+            { text: "Practice 2", sceneKey: "Practice2" },
+            { text: "Practice 3", sceneKey: "Practice3" },
         ];
 
         let x = 150;
