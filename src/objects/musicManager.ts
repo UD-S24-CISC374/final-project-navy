@@ -1,23 +1,15 @@
 import Phaser from "phaser";
 
-export class MusicManager {
-    private static instance: MusicManager;
+class MusicManager {
     private music: Phaser.Sound.BaseSound | null;
     private currentScene: Phaser.Scene | null;
 
-    private constructor() {
+    constructor() {
         this.music = null;
         this.currentScene = null;
     }
 
-    public static getInstance(): MusicManager {
-        return (
-            MusicManager.instance ??
-            (MusicManager.instance = new MusicManager())
-        );
-    }
-
-    public playMusic(scene: Phaser.Scene, key: string): void {
+    playMusic(scene: Phaser.Scene, key: string): void {
         if (this.currentScene !== scene) {
             if (this.music !== null) {
                 this.music.stop();
@@ -28,7 +20,7 @@ export class MusicManager {
         }
     }
 
-    public stopMusic(key?: string): void {
+    stopMusic(key?: string): void {
         if (this.music !== null) {
             if (!key || this.music.key === key) {
                 this.music.stop();
@@ -39,6 +31,6 @@ export class MusicManager {
     }
 }
 
-export const musicManager = MusicManager.getInstance();
+export const musicManager = new MusicManager();
 export const playMusic = musicManager.playMusic.bind(musicManager);
 export const stopMusic = musicManager.stopMusic.bind(musicManager);
