@@ -24,10 +24,20 @@ export default class Level1PlayScene extends Phaser.Scene {
     private colSelector: Phaser.GameObjects.Image;
     private tileTypes: string[];
 
+    private score: number = 0;
+    scoreText?: Phaser.GameObjects.Text;
+    private match: Phaser.Sound.BaseSound;
+
     create() {
         stopMusic("MainSong");
         playMusic(this, "L1Song");
         this.sound.pauseOnBlur = false;
+
+        this.match = this.sound.add("match", { loop: false });
+        this.scoreText = this.add.text(50, 100, "Matches: " + this.score, {
+            fontSize: "25px",
+            color: "black",
+        });
 
         this.rowSelector = this.add.image(400, 220, "Row Selector");
         this.colSelector = this.add.image(320, 300, "Col Selector");
@@ -221,6 +231,9 @@ export default class Level1PlayScene extends Phaser.Scene {
             if (this.evaluateExpression(this.board[row])) {
                 console.log("Found a match in row", row);
                 this.removeRow(row);
+                this.score += 1;
+                this.scoreText?.setText("Matches: " + this.score);
+                this.match.play();
                 //this.moveBlocksDown(row); Maybe use a diff function for moving blocks down?
             }
         }
@@ -232,6 +245,9 @@ export default class Level1PlayScene extends Phaser.Scene {
             if (this.evaluateExpression(column)) {
                 console.log("Found a match in column", col);
                 this.removeColumn(col);
+                this.score += 1;
+                this.scoreText?.setText("Matches: " + this.score);
+                this.match.play();
             }
         }
     }
