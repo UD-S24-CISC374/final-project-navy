@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { playMusic } from "../objects/musicManager";
 
 export default class PreloadScene extends Phaser.Scene {
     constructor() {
@@ -23,9 +24,12 @@ export default class PreloadScene extends Phaser.Scene {
 
         this.load.audio("MainSong", ["assets/Vibing-Over-Venus.mp3"]);
         this.load.audio("L1Song", ["assets/Thief-in-the-Night.mp3"]);
+        this.load.audio("L2Song", ["assets/Miami-Viceroy.mp3"]);
+        this.load.audio("L3Song", ["assets/ZigZag.mp3"]);
     }
 
     create() {
+        playMusic(this, "MainSong");
         this.scene.start("MainScene");
     }
 }

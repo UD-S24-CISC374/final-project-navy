@@ -1,6 +1,5 @@
 import Phaser from "phaser";
 import { Button } from "../objects/button";
-import { playMusic } from "../objects/musicManager";
 
 export default class MainScene extends Phaser.Scene {
     constructor() {
@@ -8,7 +7,6 @@ export default class MainScene extends Phaser.Scene {
     }
 
     create() {
-        playMusic(this, "MainSong");
         this.sound.pauseOnBlur = false;
 
         this.add.text(180, 200, "Boolean Bonanza (add img)", {

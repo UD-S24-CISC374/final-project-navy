@@ -1,4 +1,4 @@
-// musicManager.ts
+import Phaser from "phaser";
 
 export class MusicManager {
     private static instance: MusicManager;
