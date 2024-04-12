@@ -69,6 +69,7 @@ export default class Level1PlayScene extends Phaser.Scene {
                 stopMusic("L1Song");
                 playMusic(this, "MainSong");
                 this.score = 0;
+                this.recentMatch = "";
                 this.scene.start("SelectScene");
             }
         );
