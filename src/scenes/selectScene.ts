@@ -20,9 +20,9 @@ export default class SelectScene extends Phaser.Scene {
             { text: "Level 1", sceneKey: "Level1InfoScene" },
             { text: "Level 2", sceneKey: "Level2InfoScene" },
             { text: "Level 3", sceneKey: "Level3InfoScene" },
-            { text: "Practice 1", sceneKey: "Practice1" },
-            { text: "Practice 2", sceneKey: "Practice2" },
-            { text: "Practice 3", sceneKey: "Practice3" },
+            { text: "Practice 1", sceneKey: "P1InfoScene" },
+            { text: "Practice 2", sceneKey: "P2InfoScene" },
+            { text: "Practice 3", sceneKey: "P3InfoScene" },
         ];
 
         let x = 150;
