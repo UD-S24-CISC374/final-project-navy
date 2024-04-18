@@ -14,6 +14,7 @@ import P2InfoScene from "./scenes/p2InfoScene";
 import P2PlayScene from "./scenes/p2PlayScene";
 import P3InfoScene from "./scenes/p3InfoScene";
 import P3PlayScene from "./scenes/p3PlayScene";
+import SIntroScene from "./scenes/sIntroScene";
 
 const DEFAULT_WIDTH = 800;
 const DEFAULT_HEIGHT = 600;
@@ -46,6 +47,7 @@ export const CONFIG = {
         P2PlayScene,
         P3InfoScene,
         P3PlayScene,
+        SIntroScene,
     ],
     physics: {
         default: "arcade",
