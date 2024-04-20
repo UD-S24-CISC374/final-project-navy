@@ -1,6 +1,8 @@
 import Phaser from "phaser";
 import { Button } from "../objects/button";
 
+const globals = require("../objects/globalVars");
+
 export default class MainScene extends Phaser.Scene {
     constructor() {
         super({ key: "MainScene" });
@@ -26,7 +28,14 @@ export default class MainScene extends Phaser.Scene {
                 fontSize: "25px",
                 color: "red",
             },
-            () => this.scene.start("SelectScene")
+            () => {
+                if (globals.storyTriggered) {
+                    this.scene.start("SelectScene");
+                } else {
+                    globals.storyTriggered = true;
+                    this.scene.start("SIntroScene");
+                }
+            }
         );
 
         const htpButton = this.add
