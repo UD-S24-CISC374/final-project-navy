@@ -1,5 +1,3 @@
-import Phaser from "phaser";
-
 function safeEval(expression: string): boolean {
     try {
         return eval(expression) as boolean;

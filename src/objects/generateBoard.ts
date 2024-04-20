@@ -1,5 +1,3 @@
-import Phaser from "phaser";
-
 export function generateRandomBoard(
     numRows: number,
     numCols: number,
