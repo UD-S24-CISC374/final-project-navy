@@ -1,6 +1,11 @@
 import Phaser from "phaser";
 import { Button } from "../objects/button";
 import { playMusic, stopMusic } from "../objects/musicManager";
+import { generateRandomBoard } from "../objects/generateBoard";
+import { evaluateExpression } from "../objects/evaluateExpression";
+import { shiftValues } from "../objects/shiftValues";
+import { removeRow } from "../objects/removeRow";
+import { removeCol } from "../objects/removeCol";
 
 export default class Level1PlayScene extends Phaser.Scene {
     constructor() {
@@ -106,27 +111,6 @@ export default class Level1PlayScene extends Phaser.Scene {
             "Not",
         ];
 
-        function generateRandomBoard(
-            numRows: number,
-            numCols: number,
-            tileTypes: string[]
-        ) {
-            //TODO?: create board class and make smarter generations
-            // Also TODO: make it so same board remains when exiting level
-            const board = [];
-            for (let row = 0; row < numRows; row++) {
-                const newRow = [];
-                for (let col = 0; col < numCols; col++) {
-                    const randomIndex = Math.floor(
-                        Math.random() * tileTypes.length
-                    );
-                    newRow.push(tileTypes[randomIndex]);
-                }
-                board.push(newRow);
-            }
-            return board;
-        }
-
         this.board = generateRandomBoard(numRows, numCols, this.tileTypes);
         // These coordinates are for 5x5 board to ensre it's centered
         let startx = 280;
@@ -167,7 +151,7 @@ export default class Level1PlayScene extends Phaser.Scene {
             this.tilesGroup.getChildren()[0] as Phaser.GameObjects.Sprite;
 
         // Highlights selected tile
-        this.selectedTile.setTint(0xff0000);
+        this.selectedTile.setTint(0xa9a9a9);
         this.rowSelector.setPosition(400, this.selectedTile.y);
         this.colSelector.setPosition(this.selectedTile.x, 300);
         this.rowSelector.setVisible(true);
@@ -189,7 +173,7 @@ export default class Level1PlayScene extends Phaser.Scene {
         );
 
         this.cursors = this.input.keyboard?.createCursorKeys();
-        this.evaluateRowsAndColumns();
+        this.evaluateRowsAndColumns(5, 5);
     }
 
     update() {
@@ -216,17 +200,49 @@ export default class Level1PlayScene extends Phaser.Scene {
         // Block Movement
         //-----------------------------------------------------------------------------
         if (this.cursors?.right.isDown && !this.prevKeyState["right"]) {
-            this.shiftValues(-1, 0);
-            this.evaluateRowsAndColumns();
+            shiftValues(
+                -1,
+                0,
+                5,
+                5,
+                this.board,
+                this.selectedTileIndex,
+                this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
+            );
+            this.evaluateRowsAndColumns(5, 5);
         } else if (this.cursors?.left.isDown && !this.prevKeyState["left"]) {
-            this.shiftValues(1, 0);
-            this.evaluateRowsAndColumns();
+            shiftValues(
+                1,
+                0,
+                5,
+                5,
+                this.board,
+                this.selectedTileIndex,
+                this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
+            );
+            this.evaluateRowsAndColumns(5, 5);
         } else if (this.cursors?.down.isDown && !this.prevKeyState["down"]) {
-            this.shiftValues(0, -1);
-            this.evaluateRowsAndColumns();
+            shiftValues(
+                0,
+                -1,
+                5,
+                5,
+                this.board,
+                this.selectedTileIndex,
+                this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
+            );
+            this.evaluateRowsAndColumns(5, 5);
         } else if (this.cursors?.up.isDown && !this.prevKeyState["up"]) {
-            this.shiftValues(0, 1);
-            this.evaluateRowsAndColumns();
+            shiftValues(
+                0,
+                1,
+                5,
+                5,
+                this.board,
+                this.selectedTileIndex,
+                this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
+            );
+            this.evaluateRowsAndColumns(5, 5);
         }
 
         this.prevKeyState["right"] = this.cursors?.right.isDown || false;
@@ -237,14 +253,19 @@ export default class Level1PlayScene extends Phaser.Scene {
 
     // FUNCTIONS THAT CAN BE PUT INTO SEPARATE FILES
     //-----------------------------------------------------------------------------
-    evaluateRowsAndColumns() {
+    evaluateRowsAndColumns(numRows: number, numCols: number) {
         // Evaluate all rows
-        const numRows = 5;
         for (let row = 0; row < numRows; row++) {
-            if (this.evaluateExpression(this.board[row])) {
+            if (evaluateExpression(this.board[row])) {
                 console.log("Found a match in row", row);
                 this.recentMatch = this.board[row].join(" ");
-                this.removeRow(row);
+                removeRow(
+                    row,
+                    numCols,
+                    this.board,
+                    this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[],
+                    this.tileTypes
+                );
                 this.score += 1;
                 this.scoreText?.setText("Matches: " + this.score);
                 this.recentMatchText.setText(
@@ -256,13 +277,19 @@ export default class Level1PlayScene extends Phaser.Scene {
         }
 
         // Evaluate all columns
-        const numCols = 5;
         for (let col = 0; col < numCols; col++) {
             const column = this.board.map((row) => row[col]);
-            if (this.evaluateExpression(column)) {
+            if (evaluateExpression(column)) {
                 console.log("Found a match in column", col);
                 this.recentMatch = column.join(" ");
-                this.removeColumn(col);
+                removeCol(
+                    col,
+                    numRows,
+                    numCols,
+                    this.board,
+                    this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[],
+                    this.tileTypes
+                );
                 this.score += 1;
                 this.scoreText?.setText("Matches: " + this.score);
                 this.recentMatchText.setText(
@@ -273,146 +300,6 @@ export default class Level1PlayScene extends Phaser.Scene {
         }
     }
     //---------------------------------------------------------------------
-    // THIS CODE SEGMENT DEALS WITH SHIFTING BLOCKS WHEN MATCHES ARE MADE
-    removeRow(row: number) {
-        const numCols = this.board[0].length;
-        const tiles =
-            this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[];
-
-        // Shift the rows down in the data and update their corresponding sprites.
-        for (let i = row; i > 0; i--) {
-            this.board[i] = this.board[i - 1].slice(); // Getting row above
-            for (let col = 0; col < numCols; col++) {
-                const currentSpriteIndex = i * numCols + col;
-                const aboveSpriteIndex = (i - 1) * numCols + col;
-                tiles[currentSpriteIndex].setData(
-                    "tileType",
-                    tiles[aboveSpriteIndex].getData("tileType")
-                );
-                tiles[currentSpriteIndex].setTexture(
-                    tiles[aboveSpriteIndex].getData("tileType")
-                );
-            }
-        }
-
-        // Generate a new random top row for the board data
-        this.board[0] = [];
-        for (let col = 0; col < numCols; col++) {
-            const randomIndex = Math.floor(
-                Math.random() * this.tileTypes.length
-            );
-            this.board[0][col] = this.tileTypes[randomIndex];
-
-            // Update the data and texture for the new top row
-            const tileSprite = tiles[col];
-            tileSprite.setData("tileType", this.tileTypes[randomIndex]);
-            tileSprite.setTexture(this.tileTypes[randomIndex]);
-        }
-    }
-
-    removeColumn(col: number) {
-        const numRows = this.board.length;
-        const numCols = this.board[0].length;
-
-        // Update sprites to reflect the changes
-        const tiles =
-            this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[];
-
-        if (col === 0) {
-            // Direct replacement of column 0
-            for (let row = 0; row < numRows; row++) {
-                // Generate a new tile at the start of the row for column 0
-                const randomIndex = Math.floor(
-                    Math.random() * this.tileTypes.length
-                );
-                const newTileType = this.tileTypes[randomIndex];
-                this.board[row][col] = newTileType;
-
-                // Update the sprite for the new tile at the beginning of the row
-                const tileSprite = tiles[row * numCols + col];
-                tileSprite.setData("tileType", newTileType);
-                tileSprite.setTexture(newTileType);
-            }
-        } else {
-            // Shift all columns to the right of the matched column to the left
-            for (let row = 0; row < numRows; row++) {
-                // Remove the matched column and shift columns
-                this.board[row].splice(col, 1);
-
-                // Generate a new tile at the start of the row
-                const randomIndex = Math.floor(
-                    Math.random() * this.tileTypes.length
-                );
-                const newTileType = this.tileTypes[randomIndex];
-                this.board[row].unshift(newTileType); // Adds to the beginning of the array
-
-                // Update sprites from column 0 to col-1 after the shift
-                for (let shiftCol = 0; shiftCol < numCols; shiftCol++) {
-                    const tileSprite = tiles[row * numCols + shiftCol];
-                    const tileType = this.board[row][shiftCol];
-                    tileSprite.setData("tileType", tileType);
-                    tileSprite.setTexture(tileType);
-                }
-            }
-        }
-    }
-
-    // ----------------------------------------------------------------
-    shiftValues(deltaX: number, deltaY: number) {
-        const numRows = 5;
-        const numCols = 5;
-        const totalTiles = numRows * numCols;
-
-        const tiles =
-            this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[];
-
-        const currentIndex = this.selectedTileIndex;
-        const selectedRow = Math.floor(currentIndex / numCols);
-        const selectedCol = currentIndex % numCols;
-
-        const newTileTypes = [];
-
-        // Shift values in the row
-        if (deltaX !== 0) {
-            for (let col = 0; col < numCols; col++) {
-                const tileIndex = selectedRow * numCols + col;
-                const shiftedIndex =
-                    ((tileIndex + deltaX + numCols) % numCols) +
-                    selectedRow * numCols;
-                const tileType = tiles[shiftedIndex].getData("tileType");
-                newTileTypes.push(tileType);
-            }
-            // Update tiles in the row with new values
-            for (let col = 0; col < numCols; col++) {
-                const tileIndex = selectedRow * numCols + col;
-                tiles[tileIndex].setData("tileType", newTileTypes[col]);
-                tiles[tileIndex].setTexture(newTileTypes[col]);
-            }
-            // Update the board with new tile types
-            this.board[selectedRow] = newTileTypes;
-        }
-
-        // Shift values in the column
-        if (deltaY !== 0) {
-            for (let row = 0; row < numRows; row++) {
-                const tileIndex = row * numCols + selectedCol;
-                const shiftedIndex =
-                    (tileIndex + deltaY * numCols + totalTiles) % totalTiles;
-                const tileType = tiles[shiftedIndex].getData("tileType");
-                newTileTypes.push(tileType);
-            }
-            // Update tiles in the column with new values
-            for (let row = 0; row < numRows; row++) {
-                const tileIndex = row * numCols + selectedCol;
-                tiles[tileIndex].setData("tileType", newTileTypes[row]);
-                tiles[tileIndex].setTexture(newTileTypes[row]);
-            }
-            // Update the board with new tile types
-            for (let row = 0; row < numRows; row++) {
-                this.board[row][selectedCol] = newTileTypes[row];
-            }
-        }
-    }
 
     //TODO: Make moveSelection its own file that can be called for diff levels
     moveSelection(deltaX: number, deltaY: number) {
@@ -450,94 +337,10 @@ export default class Level1PlayScene extends Phaser.Scene {
         ] as Phaser.GameObjects.Sprite;
 
         // Highlight newly selected tile (red tint)
-        this.selectedTile.setTint(0xff0000);
+        this.selectedTile.setTint(0xa9a9a9);
         this.rowSelector.setPosition(400, this.selectedTile.y);
         this.colSelector.setPosition(this.selectedTile.x, 300);
         this.rowSelector.setVisible(true);
         this.colSelector.setVisible(true);
-    }
-
-    //MATCHCODE
-    safeEval(expression: string): boolean {
-        try {
-            return eval(expression) as boolean;
-        } catch (error) {
-            // Handle the error here, or simply return null if you want to ignore it
-            //console.error("Error evaluating expression:", error);
-            return false;
-        }
-    }
-
-    // Specifically for cases where "true || is the first part of an expression"
-    orEval(expression: string): boolean | null {
-        try {
-            return eval(expression) as boolean;
-        } catch (error) {
-            // Handle the error here, or simply return null if you want to ignore it
-            //console.error("Error evaluating expression:", error);
-            return null;
-        }
-    }
-
-    logicalOperators: { [key: string]: string } = {
-        And: "&&",
-        Or: "||",
-        Not: "!",
-        True: "true",
-        False: "false",
-    };
-
-    evaluateExpression(expression: string[]): boolean {
-        // Check if the expression starts or ends with invalid operators
-        // Construct the expression string
-        let result = "";
-        if (expression[0] === "True" && expression[1] === "Or") {
-            for (let i = 2; i < expression.length; i++) {
-                const tileType = expression[i];
-                result += this.logicalOperators[tileType];
-            }
-            let calc = this.orEval(result) as boolean | null;
-            console.log(
-                "result is: " +
-                    this.logicalOperators[expression[0]] +
-                    this.logicalOperators[expression[1]] +
-                    result
-            );
-            if (calc === null) {
-                return false;
-            } else {
-                return true;
-            }
-        } else if (
-            expression[0] === "Not" &&
-            expression[1] === "False" &&
-            expression[2] === "Or"
-        ) {
-            for (let i = 3; i < expression.length; i++) {
-                const tileType = expression[i];
-                result += this.logicalOperators[tileType];
-            }
-            let calc = this.orEval(result) as boolean | null;
-            console.log(
-                "result is: " +
-                    this.logicalOperators[expression[0]] +
-                    this.logicalOperators[expression[1]] +
-                    this.logicalOperators[expression[2]] +
-                    result
-            );
-            if (calc === null) {
-                return false;
-            } else {
-                return true;
-            }
-        } else {
-            for (let i = 0; i < expression.length; i++) {
-                const tileType = expression[i];
-                result += this.logicalOperators[tileType];
-            }
-            console.log("result is: " + result);
-            // Evaluate the expression using eval() and return the result
-            return this.safeEval(result) as boolean;
-        }
     }
 }
