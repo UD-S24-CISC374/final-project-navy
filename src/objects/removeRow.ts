@@ -1,3 +1,5 @@
+import Phaser from "phaser";
+
 export function removeRow(
     row: number,
     numCols: number,

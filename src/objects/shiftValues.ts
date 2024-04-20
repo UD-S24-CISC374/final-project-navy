@@ -1,3 +1,5 @@
+import Phaser from "phaser";
+
 export function shiftValues(
     deltaX: number,
     deltaY: number,
