@@ -10,6 +10,37 @@ import { removeCol } from "../objects/removeCol";
 export default class Level1PlayScene extends Phaser.Scene {
     constructor() {
         super({ key: "Level1PlayScene" });
+        /* added multiples 
+        true, false are weight .25 
+        and, or are weight .1875 
+        not is weight .125 */
+        this.tileTypes = [
+            "True",
+            "True",
+            "True",
+            "True",
+            "False",
+            "False",
+            "False",
+            "False",
+            "And",
+            "And",
+            "And",
+            "Or",
+            "Or",
+            "Or",
+            "Not",
+            "Not",
+        ];
+    }
+
+    saveGameState() {
+        const gameState = {
+            board: this.board,
+            score: this.score,
+            recentMatch: this.recentMatch,
+        };
+        localStorage.setItem("level1GameState", JSON.stringify(gameState));
     }
 
     private board: string[][];
@@ -40,6 +71,18 @@ export default class Level1PlayScene extends Phaser.Scene {
         playMusic(this, "L1Song");
         this.sound.pauseOnBlur = false;
 
+        const savedState = localStorage.getItem("level1GameState");
+        if (savedState) {
+            const gameState = JSON.parse(savedState);
+            this.board = gameState.board;
+            this.score = gameState.score;
+            this.recentMatch = gameState.recentMatch;
+        } else {
+            this.board = generateRandomBoard(5, 5, this.tileTypes);
+            this.score = 0;
+            this.recentMatch = "";
+        }
+
         this.match = this.sound.add("match", { loop: false });
         this.scoreText = this.add.text(50, 100, "Matches: " + this.score, {
             fontSize: "25px",
@@ -60,7 +103,6 @@ export default class Level1PlayScene extends Phaser.Scene {
         this.rowSelector.setVisible(false);
         this.colSelector.setVisible(false);
 
-        // back to levels button
         new Button(
             this,
             50,
@@ -71,10 +113,9 @@ export default class Level1PlayScene extends Phaser.Scene {
                 color: "red",
             },
             () => {
+                this.saveGameState(); // Save state before leaving
                 stopMusic("L1Song");
                 playMusic(this, "MainSong");
-                this.score = 0;
-                this.recentMatch = "";
                 this.scene.start("SelectScene");
             }
         );
@@ -84,49 +125,16 @@ export default class Level1PlayScene extends Phaser.Scene {
             color: "black",
         });
 
-        // Creating Randomized Board
-        //-----------------------------------------------------------------------------
-        const numRows = 5;
-        const numCols = 5;
-        /* added multiples 
-        true, false are weight .25 
-        and, or are weight .1875 
-        not is weight .125 */
-        this.tileTypes = [
-            "True",
-            "True",
-            "True",
-            "True",
-            "False",
-            "False",
-            "False",
-            "False",
-            "And",
-            "And",
-            "And",
-            "Or",
-            "Or",
-            "Or",
-            "Not",
-            "Not",
-        ];
-
-        this.board = generateRandomBoard(numRows, numCols, this.tileTypes);
-        // These coordinates are for 5x5 board to ensre it's centered
-        let startx = 280;
-        let starty = 180;
-
-        // These values will be updated in loop
+        // Creating tiles for the board
+        const startx = 280;
+        const starty = 180;
         let newx = startx;
         let newy = starty;
 
         this.tilesGroup = this.add.group();
-
-        // Loops through board and creates sprites for each tile
         for (let row = 0; row < this.board.length; row++) {
             for (let col = 0; col < this.board[row].length; col++) {
                 const tileType = this.board[row][col];
-                // the value being added to newx/y depends on board size
                 const xPos = newx + 40;
                 const yPos = newy + 40;
 
@@ -137,28 +145,19 @@ export default class Level1PlayScene extends Phaser.Scene {
                 this.tilesGroup.add(tileSprite);
                 newx += 40;
             }
-            // Have to reset newx so row below is at same x coordinate as one above
             newx = startx;
             newy += 40;
         }
 
-        // Deals with highlighting currently selected block and placing selectors
-        //-----------------------------------------------------------------------------
-        //Selected tile (initially the one at row 0 col 0)
         this.selectedTileIndex = 0;
-
         this.selectedTile =
             this.tilesGroup.getChildren()[0] as Phaser.GameObjects.Sprite;
-
-        // Highlights selected tile
         this.selectedTile.setTint(0xa9a9a9);
         this.rowSelector.setPosition(400, this.selectedTile.y);
         this.colSelector.setPosition(this.selectedTile.x, 300);
         this.rowSelector.setVisible(true);
         this.colSelector.setVisible(true);
 
-        // Key/WASD commands
-        //-----------------------------------------------------------------------------
         this.keyW = this.input.keyboard?.addKey(
             Phaser.Input.Keyboard.KeyCodes.W
         );
