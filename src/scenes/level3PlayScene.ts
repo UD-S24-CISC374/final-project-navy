@@ -33,6 +33,29 @@ export default class Level3PlayScene extends Phaser.Scene {
         localStorage.setItem("level3GameState", JSON.stringify(gameState));
     }
 
+    resetGameState() {
+        // Reset the game state variables
+        this.board = generateRandomBoard(9, 9, this.tileTypes);
+        this.score = 0;
+        this.recentMatch = "";
+
+        // Update UI elements
+        this.scoreText?.setText("Matches: " + this.score);
+        this.recentMatchText.setText("Most Recent Match: " + this.recentMatch);
+
+        this.tilesGroup.getChildren().forEach((tile, index) => {
+            const tileType = this.board[Math.floor(index / 9)][index % 9];
+            tile.setData("tileType", tileType);
+            if (tile instanceof Phaser.GameObjects.Sprite) {
+                // Cast tile to Phaser.GameObjects.Sprite
+                tile.setTexture(tileType);
+            }
+        });
+
+        // Save the reset game state
+        this.saveGameState();
+    }
+
     private board: string[][];
 
     private tilesGroup: Phaser.GameObjects.Group;
@@ -107,6 +130,20 @@ export default class Level3PlayScene extends Phaser.Scene {
                 stopMusic("L3Song");
                 playMusic(this, "MainSong");
                 this.scene.start("SelectScene");
+            }
+        );
+
+        new Button(
+            this,
+            675,
+            35,
+            "Reset",
+            {
+                fontSize: "25px",
+                color: "red",
+            },
+            () => {
+                this.resetGameState(); // Save state before leaving
             }
         );
 
