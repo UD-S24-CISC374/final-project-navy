@@ -19,17 +19,10 @@ function orEval(expression: string): boolean | null {
     }
 }
 
-const logicalOperators: { [key: string]: string } = {
-    And: "&&",
-    Or: "||",
-    Not: "!",
-    True: "true",
-    False: "false",
-};
-
-export function evaluateExpression(expression: string[]): boolean {
-    // Check if the expression starts or ends with invalid operators
-    // Construct the expression string
+export function evaluateExpression(
+    expression: string[],
+    logicalOperators: { [key: string]: string }
+): boolean {
     let result = "";
     if (expression[0] === "True" && expression[1] === "Or") {
         for (let i = 2; i < expression.length; i++) {

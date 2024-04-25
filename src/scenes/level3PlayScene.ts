@@ -1,15 +1,44 @@
 import Phaser from "phaser";
 import { Button } from "../objects/button";
 import { playMusic, stopMusic } from "../objects/musicManager";
+import { generateRandomBoard } from "../objects/generateBoard";
+import { evaluateExpression } from "../objects/evaluateExpression";
+import { shiftValues } from "../objects/shiftValues";
+import { removeRow } from "../objects/removeRow";
+import { removeCol } from "../objects/removeCol";
 
 export default class Level3PlayScene extends Phaser.Scene {
     constructor() {
         super({ key: "Level3PlayScene" });
+        this.tileTypes = [
+            "True",
+            "False",
+            "And",
+            "Or",
+            "Not",
+            "Equals",
+            "LParen",
+            "RParen",
+            "True",
+            "False",
+        ];
     }
+
+    saveGameState() {
+        const gameState = {
+            board: this.board,
+            score: this.score,
+            recentMatch: this.recentMatch,
+        };
+        localStorage.setItem("level3GameState", JSON.stringify(gameState));
+    }
+
+    private board: string[][];
 
     private tilesGroup: Phaser.GameObjects.Group;
     private selectedTile: Phaser.GameObjects.Sprite;
     private selectedTileIndex: number;
+
     private keyW?: Phaser.Input.Keyboard.Key;
     private keyA?: Phaser.Input.Keyboard.Key;
     private keyS?: Phaser.Input.Keyboard.Key;
@@ -19,10 +48,44 @@ export default class Level3PlayScene extends Phaser.Scene {
 
     private rowSelector: Phaser.GameObjects.Image;
     private colSelector: Phaser.GameObjects.Image;
+    private tileTypes: string[];
+
+    private recentMatch: string = "";
+    private score: number = 0;
+    private recentMatchText: Phaser.GameObjects.Text;
+    scoreText?: Phaser.GameObjects.Text;
+    private match: Phaser.Sound.BaseSound;
 
     create() {
         stopMusic();
         playMusic(this, "L3Song");
+
+        const savedState = localStorage.getItem("level3GameState");
+        if (savedState) {
+            const gameState = JSON.parse(savedState);
+            this.board = gameState.board;
+            this.score = gameState.score;
+            this.recentMatch = gameState.recentMatch;
+        } else {
+            this.board = generateRandomBoard(9, 9, this.tileTypes);
+            this.score = 0;
+            this.recentMatch = "";
+        }
+
+        this.match = this.sound.add("match", { loop: false });
+        this.scoreText = this.add.text(50, 100, "Matches: " + this.score, {
+            fontSize: "25px",
+            color: "black",
+        });
+        this.recentMatchText = this.add.text(
+            50,
+            130,
+            "Most Recent Match: " + this.recentMatch,
+            {
+                fontSize: "25px",
+                color: "black",
+            }
+        );
 
         this.rowSelector = this.add.image(360, 220, "RS 9x9");
         this.colSelector = this.add.image(320, 300, "CS 9x9");
@@ -40,7 +103,8 @@ export default class Level3PlayScene extends Phaser.Scene {
                 color: "red",
             },
             () => {
-                stopMusic("L3Song");
+                this.saveGameState(); // Save state before leaving
+                stopMusic("L2Song");
                 playMusic(this, "MainSong");
                 this.scene.start("SelectScene");
             }
@@ -51,48 +115,6 @@ export default class Level3PlayScene extends Phaser.Scene {
             color: "black",
         });
 
-        const numRows = 9;
-        const numCols = 9;
-        const tileTypes = [
-            "True",
-            "False",
-            "And",
-            "Or",
-            "Not",
-            "Equals",
-            "LParen",
-            "RParen",
-            "True",
-            "False",
-        ];
-
-        function generateRandomBoard(
-            numRows: number,
-            numCols: number,
-            tileTypes: string[]
-        ) {
-            //TODO?: create board class and make smarter generations
-            // Also TODO: make it so same board remains when exiting level
-            // SLIGHT DIFFERENT RANDOMIZATION
-            const board = [];
-            for (let row = 0; row < numRows; row++) {
-                const newRow = [];
-                for (let col = 0; col < numCols; col++) {
-                    /* const randomIndex = Math.floor(
-                        Math.random() * tileTypes.length
-                    ); */
-
-                    const randomIndex =
-                        Math.floor(Math.random() * (tileTypes.length + 1)) %
-                        tileTypes.length;
-                    newRow.push(tileTypes[randomIndex]);
-                }
-                board.push(newRow);
-            }
-            return board;
-        }
-
-        const board = generateRandomBoard(numRows, numCols, tileTypes);
         // These coordinates are for 9x9 board to ensure it's centered
         let startx = 200;
         let starty = 150;
@@ -104,9 +126,9 @@ export default class Level3PlayScene extends Phaser.Scene {
         this.tilesGroup = this.add.group();
 
         // Loops through board and creates sprites for each tile
-        for (let row = 0; row < board.length; row++) {
-            for (let col = 0; col < board[row].length; col++) {
-                const tileType = board[row][col];
+        for (let row = 0; row < this.board.length; row++) {
+            for (let col = 0; col < this.board[row].length; col++) {
+                const tileType = this.board[row][col];
                 // the value being added to newx/y depends on board size
                 const xPos = newx + 40;
                 const yPos = newy + 40;
@@ -152,6 +174,7 @@ export default class Level3PlayScene extends Phaser.Scene {
         );
 
         this.cursors = this.input.keyboard?.createCursorKeys();
+        this.evaluateRowsAndColumns(9, 9);
     }
 
     update() {
@@ -160,16 +183,12 @@ export default class Level3PlayScene extends Phaser.Scene {
 
         //TODO: Make it so holding down a key moves you multiple times instead of pressing each time
         if (this.keyW?.isDown && !this.prevKeyState["W"]) {
-            console.log("Pressing W");
             this.moveSelection(0, -1);
         } else if (this.keyS?.isDown && !this.prevKeyState["S"]) {
-            console.log("Pressing S");
             this.moveSelection(0, 1);
         } else if (this.keyA?.isDown && !this.prevKeyState["A"]) {
-            console.log("Pressing A");
             this.moveSelection(-1, 0);
         } else if (this.keyD?.isDown && !this.prevKeyState["D"]) {
-            console.log("Pressing D");
             this.moveSelection(1, 0);
         }
 
@@ -180,73 +199,55 @@ export default class Level3PlayScene extends Phaser.Scene {
         this.prevKeyState["D"] = this.keyD?.isDown || false;
 
         if (this.cursors?.right.isDown && !this.prevKeyState["right"]) {
-            console.log("Pressing Right Arrow");
-            this.shiftValues(-1, 0);
+            shiftValues(
+                -1,
+                0,
+                9,
+                9,
+                this.board,
+                this.selectedTileIndex,
+                this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
+            );
+            this.evaluateRowsAndColumns(9, 9);
         } else if (this.cursors?.left.isDown && !this.prevKeyState["left"]) {
-            console.log("Pressing Left Arrow");
-            this.shiftValues(1, 0);
+            shiftValues(
+                1,
+                0,
+                9,
+                9,
+                this.board,
+                this.selectedTileIndex,
+                this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
+            );
+            this.evaluateRowsAndColumns(9, 9);
         } else if (this.cursors?.down.isDown && !this.prevKeyState["down"]) {
-            console.log("Pressing Down Arrow");
-            this.shiftValues(0, -1);
+            shiftValues(
+                0,
+                -1,
+                9,
+                9,
+                this.board,
+                this.selectedTileIndex,
+                this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
+            );
+            this.evaluateRowsAndColumns(9, 9);
         } else if (this.cursors?.up.isDown && !this.prevKeyState["up"]) {
-            console.log("Pressing Up Arrow");
-            this.shiftValues(0, 1);
+            shiftValues(
+                0,
+                1,
+                9,
+                9,
+                this.board,
+                this.selectedTileIndex,
+                this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
+            );
+            this.evaluateRowsAndColumns(9, 9);
         }
 
         this.prevKeyState["right"] = this.cursors?.right.isDown || false;
         this.prevKeyState["left"] = this.cursors?.left.isDown || false;
         this.prevKeyState["down"] = this.cursors?.down.isDown || false;
         this.prevKeyState["up"] = this.cursors?.up.isDown || false;
-    }
-
-    shiftValues(deltaX: number, deltaY: number) {
-        const numRows = 9;
-        const numCols = 9;
-        const totalTiles = numRows * numCols;
-
-        const tiles =
-            this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[];
-
-        const currentIndex = this.selectedTileIndex;
-        const selectedRow = Math.floor(currentIndex / numCols);
-        const selectedCol = currentIndex % numCols;
-
-        const newTileTypes = [];
-
-        // Shift values in the row
-        if (deltaX !== 0) {
-            for (let col = 0; col < numCols; col++) {
-                const tileIndex = selectedRow * numCols + col;
-                const shiftedIndex =
-                    ((tileIndex + deltaX + numCols) % numCols) +
-                    selectedRow * numCols;
-                const tileType = tiles[shiftedIndex].getData("tileType");
-                newTileTypes.push(tileType);
-            }
-            // Update tiles in the row with new values
-            for (let col = 0; col < numCols; col++) {
-                const tileIndex = selectedRow * numCols + col;
-                tiles[tileIndex].setData("tileType", newTileTypes[col]);
-                tiles[tileIndex].setTexture(newTileTypes[col]);
-            }
-        }
-
-        // Shift values in the column
-        if (deltaY !== 0) {
-            for (let row = 0; row < numRows; row++) {
-                const tileIndex = row * numCols + selectedCol;
-                const shiftedIndex =
-                    (tileIndex + deltaY * numCols + totalTiles) % totalTiles;
-                const tileType = tiles[shiftedIndex].getData("tileType");
-                newTileTypes.push(tileType);
-            }
-            // Update tiles in the column with new values
-            for (let row = 0; row < numRows; row++) {
-                const tileIndex = row * numCols + selectedCol;
-                tiles[tileIndex].setData("tileType", newTileTypes[row]);
-                tiles[tileIndex].setTexture(newTileTypes[row]);
-            }
-        }
     }
 
     //TODO: Make moveSelection its own file that can be called for diff levels
@@ -290,5 +291,63 @@ export default class Level3PlayScene extends Phaser.Scene {
         this.colSelector.setPosition(this.selectedTile.x, 350);
         this.rowSelector.setVisible(true);
         this.colSelector.setVisible(true);
+    }
+
+    logicalOperators: { [key: string]: string } = {
+        And: "&&",
+        Or: "||",
+        Not: "!",
+        True: "true",
+        False: "false",
+        Equals: "===",
+        LParen: "(",
+        RParen: ")",
+    };
+
+    evaluateRowsAndColumns(numRows: number, numCols: number) {
+        // Evaluate all rows
+        for (let row = 0; row < numRows; row++) {
+            if (evaluateExpression(this.board[row], this.logicalOperators)) {
+                console.log("Found a match in row", row);
+                this.recentMatch = this.board[row].join(" ");
+                removeRow(
+                    row,
+                    numCols,
+                    this.board,
+                    this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[],
+                    this.tileTypes
+                );
+                this.score += 1;
+                this.scoreText?.setText("Matches: " + this.score);
+                this.recentMatchText.setText(
+                    "Most Recent Match: " + this.recentMatch
+                );
+                this.match.play();
+                //this.moveBlocksDown(row); Maybe use a diff function for moving blocks down?
+            }
+        }
+
+        // Evaluate all columns
+        for (let col = 0; col < numCols; col++) {
+            const column = this.board.map((row) => row[col]);
+            if (evaluateExpression(column, this.logicalOperators)) {
+                console.log("Found a match in column", col);
+                this.recentMatch = column.join(" ");
+                removeCol(
+                    col,
+                    numRows,
+                    numCols,
+                    this.board,
+                    this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[],
+                    this.tileTypes
+                );
+                this.score += 1;
+                this.scoreText?.setText("Matches: " + this.score);
+                this.recentMatchText.setText(
+                    "Most Recent Match: " + this.recentMatch
+                );
+                this.match.play();
+            }
+        }
     }
 }
