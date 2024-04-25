@@ -39,6 +39,7 @@ export default class Level1PlayScene extends Phaser.Scene {
             board: this.board,
             score: this.score,
             recentMatch: this.recentMatch,
+            turnCount: this.turnCount, // Save the turn count
         };
         localStorage.setItem("level1GameState", JSON.stringify(gameState));
     }
@@ -48,10 +49,12 @@ export default class Level1PlayScene extends Phaser.Scene {
         this.board = generateRandomBoard(5, 5, this.tileTypes);
         this.score = 0;
         this.recentMatch = "";
+        this.turnCount = 0;
 
         // Update UI elements
         this.scoreText?.setText("Matches: " + this.score);
         this.recentMatchText.setText("Most Recent Match: " + this.recentMatch);
+        this.turnText.setText("Turns: " + this.turnCount);
 
         this.tilesGroup.getChildren().forEach((tile, index) => {
             const tileType = this.board[Math.floor(index / 5)][index % 5];
@@ -89,6 +92,10 @@ export default class Level1PlayScene extends Phaser.Scene {
     scoreText?: Phaser.GameObjects.Text;
     private match: Phaser.Sound.BaseSound;
 
+    private hasMoved: boolean = false; // Track if any movement has happened
+    private turnCount: number = 0; // Track the number of turns
+    private turnText: Phaser.GameObjects.Text;
+
     create() {
         stopMusic("MainSong");
         playMusic(this, "L1Song");
@@ -100,10 +107,9 @@ export default class Level1PlayScene extends Phaser.Scene {
             this.board = gameState.board;
             this.score = gameState.score;
             this.recentMatch = gameState.recentMatch;
+            this.turnCount = gameState.turnCount || 0;
         } else {
-            this.board = generateRandomBoard(5, 5, this.tileTypes);
-            this.score = 0;
-            this.recentMatch = "";
+            this.resetGameState();
         }
 
         this.match = this.sound.add("match", { loop: false });
@@ -115,6 +121,15 @@ export default class Level1PlayScene extends Phaser.Scene {
             50,
             130,
             "Most Recent Match: " + this.recentMatch,
+            {
+                fontSize: "25px",
+                color: "black",
+            }
+        );
+        this.turnText = this.add.text(
+            50,
+            160,
+            "Turns: " + (this.turnCount || 0),
             {
                 fontSize: "25px",
                 color: "black",
@@ -213,25 +228,7 @@ export default class Level1PlayScene extends Phaser.Scene {
     }
 
     update() {
-        // Board movement
-        //-----------------------------------------------------------------------------
-        // Had to check key state otherwise clicking once would make it move like 3 or 5 blocks
-        // Has to do with update being called so many times per second, need a workaround
-        if (this.keyW?.isDown && !this.prevKeyState["W"]) {
-            this.moveSelection(0, -1);
-        } else if (this.keyS?.isDown && !this.prevKeyState["S"]) {
-            this.moveSelection(0, 1);
-        } else if (this.keyA?.isDown && !this.prevKeyState["A"]) {
-            this.moveSelection(-1, 0);
-        } else if (this.keyD?.isDown && !this.prevKeyState["D"]) {
-            this.moveSelection(1, 0);
-        }
-
-        // Update previous key state so it resets
-        this.prevKeyState["W"] = this.keyW?.isDown || false;
-        this.prevKeyState["S"] = this.keyS?.isDown || false;
-        this.prevKeyState["A"] = this.keyA?.isDown || false;
-        this.prevKeyState["D"] = this.keyD?.isDown || false;
+        let selectionChanged = false;
 
         // Block Movement
         //-----------------------------------------------------------------------------
@@ -245,6 +242,7 @@ export default class Level1PlayScene extends Phaser.Scene {
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
             );
+            this.hasMoved = true;
             this.evaluateRowsAndColumns(5, 5);
         } else if (this.cursors?.left.isDown && !this.prevKeyState["left"]) {
             shiftValues(
@@ -256,6 +254,7 @@ export default class Level1PlayScene extends Phaser.Scene {
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
             );
+            this.hasMoved = true;
             this.evaluateRowsAndColumns(5, 5);
         } else if (this.cursors?.down.isDown && !this.prevKeyState["down"]) {
             shiftValues(
@@ -267,6 +266,7 @@ export default class Level1PlayScene extends Phaser.Scene {
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
             );
+            this.hasMoved = true;
             this.evaluateRowsAndColumns(5, 5);
         } else if (this.cursors?.up.isDown && !this.prevKeyState["up"]) {
             shiftValues(
@@ -278,9 +278,40 @@ export default class Level1PlayScene extends Phaser.Scene {
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
             );
+            this.hasMoved = true;
             this.evaluateRowsAndColumns(5, 5);
         }
 
+        // Board movement
+        //-----------------------------------------------------------------------------
+        // Had to check key state otherwise clicking once would make it move like 3 or 5 blocks
+        // Has to do with update being called so many times per second, need a workaround
+        if (this.keyW?.isDown && !this.prevKeyState["W"]) {
+            this.moveSelection(0, -1);
+            selectionChanged = true;
+        } else if (this.keyS?.isDown && !this.prevKeyState["S"]) {
+            this.moveSelection(0, 1);
+            selectionChanged = true;
+        } else if (this.keyA?.isDown && !this.prevKeyState["A"]) {
+            this.moveSelection(-1, 0);
+            selectionChanged = true;
+        } else if (this.keyD?.isDown && !this.prevKeyState["D"]) {
+            this.moveSelection(1, 0);
+            selectionChanged = true;
+        }
+
+        if (this.hasMoved && selectionChanged) {
+            this.turnCount = isNaN(this.turnCount) ? 1 : this.turnCount + 1;
+            this.hasMoved = false;
+            console.log("Turn " + this.turnCount + " completed.");
+            this.turnText.setText("Turns: " + this.turnCount);
+        }
+
+        // Update previous key state so it resets
+        this.prevKeyState["W"] = this.keyW?.isDown || false;
+        this.prevKeyState["S"] = this.keyS?.isDown || false;
+        this.prevKeyState["A"] = this.keyA?.isDown || false;
+        this.prevKeyState["D"] = this.keyD?.isDown || false;
         this.prevKeyState["right"] = this.cursors?.right.isDown || false;
         this.prevKeyState["left"] = this.cursors?.left.isDown || false;
         this.prevKeyState["down"] = this.cursors?.down.isDown || false;
