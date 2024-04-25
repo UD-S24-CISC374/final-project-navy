@@ -186,7 +186,7 @@ export default class Level2PlayScene extends Phaser.Scene {
 
         // Highlights selected tile
         //TODO: adjust row and coloum selectors for bigger board
-        this.selectedTile.setTint(0xff0000);
+        this.selectedTile.setTint(0xa9a9a9);
         this.rowSelector.setPosition(400, this.selectedTile.y);
         this.colSelector.setPosition(this.selectedTile.x, 340);
         this.rowSelector.setVisible(true);
@@ -391,7 +391,7 @@ export default class Level2PlayScene extends Phaser.Scene {
         ] as Phaser.GameObjects.Sprite;
 
         // Highlight newly selected tile (red tint)
-        this.selectedTile.setTint(0xff0000);
+        this.selectedTile.setTint(0xa9a9a9);
         this.rowSelector.setPosition(400, this.selectedTile.y);
         this.colSelector.setPosition(this.selectedTile.x, 340);
         this.rowSelector.setVisible(true);
