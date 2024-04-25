@@ -104,7 +104,7 @@ export default class Level3PlayScene extends Phaser.Scene {
             },
             () => {
                 this.saveGameState(); // Save state before leaving
-                stopMusic("L2Song");
+                stopMusic("L3Song");
                 playMusic(this, "MainSong");
                 this.scene.start("SelectScene");
             }
@@ -304,12 +304,26 @@ export default class Level3PlayScene extends Phaser.Scene {
         RParen: ")",
     };
 
+    matchOperators: { [key: string]: string } = {
+        And: "&",
+        Or: "|",
+        Not: "!",
+        True: "T",
+        False: "F",
+        Equals: "=",
+        LParen: "(",
+        RParen: ")",
+    };
+
     evaluateRowsAndColumns(numRows: number, numCols: number) {
         // Evaluate all rows
         for (let row = 0; row < numRows; row++) {
             if (evaluateExpression(this.board[row], this.logicalOperators)) {
                 console.log("Found a match in row", row);
-                this.recentMatch = this.board[row].join(" ");
+                const convertVals = this.board[row].map(
+                    (value) => this.matchOperators[value]
+                );
+                this.recentMatch = convertVals.join(" ");
                 removeRow(
                     row,
                     numCols,
@@ -332,7 +346,10 @@ export default class Level3PlayScene extends Phaser.Scene {
             const column = this.board.map((row) => row[col]);
             if (evaluateExpression(column, this.logicalOperators)) {
                 console.log("Found a match in column", col);
-                this.recentMatch = column.join(" ");
+                const convertVals = column.map(
+                    (value) => this.matchOperators[value]
+                );
+                this.recentMatch = convertVals.join(" ");
                 removeCol(
                     col,
                     numRows,

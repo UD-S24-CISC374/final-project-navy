@@ -18,6 +18,9 @@ export default class MainScene extends Phaser.Scene {
 
         //Pointerover useful for when implementing hover effects, pointerout is for when it's not hovering on it
 
+        //NOTE: Considering using level 1 state to determine if intro scene should appear
+        //const savedState = localStorage.getItem("level1GameState");
+
         // start button
         new Button(
             this,

@@ -258,6 +258,14 @@ export default class Level1PlayScene extends Phaser.Scene {
         False: "false",
     };
 
+    matchOperators: { [key: string]: string } = {
+        And: "&",
+        Or: "|",
+        Not: "!",
+        True: "T",
+        False: "F",
+    };
+
     // FUNCTIONS THAT CAN BE PUT INTO SEPARATE FILES
     //-----------------------------------------------------------------------------
     evaluateRowsAndColumns(numRows: number, numCols: number) {
@@ -265,7 +273,10 @@ export default class Level1PlayScene extends Phaser.Scene {
         for (let row = 0; row < numRows; row++) {
             if (evaluateExpression(this.board[row], this.logicalOperators)) {
                 console.log("Found a match in row", row);
-                this.recentMatch = this.board[row].join(" ");
+                const convertVals = this.board[row].map(
+                    (value) => this.matchOperators[value]
+                );
+                this.recentMatch = convertVals.join(" ");
                 removeRow(
                     row,
                     numCols,
@@ -288,7 +299,10 @@ export default class Level1PlayScene extends Phaser.Scene {
             const column = this.board.map((row) => row[col]);
             if (evaluateExpression(column, this.logicalOperators)) {
                 console.log("Found a match in column", col);
-                this.recentMatch = column.join(" ");
+                const convertVals = column.map(
+                    (value) => this.matchOperators[value]
+                );
+                this.recentMatch = convertVals.join(" ");
                 removeCol(
                     col,
                     numRows,
