@@ -29,6 +29,7 @@ export default class Level3PlayScene extends Phaser.Scene {
             board: this.board,
             score: this.score,
             recentMatch: this.recentMatch,
+            turnCount: this.turnCount, // Save the turn count
         };
         localStorage.setItem("level3GameState", JSON.stringify(gameState));
     }
@@ -38,10 +39,12 @@ export default class Level3PlayScene extends Phaser.Scene {
         this.board = generateRandomBoard(9, 9, this.tileTypes);
         this.score = 0;
         this.recentMatch = "";
+        this.turnCount = 0;
 
         // Update UI elements
         this.scoreText?.setText("Matches: " + this.score);
         this.recentMatchText.setText("Most Recent Match: " + this.recentMatch);
+        this.turnText.setText("Turns: " + this.turnCount);
 
         this.tilesGroup.getChildren().forEach((tile, index) => {
             const tileType = this.board[Math.floor(index / 9)][index % 9];
@@ -79,6 +82,10 @@ export default class Level3PlayScene extends Phaser.Scene {
     scoreText?: Phaser.GameObjects.Text;
     private match: Phaser.Sound.BaseSound;
 
+    private hasMoved: boolean = false; // Track if any movement has happened
+    private turnCount: number = 0; // Track the number of turns
+    private turnText: Phaser.GameObjects.Text;
+
     create() {
         stopMusic();
         playMusic(this, "L3Song");
@@ -89,21 +96,29 @@ export default class Level3PlayScene extends Phaser.Scene {
             this.board = gameState.board;
             this.score = gameState.score;
             this.recentMatch = gameState.recentMatch;
+            this.turnCount = gameState.turnCount || 0;
         } else {
-            this.board = generateRandomBoard(9, 9, this.tileTypes);
-            this.score = 0;
-            this.recentMatch = "";
+            this.resetGameState();
         }
 
         this.match = this.sound.add("match", { loop: false });
-        this.scoreText = this.add.text(50, 100, "Matches: " + this.score, {
+        this.scoreText = this.add.text(50, 90, "Matches: " + this.score, {
             fontSize: "25px",
             color: "black",
         });
         this.recentMatchText = this.add.text(
             50,
-            130,
+            120,
             "Most Recent Match: " + this.recentMatch,
+            {
+                fontSize: "25px",
+                color: "black",
+            }
+        );
+        this.turnText = this.add.text(
+            50,
+            150,
+            "Turns: " + (this.turnCount || 0),
             {
                 fontSize: "25px",
                 color: "black",
@@ -147,7 +162,7 @@ export default class Level3PlayScene extends Phaser.Scene {
             }
         );
 
-        this.add.text(330, 100, "Level 3", {
+        this.add.text(330, 90, "Level 3", {
             fontSize: "35px",
             color: "black",
         });
@@ -215,25 +230,7 @@ export default class Level3PlayScene extends Phaser.Scene {
     }
 
     update() {
-        // Had to check key state otherwise clicking once would make it move like 3 or 5 blocks
-        // Has to do with update being called so many times per second, need a workaround
-
-        //TODO: Make it so holding down a key moves you multiple times instead of pressing each time
-        if (this.keyW?.isDown && !this.prevKeyState["W"]) {
-            this.moveSelection(0, -1);
-        } else if (this.keyS?.isDown && !this.prevKeyState["S"]) {
-            this.moveSelection(0, 1);
-        } else if (this.keyA?.isDown && !this.prevKeyState["A"]) {
-            this.moveSelection(-1, 0);
-        } else if (this.keyD?.isDown && !this.prevKeyState["D"]) {
-            this.moveSelection(1, 0);
-        }
-
-        // Update previous key state so it resets
-        this.prevKeyState["W"] = this.keyW?.isDown || false;
-        this.prevKeyState["S"] = this.keyS?.isDown || false;
-        this.prevKeyState["A"] = this.keyA?.isDown || false;
-        this.prevKeyState["D"] = this.keyD?.isDown || false;
+        let selectionChanged = false;
 
         if (this.cursors?.right.isDown && !this.prevKeyState["right"]) {
             shiftValues(
@@ -245,6 +242,7 @@ export default class Level3PlayScene extends Phaser.Scene {
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
             );
+            this.hasMoved = true;
             this.evaluateRowsAndColumns(9, 9);
         } else if (this.cursors?.left.isDown && !this.prevKeyState["left"]) {
             shiftValues(
@@ -256,6 +254,7 @@ export default class Level3PlayScene extends Phaser.Scene {
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
             );
+            this.hasMoved = true;
             this.evaluateRowsAndColumns(9, 9);
         } else if (this.cursors?.down.isDown && !this.prevKeyState["down"]) {
             shiftValues(
@@ -267,6 +266,7 @@ export default class Level3PlayScene extends Phaser.Scene {
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
             );
+            this.hasMoved = true;
             this.evaluateRowsAndColumns(9, 9);
         } else if (this.cursors?.up.isDown && !this.prevKeyState["up"]) {
             shiftValues(
@@ -278,56 +278,44 @@ export default class Level3PlayScene extends Phaser.Scene {
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
             );
+            this.hasMoved = true;
             this.evaluateRowsAndColumns(9, 9);
         }
 
+        // Board movement
+        //-----------------------------------------------------------------------------
+        // Had to check key state otherwise clicking once would make it move like 3 or 5 blocks
+        // Has to do with update being called so many times per second, need a workaround
+        if (this.keyW?.isDown && !this.prevKeyState["W"]) {
+            this.moveSelection(0, -1);
+            selectionChanged = true;
+        } else if (this.keyS?.isDown && !this.prevKeyState["S"]) {
+            this.moveSelection(0, 1);
+            selectionChanged = true;
+        } else if (this.keyA?.isDown && !this.prevKeyState["A"]) {
+            this.moveSelection(-1, 0);
+            selectionChanged = true;
+        } else if (this.keyD?.isDown && !this.prevKeyState["D"]) {
+            this.moveSelection(1, 0);
+            selectionChanged = true;
+        }
+
+        if (this.hasMoved && selectionChanged) {
+            this.turnCount = isNaN(this.turnCount) ? 1 : this.turnCount + 1;
+            this.hasMoved = false;
+            console.log("Turn " + this.turnCount + " completed.");
+            this.turnText.setText("Turns: " + this.turnCount);
+        }
+
+        // Update previous key state so it resets
+        this.prevKeyState["W"] = this.keyW?.isDown || false;
+        this.prevKeyState["S"] = this.keyS?.isDown || false;
+        this.prevKeyState["A"] = this.keyA?.isDown || false;
+        this.prevKeyState["D"] = this.keyD?.isDown || false;
         this.prevKeyState["right"] = this.cursors?.right.isDown || false;
         this.prevKeyState["left"] = this.cursors?.left.isDown || false;
         this.prevKeyState["down"] = this.cursors?.down.isDown || false;
         this.prevKeyState["up"] = this.cursors?.up.isDown || false;
-    }
-
-    //TODO: Make moveSelection its own file that can be called for diff levels
-    moveSelection(deltaX: number, deltaY: number) {
-        const numRows = 9;
-        const numCols = 9;
-        const totalTiles = numRows * numCols;
-
-        const currentIndex = this.selectedTileIndex;
-        let newIndex = currentIndex + deltaX + deltaY * numCols;
-
-        // Wrap horizontally
-        if (deltaX !== 0) {
-            newIndex =
-                ((currentIndex + deltaX + numCols) % numCols) +
-                Math.floor(currentIndex / numCols) * numCols;
-        }
-
-        // Wrap vertically
-        if (deltaY !== 0) {
-            newIndex =
-                (currentIndex + totalTiles + deltaY * numCols) % totalTiles;
-        }
-
-        // make sure newIndex doesn't go out of range
-        // clamp function is pretty cool haven't used it till now
-        newIndex = Phaser.Math.Clamp(newIndex, 0, totalTiles - 1);
-
-        // Remove tint from previously selected tile
-        this.selectedTile.clearTint();
-
-        // Update selected tile index, cast GameObject to Sprite
-        this.selectedTileIndex = newIndex;
-        this.selectedTile = this.tilesGroup.getChildren()[
-            newIndex
-        ] as Phaser.GameObjects.Sprite;
-
-        // Highlight newly selected tile (red tint)
-        this.selectedTile.setTint(0xa9a9a9);
-        this.rowSelector.setPosition(400, this.selectedTile.y);
-        this.colSelector.setPosition(this.selectedTile.x, 350);
-        this.rowSelector.setVisible(true);
-        this.colSelector.setVisible(true);
     }
 
     logicalOperators: { [key: string]: string } = {
@@ -352,6 +340,8 @@ export default class Level3PlayScene extends Phaser.Scene {
         RParen: ")",
     };
 
+    // FUNCTIONS THAT CAN BE PUT INTO SEPARATE FILES
+    //-----------------------------------------------------------------------------
     evaluateRowsAndColumns(numRows: number, numCols: number) {
         // Evaluate all rows
         for (let row = 0; row < numRows; row++) {
@@ -403,5 +393,49 @@ export default class Level3PlayScene extends Phaser.Scene {
                 this.match.play();
             }
         }
+    }
+    //---------------------------------------------------------------------
+
+    //TODO: Make moveSelection its own file that can be called for diff levels
+    moveSelection(deltaX: number, deltaY: number) {
+        const numRows = 9;
+        const numCols = 9;
+        const totalTiles = numRows * numCols;
+
+        const currentIndex = this.selectedTileIndex;
+        let newIndex = currentIndex + deltaX + deltaY * numCols;
+
+        // Wrap horizontally
+        if (deltaX !== 0) {
+            newIndex =
+                ((currentIndex + deltaX + numCols) % numCols) +
+                Math.floor(currentIndex / numCols) * numCols;
+        }
+
+        // Wrap vertically
+        if (deltaY !== 0) {
+            newIndex =
+                (currentIndex + totalTiles + deltaY * numCols) % totalTiles;
+        }
+
+        // make sure newIndex doesn't go out of range
+        // clamp function is pretty cool haven't used it till now
+        newIndex = Phaser.Math.Clamp(newIndex, 0, totalTiles - 1);
+
+        // Remove tint from previously selected tile
+        this.selectedTile.clearTint();
+
+        // Update selected tile index, cast GameObject to Sprite
+        this.selectedTileIndex = newIndex;
+        this.selectedTile = this.tilesGroup.getChildren()[
+            newIndex
+        ] as Phaser.GameObjects.Sprite;
+
+        // Highlight newly selected tile (red tint)
+        this.selectedTile.setTint(0xa9a9a9);
+        this.rowSelector.setPosition(400, this.selectedTile.y);
+        this.colSelector.setPosition(this.selectedTile.x, 340);
+        this.rowSelector.setVisible(true);
+        this.colSelector.setVisible(true);
     }
 }

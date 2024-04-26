@@ -100,13 +100,13 @@ export default class Level2PlayScene extends Phaser.Scene {
         }
 
         this.match = this.sound.add("match", { loop: false });
-        this.scoreText = this.add.text(50, 100, "Matches: " + this.score, {
+        this.scoreText = this.add.text(50, 90, "Matches: " + this.score, {
             fontSize: "25px",
             color: "black",
         });
         this.recentMatchText = this.add.text(
             50,
-            130,
+            120,
             "Most Recent Match: " + this.recentMatch,
             {
                 fontSize: "25px",
@@ -115,7 +115,7 @@ export default class Level2PlayScene extends Phaser.Scene {
         );
         this.turnText = this.add.text(
             50,
-            160,
+            150,
             "Turns: " + (this.turnCount || 0),
             {
                 fontSize: "25px",
@@ -160,7 +160,7 @@ export default class Level2PlayScene extends Phaser.Scene {
             }
         );
 
-        this.add.text(330, 100, "Level 2", {
+        this.add.text(330, 90, "Level 2", {
             fontSize: "35px",
             color: "black",
         });
@@ -239,7 +239,7 @@ export default class Level2PlayScene extends Phaser.Scene {
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
             );
             this.hasMoved = true;
-            this.evaluateRowsAndColumns(5, 5);
+            this.evaluateRowsAndColumns(7, 7);
         } else if (this.cursors?.left.isDown && !this.prevKeyState["left"]) {
             shiftValues(
                 1,
@@ -251,7 +251,7 @@ export default class Level2PlayScene extends Phaser.Scene {
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
             );
             this.hasMoved = true;
-            this.evaluateRowsAndColumns(5, 5);
+            this.evaluateRowsAndColumns(7, 7);
         } else if (this.cursors?.down.isDown && !this.prevKeyState["down"]) {
             shiftValues(
                 0,
@@ -263,7 +263,7 @@ export default class Level2PlayScene extends Phaser.Scene {
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
             );
             this.hasMoved = true;
-            this.evaluateRowsAndColumns(5, 5);
+            this.evaluateRowsAndColumns(7, 7);
         } else if (this.cursors?.up.isDown && !this.prevKeyState["up"]) {
             shiftValues(
                 0,
@@ -275,7 +275,7 @@ export default class Level2PlayScene extends Phaser.Scene {
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
             );
             this.hasMoved = true;
-            this.evaluateRowsAndColumns(5, 5);
+            this.evaluateRowsAndColumns(7, 7);
         }
 
         // Board movement

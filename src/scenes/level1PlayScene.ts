@@ -113,13 +113,13 @@ export default class Level1PlayScene extends Phaser.Scene {
         }
 
         this.match = this.sound.add("match", { loop: false });
-        this.scoreText = this.add.text(50, 100, "Matches: " + this.score, {
+        this.scoreText = this.add.text(50, 90, "Matches: " + this.score, {
             fontSize: "25px",
             color: "black",
         });
         this.recentMatchText = this.add.text(
             50,
-            130,
+            120,
             "Most Recent Match: " + this.recentMatch,
             {
                 fontSize: "25px",
@@ -128,7 +128,7 @@ export default class Level1PlayScene extends Phaser.Scene {
         );
         this.turnText = this.add.text(
             50,
-            160,
+            150,
             "Turns: " + (this.turnCount || 0),
             {
                 fontSize: "25px",
@@ -172,7 +172,7 @@ export default class Level1PlayScene extends Phaser.Scene {
             }
         );
 
-        this.add.text(330, 100, "Level 1", {
+        this.add.text(330, 90, "Level 1", {
             fontSize: "35px",
             color: "black",
         });
