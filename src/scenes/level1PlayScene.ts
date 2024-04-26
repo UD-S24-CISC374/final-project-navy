@@ -6,6 +6,7 @@ import { evaluateExpression } from "../objects/evaluateExpression";
 import { shiftValues } from "../objects/shiftValues";
 import { removeRow } from "../objects/removeRow";
 import { removeCol } from "../objects/removeCol";
+import { moveSelection } from "../objects/moveSelection";
 
 export default class Level1PlayScene extends Phaser.Scene {
     constructor() {
@@ -287,17 +288,49 @@ export default class Level1PlayScene extends Phaser.Scene {
         // Had to check key state otherwise clicking once would make it move like 3 or 5 blocks
         // Has to do with update being called so many times per second, need a workaround
         if (this.keyW?.isDown && !this.prevKeyState["W"]) {
-            this.moveSelection(0, -1);
             selectionChanged = true;
+            const { newIndex, selectedTile } = moveSelection(
+                this.selectedTileIndex,
+                0,
+                -1,
+                5,
+                5,
+                this.tilesGroup
+            );
+            this.updateSelection(newIndex, selectedTile);
         } else if (this.keyS?.isDown && !this.prevKeyState["S"]) {
-            this.moveSelection(0, 1);
             selectionChanged = true;
+            const { newIndex, selectedTile } = moveSelection(
+                this.selectedTileIndex,
+                0,
+                1,
+                5,
+                5,
+                this.tilesGroup
+            );
+            this.updateSelection(newIndex, selectedTile);
         } else if (this.keyA?.isDown && !this.prevKeyState["A"]) {
-            this.moveSelection(-1, 0);
             selectionChanged = true;
+            const { newIndex, selectedTile } = moveSelection(
+                this.selectedTileIndex,
+                -1,
+                0,
+                5,
+                5,
+                this.tilesGroup
+            );
+            this.updateSelection(newIndex, selectedTile);
         } else if (this.keyD?.isDown && !this.prevKeyState["D"]) {
-            this.moveSelection(1, 0);
             selectionChanged = true;
+            const { newIndex, selectedTile } = moveSelection(
+                this.selectedTileIndex,
+                1,
+                0,
+                5,
+                5,
+                this.tilesGroup
+            );
+            this.updateSelection(newIndex, selectedTile);
         }
 
         if (this.hasMoved && selectionChanged) {
@@ -387,44 +420,16 @@ export default class Level1PlayScene extends Phaser.Scene {
             }
         }
     }
-    //---------------------------------------------------------------------
 
-    //TODO: Make moveSelection its own file that can be called for diff levels
-    moveSelection(deltaX: number, deltaY: number) {
-        const numRows = 5;
-        const numCols = 5;
-        const totalTiles = numRows * numCols;
-
-        const currentIndex = this.selectedTileIndex;
-        let newIndex = currentIndex + deltaX + deltaY * numCols;
-
-        // Wrap horizontally
-        if (deltaX !== 0) {
-            newIndex =
-                ((currentIndex + deltaX + numCols) % numCols) +
-                Math.floor(currentIndex / numCols) * numCols;
-        }
-
-        // Wrap vertically
-        if (deltaY !== 0) {
-            newIndex =
-                (currentIndex + totalTiles + deltaY * numCols) % totalTiles;
-        }
-
-        // make sure newIndex doesn't go out of range
-        // clamp function is pretty cool haven't used it till now
-        newIndex = Phaser.Math.Clamp(newIndex, 0, totalTiles - 1);
-
-        // Remove tint from previously selected tile
+    updateSelection(newIndex: number, selectedTile: Phaser.GameObjects.Sprite) {
+        // Clear tint from previously selected tile
         this.selectedTile.clearTint();
 
-        // Update selected tile index, cast GameObject to Sprite
+        // Update selected tile index and the tile itself
         this.selectedTileIndex = newIndex;
-        this.selectedTile = this.tilesGroup.getChildren()[
-            newIndex
-        ] as Phaser.GameObjects.Sprite;
+        this.selectedTile = selectedTile;
 
-        // Highlight newly selected tile (red tint)
+        // Add new tint to selected tile and update selectors' position
         this.selectedTile.setTint(0xa9a9a9);
         this.rowSelector.setPosition(400, this.selectedTile.y);
         this.colSelector.setPosition(this.selectedTile.x, 300);
