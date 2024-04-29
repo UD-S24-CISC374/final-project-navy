@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import { Button } from "../objects/button";
 import { playMusic, stopMusic } from "../objects/musicManager";
 import { generateRandomBoard } from "../objects/generateBoard";
-import { evaluateExpression } from "../objects/evaluateExpression";
+import { evaluate9x9Expression } from "../objects/evaluateExpression";
 import { shiftValues } from "../objects/shiftValues";
 import { removeRow } from "../objects/removeRow";
 import { removeCol } from "../objects/removeCol";
@@ -345,7 +345,7 @@ export default class Level3PlayScene extends Phaser.Scene {
     evaluateRowsAndColumns(numRows: number, numCols: number) {
         // Evaluate all rows
         for (let row = 0; row < numRows; row++) {
-            if (evaluateExpression(this.board[row], this.logicalOperators, 9)) {
+            if (evaluate9x9Expression(this.board[row], this.logicalOperators)) {
                 console.log("Found a match in row", row);
                 const convertVals = this.board[row].map(
                     (value) => this.matchOperators[value]
@@ -371,7 +371,7 @@ export default class Level3PlayScene extends Phaser.Scene {
         // Evaluate all columns
         for (let col = 0; col < numCols; col++) {
             const column = this.board.map((row) => row[col]);
-            if (evaluateExpression(column, this.logicalOperators, 9)) {
+            if (evaluate9x9Expression(column, this.logicalOperators)) {
                 console.log("Found a match in column", col);
                 const convertVals = column.map(
                     (value) => this.matchOperators[value]
