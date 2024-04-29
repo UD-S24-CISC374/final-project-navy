@@ -355,7 +355,7 @@ export default class P3PlayScene extends Phaser.Scene {
     evaluateRowsAndColumns(numRows: number, numCols: number) {
         // Evaluate all rows
         for (let row = 0; row < numRows; row++) {
-            if (evaluateExpression(this.board[row], this.logicalOperators)) {
+            if (evaluateExpression(this.board[row], this.logicalOperators, 9)) {
                 console.log("Found a match in row", row);
                 const convertVals = this.board[row].map(
                     (value) => this.matchOperators[value]
@@ -381,7 +381,7 @@ export default class P3PlayScene extends Phaser.Scene {
         // Evaluate all columns
         for (let col = 0; col < numCols; col++) {
             const column = this.board.map((row) => row[col]);
-            if (evaluateExpression(column, this.logicalOperators)) {
+            if (evaluateExpression(column, this.logicalOperators, 9)) {
                 console.log("Found a match in column", col);
                 const convertVals = column.map(
                     (value) => this.matchOperators[value]
