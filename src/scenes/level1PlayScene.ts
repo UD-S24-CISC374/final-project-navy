@@ -154,8 +154,6 @@ export default class Level1PlayScene extends Phaser.Scene {
             this.score = gameState.score;
             this.recentMatch = gameState.recentMatch;
             this.turnCount = gameState.turnCount || 0;
-        } else {
-            this.resetGameState();
         }
 
         this.match = this.sound.add("match", { loop: false });
