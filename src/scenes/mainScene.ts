@@ -41,21 +41,17 @@ export default class MainScene extends Phaser.Scene {
             }
         );
 
-        const htpButton = this.add
-            .text(400, 400, "How to Play", {
+        new Button(
+            this,
+            400,
+            400,
+            "How to Play",
+            {
                 fontSize: "25px",
                 color: "red",
-            })
-            .on("pointerover", () => {
-                console.log("pointerover");
-            })
-            .on("pointerdown", () =>
-                this.add.text(400, 450, "will add later", {
-                    fontSize: "25px",
-                    color: "green",
-                })
-            );
-        htpButton.setInteractive();
+            },
+            () => this.scene.start("HtpScene")
+        );
     }
 
     update() {}
