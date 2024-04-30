@@ -15,6 +15,7 @@ import P2PlayScene from "./scenes/p2PlayScene";
 import P3InfoScene from "./scenes/p3InfoScene";
 import P3PlayScene from "./scenes/p3PlayScene";
 import SIntroScene from "./scenes/sIntroScene";
+import HtpScene from "./scenes/htpScene";
 
 const DEFAULT_WIDTH = 800;
 const DEFAULT_HEIGHT = 600;
@@ -34,6 +35,7 @@ export const CONFIG = {
     scene: [
         PreloadScene,
         MainScene,
+        HtpScene,
         SelectScene,
         Level1PlayScene,
         Level1InfoScene,
