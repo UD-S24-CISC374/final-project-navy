@@ -54,8 +54,8 @@ export default class Level1PlayScene extends Phaser.Scene {
 
         // Update UI elements
         this.scoreText?.setText("Matches: " + this.score);
-        this.recentMatchText.setText("Most Recent Match: " + this.recentMatch);
-        this.turnText.setText("Turns: " + this.turnCount);
+        this.recentMatchText?.setText("Most Recent Match: " + this.recentMatch);
+        this.turnText?.setText("Turns: " + this.turnCount);
 
         this.tilesGroup.getChildren().forEach((tile, index) => {
             const tileType = this.board[Math.floor(index / 5)][index % 5];
@@ -69,6 +69,10 @@ export default class Level1PlayScene extends Phaser.Scene {
         // Save the reset game state
         this.saveGameState();
     }
+
+    helpDisplay: Phaser.GameObjects.Graphics;
+    helpText: Phaser.GameObjects.Text;
+    helpContainer: Phaser.GameObjects.Container;
 
     private board: string[][];
 
@@ -98,6 +102,24 @@ export default class Level1PlayScene extends Phaser.Scene {
     private turnText: Phaser.GameObjects.Text;
 
     create() {
+        // Create the help display
+        this.createHelpDisplay();
+
+        // Create the help button
+        new Button(
+            this,
+            550,
+            35,
+            "Help",
+            {
+                fontSize: "25px",
+                color: "red",
+            },
+            () => {
+                this.toggleHelpDisplay();
+            }
+        );
+
         stopMusic("MainSong");
         playMusic(this, "L1Song");
         this.sound.pauseOnBlur = false;
@@ -368,6 +390,45 @@ export default class Level1PlayScene extends Phaser.Scene {
     };
 
     //-----------------------------------------------------------------------------
+    createHelpDisplay() {
+        // Create background for the help display
+        this.helpDisplay = this.add.graphics();
+        this.helpDisplay.fillStyle(0xfe9883, 1);
+        this.helpDisplay.fillRect(500, 75, 300, 600); // Adjust position and size as needed
+
+        this.helpContainer = this.add.container(525, 100);
+
+        // Add help text
+        this.helpText = this.add.text(
+            10,
+            10,
+            "Text in the help section\nmore text\nmore text\neeyup more text\nText in the help section\nmore text\nmore text\neeyup more text",
+            {
+                fontSize: "15px",
+                color: "black",
+            }
+        );
+        this.helpText.setWordWrapWidth(260); // Adjust width for wrapping
+        this.helpContainer.setInteractive(); // Enable input for scrolling
+
+        // Add background color to the container for visualization
+        const containerBackground = this.add.graphics();
+        containerBackground.fillStyle(0x00ff00, 0.5); // Green color with 50% opacity
+        containerBackground.fillRect(0, 0, 260, 450); // Adjust size as needed
+        this.helpContainer.add(containerBackground); // Add background to the container
+
+        this.helpContainer.add(this.helpText);
+
+        // Hide help display initially
+        this.helpDisplay.visible = false;
+        this.helpContainer.visible = false;
+    }
+
+    toggleHelpDisplay() {
+        this.helpDisplay.visible = !this.helpDisplay.visible;
+        this.helpContainer.visible = !this.helpContainer.visible;
+    }
+
     evaluateRowsAndColumns(numRows: number, numCols: number) {
         // Evaluate all rows
         for (let row = 0; row < numRows; row++) {
@@ -386,7 +447,7 @@ export default class Level1PlayScene extends Phaser.Scene {
                 );
                 this.score += 1;
                 this.scoreText?.setText("Matches: " + this.score);
-                this.recentMatchText.setText(
+                this.recentMatchText?.setText(
                     "Most Recent Match: " + this.recentMatch
                 );
                 this.match.play();
@@ -413,7 +474,7 @@ export default class Level1PlayScene extends Phaser.Scene {
                 );
                 this.score += 1;
                 this.scoreText?.setText("Matches: " + this.score);
-                this.recentMatchText.setText(
+                this.recentMatchText?.setText(
                     "Most Recent Match: " + this.recentMatch
                 );
                 this.match.play();
