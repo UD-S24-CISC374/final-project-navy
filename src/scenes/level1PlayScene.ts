@@ -53,9 +53,9 @@ export default class Level1PlayScene extends Phaser.Scene {
         this.turnCount = 0;
 
         // Update UI elements
-        this.scoreText?.setText("Matches: " + this.score);
-        this.recentMatchText?.setText("Most Recent Match: " + this.recentMatch);
-        this.turnText?.setText("Turns: " + this.turnCount);
+        this.scoreText.setText("Matches: " + this.score);
+        this.recentMatchText.setText("Most Recent Match: " + this.recentMatch);
+        this.turnText.setText("Turns: " + this.turnCount);
 
         this.tilesGroup.getChildren().forEach((tile, index) => {
             const tileType = this.board[Math.floor(index / 5)][index % 5];
@@ -94,7 +94,7 @@ export default class Level1PlayScene extends Phaser.Scene {
     private recentMatch: string = "";
     private score: number = 0;
     private recentMatchText: Phaser.GameObjects.Text;
-    scoreText?: Phaser.GameObjects.Text;
+    private scoreText: Phaser.GameObjects.Text;
     private match: Phaser.Sound.BaseSound;
 
     private hasMoved: boolean = false; // Track if any movement has happened
@@ -447,7 +447,7 @@ export default class Level1PlayScene extends Phaser.Scene {
                 );
                 this.score += 1;
                 this.scoreText?.setText("Matches: " + this.score);
-                this.recentMatchText?.setText(
+                this.recentMatchText.setText(
                     "Most Recent Match: " + this.recentMatch
                 );
                 this.match.play();
@@ -474,7 +474,7 @@ export default class Level1PlayScene extends Phaser.Scene {
                 );
                 this.score += 1;
                 this.scoreText?.setText("Matches: " + this.score);
-                this.recentMatchText?.setText(
+                this.recentMatchText.setText(
                     "Most Recent Match: " + this.recentMatch
                 );
                 this.match.play();
