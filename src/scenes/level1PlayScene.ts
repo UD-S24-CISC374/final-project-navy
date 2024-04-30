@@ -124,18 +124,6 @@ export default class Level1PlayScene extends Phaser.Scene {
         playMusic(this, "L1Song");
         this.sound.pauseOnBlur = false;
 
-        const savedState = localStorage.getItem("level1GameState");
-        if (savedState) {
-            const gameState = JSON.parse(savedState);
-            this.board = gameState.board;
-            this.score = gameState.score;
-            this.recentMatch = gameState.recentMatch;
-            this.turnCount = gameState.turnCount || 0;
-        } else {
-            this.resetGameState();
-        }
-
-        this.match = this.sound.add("match", { loop: false });
         this.scoreText = this.add.text(50, 90, "Matches: " + this.score, {
             fontSize: "25px",
             color: "black",
@@ -158,6 +146,19 @@ export default class Level1PlayScene extends Phaser.Scene {
                 color: "black",
             }
         );
+
+        const savedState = localStorage.getItem("level1GameState");
+        if (savedState) {
+            const gameState = JSON.parse(savedState);
+            this.board = gameState.board;
+            this.score = gameState.score;
+            this.recentMatch = gameState.recentMatch;
+            this.turnCount = gameState.turnCount || 0;
+        } else {
+            this.resetGameState();
+        }
+
+        this.match = this.sound.add("match", { loop: false });
 
         this.rowSelector = this.add.image(400, 220, "Row Selector");
         this.colSelector = this.add.image(320, 300, "Col Selector");
