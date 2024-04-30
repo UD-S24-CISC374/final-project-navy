@@ -12,14 +12,10 @@ export default class SelectScene extends Phaser.Scene {
             color: "black",
         });
 
-        //TODO: create button class and handle all this in there to make simpler
-        //NOTE: None of the scenes for the levels 2-6 have been made yet
-
         const levelButtons = [];
         const levels = [
             { text: "Level 1", sceneKey: "Level1InfoScene" },
             { text: "Level 2", sceneKey: "Level2InfoScene" },
-            { text: "Level 3", sceneKey: "Level3InfoScene" },
             { text: "Practice 1", sceneKey: "P1InfoScene" },
             { text: "Practice 2", sceneKey: "P2InfoScene" },
             { text: "Practice 3", sceneKey: "P3InfoScene" },
@@ -50,8 +46,34 @@ export default class SelectScene extends Phaser.Scene {
             }
         });
 
-        // main menu button
-        // had "const mmButton = new Button" but it never got read so I removed it for now
+        // Level 3 button with dynamic scene routing based on game state
+        const level3State = localStorage.getItem("level3GameState");
+        let level3SceneKey = "Level3InfoScene"; // Default to info scene if no game state
+
+        if (level3State) {
+            const state = JSON.parse(level3State);
+            if (state.win) {
+                level3SceneKey = "Level3WinScene";
+            } else if (state.lose) {
+                level3SceneKey = "Level3LoseScene";
+            } else {
+                level3SceneKey = "Level3PlayScene"; // Player has started playing but not finished
+            }
+        }
+
+        new Button(
+            this,
+            x,
+            y,
+            "Level 3",
+            {
+                fontSize: "25px",
+                color: "red",
+            },
+            () => this.scene.start(level3SceneKey)
+        );
+
+        // Main menu button
         new Button(
             this,
             350,

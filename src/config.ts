@@ -8,6 +8,8 @@ import Level2PlayScene from "./scenes/level2PlayScene";
 import Level2InfoScene from "./scenes/level2InfoScene";
 import Level3PlayScene from "./scenes/level3PlayScene";
 import Level3InfoScene from "./scenes/level3InfoScene";
+import Level3LoseScene from "./scenes/level3LoseScene";
+import Level3WinScene from "./scenes/level3WinScene";
 import P1PlayScene from "./scenes/p1PlayScene";
 import P1InfoScene from "./scenes/p1InfoScene";
 import P2InfoScene from "./scenes/p2InfoScene";
@@ -48,6 +50,8 @@ export const CONFIG = {
         P3InfoScene,
         P3PlayScene,
         SIntroScene,
+        Level3LoseScene,
+        Level3WinScene,
     ],
     physics: {
         default: "arcade",

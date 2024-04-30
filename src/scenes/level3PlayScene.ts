@@ -30,6 +30,8 @@ export default class Level3PlayScene extends Phaser.Scene {
             score: this.score,
             recentMatch: this.recentMatch,
             turnCount: this.turnCount, // Save the turn count
+            win: this.win,
+            lose: this.lose,
         };
         localStorage.setItem("level3GameState", JSON.stringify(gameState));
     }
@@ -39,7 +41,7 @@ export default class Level3PlayScene extends Phaser.Scene {
         this.board = generateRandomBoard(9, 9, this.tileTypes);
         this.score = 0;
         this.recentMatch = "";
-        this.turnCount = 0;
+        this.turnCount = 10;
 
         // Update UI elements
         this.scoreText?.setText("Matches: " + this.score);
@@ -83,8 +85,11 @@ export default class Level3PlayScene extends Phaser.Scene {
     private match: Phaser.Sound.BaseSound;
 
     private hasMoved: boolean = false; // Track if any movement has happened
-    private turnCount: number = 0; // Track the number of turns
+    private turnCount: number = 10; // Track the number of turns
     private turnText: Phaser.GameObjects.Text;
+
+    private win: boolean = false;
+    private lose: boolean = false;
 
     create() {
         stopMusic();
@@ -96,7 +101,7 @@ export default class Level3PlayScene extends Phaser.Scene {
             this.board = gameState.board;
             this.score = gameState.score;
             this.recentMatch = gameState.recentMatch;
-            this.turnCount = gameState.turnCount || 0;
+            this.turnCount = gameState.turnCount || 10;
         } else {
             this.resetGameState();
         }
@@ -118,7 +123,7 @@ export default class Level3PlayScene extends Phaser.Scene {
         this.turnText = this.add.text(
             50,
             150,
-            "Turns: " + (this.turnCount || 0),
+            "Turns: " + (this.turnCount || 10),
             {
                 fontSize: "25px",
                 color: "black",
@@ -301,10 +306,30 @@ export default class Level3PlayScene extends Phaser.Scene {
         }
 
         if (this.hasMoved && selectionChanged) {
-            this.turnCount = isNaN(this.turnCount) ? 1 : this.turnCount + 1;
+            this.turnCount = this.turnCount - 1;
             this.hasMoved = false;
             console.log("Turn " + this.turnCount + " completed.");
             this.turnText.setText("Turns: " + this.turnCount);
+        }
+
+        let matchReq = 1; // Required matches to win
+
+        // Check for win condition
+        if (this.turnCount >= 0 && this.score == matchReq) {
+            this.win = true;
+            this.lose = false;
+            stopMusic("L3Song");
+            this.saveGameState(); // Save the game state as a win
+            this.scene.start("Level3WinScene"); // Transition to the win scene
+        }
+
+        // Check for lose condition
+        if (this.turnCount === 0 && this.score < matchReq) {
+            this.lose = true;
+            this.win = false; // Ensure win is set to false
+            stopMusic("L3Song");
+            this.saveGameState(); // Save the game state as a loss
+            this.scene.start("Level3LoseScene"); // Transition to the lose scene
         }
 
         // Update previous key state so it resets
@@ -434,7 +459,7 @@ export default class Level3PlayScene extends Phaser.Scene {
         // Highlight newly selected tile (red tint)
         this.selectedTile.setTint(0xa9a9a9);
         this.rowSelector.setPosition(400, this.selectedTile.y);
-        this.colSelector.setPosition(this.selectedTile.x, 340);
+        this.colSelector.setPosition(this.selectedTile.x, 350);
         this.rowSelector.setVisible(true);
         this.colSelector.setVisible(true);
     }
