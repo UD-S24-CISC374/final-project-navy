@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { Button } from "../objects/button";
+import { playMusic, stopMusic } from "../objects/musicManager";
 
 const globals = require("../objects/globalVars");
 
@@ -64,6 +65,15 @@ export default class MainScene extends Phaser.Scene {
                             if (progress === 1) {
                                 this.scene.start("SIntroScene");
                             }
+                        }
+                    );
+                    this.cameras.main.fadeOut(500, 0, 0, 0);
+                    this.cameras.main.on(
+                        Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
+                        () => {
+                            stopMusic("MainSong");
+                            playMusic(this, "IntroSong");
+                            this.scene.start("SIntroScene");
                         }
                     );
                 }

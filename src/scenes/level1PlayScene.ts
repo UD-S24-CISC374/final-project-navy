@@ -174,9 +174,15 @@ export default class Level1PlayScene extends Phaser.Scene {
             },
             () => {
                 this.saveGameState(); // Save state before leaving
-                stopMusic("L1Song");
-                playMusic(this, "MainSong");
-                this.scene.start("SelectScene");
+                this.cameras.main.fadeOut(500, 0, 0, 0);
+                this.cameras.main.on(
+                    Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
+                    () => {
+                        stopMusic("L1Song");
+                        playMusic(this, "MainSong");
+                        this.scene.start("SelectScene");
+                    }
+                );
             }
         );
 

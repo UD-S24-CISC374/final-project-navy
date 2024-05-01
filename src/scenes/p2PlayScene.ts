@@ -125,9 +125,15 @@ export default class P2PlayScene extends Phaser.Scene {
             },
             () => {
                 this.saveGameState(); // Save state before leaving
-                stopMusic("L2Song");
-                playMusic(this, "MainSong");
-                this.scene.start("SelectScene");
+                this.cameras.main.fadeOut(500, 0, 0, 0);
+                this.cameras.main.on(
+                    Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
+                    () => {
+                        stopMusic("L2Song");
+                        playMusic(this, "MainSong");
+                        this.scene.start("SelectScene");
+                    }
+                );
             }
         );
 
