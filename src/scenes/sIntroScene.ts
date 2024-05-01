@@ -16,8 +16,10 @@ export default class SIntroScene extends Phaser.Scene {
     }
 
     create() {
+        this.cameras.main.fadeIn(500, 0, 0, 0);
         stopMusic("MainSong");
         playMusic(this, "IntroSong");
+
         this.sound.pauseOnBlur = false;
 
         this.add.text(300, 100, "Intro Scene", {
@@ -37,7 +39,21 @@ export default class SIntroScene extends Phaser.Scene {
             () => {
                 stopMusic("IntroSong");
                 playMusic(this, "MainSong");
-                this.scene.start("SelectScene");
+                this.cameras.main.fadeOut(
+                    500,
+                    0,
+                    0,
+                    0,
+                    (
+                        camera: Phaser.Cameras.Scene2D.Camera,
+                        progress: number
+                    ) => {
+                        console.log(progress);
+                        if (progress === 1) {
+                            this.scene.start("SelectScene");
+                        }
+                    }
+                );
             }
         );
 

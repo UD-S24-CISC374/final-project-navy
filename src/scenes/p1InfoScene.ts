@@ -35,7 +35,23 @@ export default class P1InfoScene extends Phaser.Scene {
                 fontSize: "25px",
                 color: "red",
             },
-            () => this.scene.start("SelectScene")
+            () => {
+                this.cameras.main.fadeOut(
+                    500,
+                    0,
+                    0,
+                    0,
+                    (
+                        camera: Phaser.Cameras.Scene2D.Camera,
+                        progress: number
+                    ) => {
+                        console.log(progress);
+                        if (progress === 1) {
+                            this.scene.start("SelectScene");
+                        }
+                    }
+                );
+            }
         );
     }
 
