@@ -25,6 +25,17 @@ export default class SIntroScene extends Phaser.Scene {
                 this.scene.start("SelectScene");
             }
         );
+
+        this.add.image(400, 480, "Textbox");
+        this.add.text(
+            150,
+            460,
+            "Words words words words words words words words",
+            {
+                fontSize: "20px",
+                color: "white",
+            }
+        );
     }
 
     update() {}

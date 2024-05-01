@@ -21,6 +21,7 @@ export default class PreloadScene extends Phaser.Scene {
         this.load.image("CS 7x7", "assets/ColSelector7x7.png");
         this.load.image("RS 9x9", "assets/RowSelector9x9.png");
         this.load.image("CS 9x9", "assets/ColSelector9x9.png");
+        this.load.image("Textbox", "assets/Textbox.png");
 
         this.load.audio("MainSong", ["assets/Vibing-Over-Venus.mp3"]);
         this.load.audio("L1Song", ["assets/Thief-in-the-Night.mp3"]);
