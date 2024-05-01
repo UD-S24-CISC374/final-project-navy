@@ -56,6 +56,12 @@ export default class SIntroScene extends Phaser.Scene {
             .setTint(0x7b5e57);
         arrowButton.setInteractive();
 
+        this.add.text(156, 418, "Greebus", {
+            fontSize: "25px",
+            color: "white",
+            align: "center",
+        });
+
         this.textContainer = this.add.container(140, 460);
 
         this.storyText = this.add.text(10, 10, "", {
@@ -96,16 +102,42 @@ export default class SIntroScene extends Phaser.Scene {
             }
         });
 
+        // this.dialogue(
+        //     "humans think is impossible. Yellow, black. Yellow, black. Yellow, black. Yellow, black. Ooh, black and yellow!"
+        // );
+        this.dialogue("...");
+        this.dialogue("...Oh! Sorry, didn't see ya there");
+        this.dialogue("My name's Greebus, Greebus the green frog!");
         this.dialogue(
-            "According to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small"
+            "I haven't seen you around here before...you must be new!"
         );
         this.dialogue(
-            "to get its fat little body off the ground. The bee, of course, flies anyway because bees don't care what"
+            "So newbie, do you think you can help me out with something? I've got a bit of a problem."
         );
         this.dialogue(
-            "humans think is impossible. Yellow, black. Yellow, black. Yellow, black. Yellow, black. Ooh, black and yellow!"
+            "You see, the frogs here celebrate a special event known as the annual frog festival."
         );
-        this.dialogue("Let's shake it up a little. Barry! Breakfast is ready!");
+        this.dialogue(
+            "This is a big deal for us frog folk. A tradition passed down from the elders."
+        );
+        this.dialogue(
+            "Each year after sunset, friends and family from distant lands gather together to celebrate our reunion."
+        );
+        this.dialogue(
+            "This year was supposed to be the same, but we had a small accident when setting up for the event."
+        );
+        this.dialogue(
+            "The frogs moving the lighting equipment lost their footing and dropped all the decorations."
+        );
+        this.dialogue(
+            "Since the repair frog is out of town for the festival, we haven't been able to find anyone to fix the lights."
+        );
+        this.dialogue(
+            "The repair frog left some notes in case anything went wrong, but we can't quite figure out what to do."
+        );
+        this.dialogue(
+            "With your help though, I'm sure we can figure this out in no time! So, let's get to work!"
+        );
     }
 
     update() {}
