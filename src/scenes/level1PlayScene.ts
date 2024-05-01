@@ -70,9 +70,9 @@ export default class Level1PlayScene extends Phaser.Scene {
         this.saveGameState();
     }
 
-    helpDisplay: Phaser.GameObjects.Graphics;
-    helpText: Phaser.GameObjects.Text;
-    helpContainer: Phaser.GameObjects.Container;
+    private helpDisplay: Phaser.GameObjects.Graphics;
+    private helpText: Phaser.GameObjects.Text;
+    private helpContainer: Phaser.GameObjects.Container;
 
     private board: string[][];
 
