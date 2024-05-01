@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { Button } from "../objects/button";
+import { playMusic, stopMusic } from "../objects/musicManager";
 
 export default class SIntroScene extends Phaser.Scene {
     private storyText: Phaser.GameObjects.Text;
@@ -15,6 +16,10 @@ export default class SIntroScene extends Phaser.Scene {
     }
 
     create() {
+        stopMusic("MainSong");
+        playMusic(this, "IntroSong");
+        this.sound.pauseOnBlur = false;
+
         this.add.text(300, 100, "Intro Scene", {
             fontSize: "32px",
             color: "black",
@@ -30,6 +35,8 @@ export default class SIntroScene extends Phaser.Scene {
                 color: "black",
             },
             () => {
+                stopMusic("IntroSong");
+                playMusic(this, "MainSong");
                 this.scene.start("SelectScene");
             }
         );
