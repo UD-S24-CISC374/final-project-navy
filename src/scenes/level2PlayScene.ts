@@ -53,18 +53,6 @@ export default class Level2PlayScene extends Phaser.Scene {
         stopMusic();
         playMusic(this, "L2Song");
 
-        const savedState = localStorage.getItem("level2GameState");
-        if (savedState) {
-            const gameState = JSON.parse(savedState);
-            this.board = gameState.board;
-            this.score = gameState.score;
-            this.recentMatch = gameState.recentMatch;
-            this.turnCount = gameState.turnCount || 0;
-        } else {
-            this.resetGameState();
-        }
-
-        this.match = this.sound.add("match", { loop: false });
         this.scoreText = this.add.text(50, 90, "Matches: " + this.score, {
             fontSize: "25px",
             color: "black",
@@ -87,6 +75,36 @@ export default class Level2PlayScene extends Phaser.Scene {
                 color: "black",
             }
         );
+
+        const savedState = localStorage.getItem("level2GameState");
+        if (savedState) {
+            const gameState = JSON.parse(savedState);
+            this.board = gameState.board;
+            this.score = gameState.score;
+            this.recentMatch = gameState.recentMatch;
+            this.turnCount = gameState.turnCount || 0;
+
+            this.scoreText.setText("Matches: " + this.score);
+            this.recentMatchText.setText(
+                "Most Recent Match: " + this.recentMatch
+            );
+            this.turnText.setText("Turns: " + this.turnCount);
+        } else {
+            this.board = generateRandomBoard(7, 7, this.tileTypes);
+            this.score = 0;
+            this.recentMatch = "";
+            this.turnCount = 0;
+
+            // Update UI elements
+            this.scoreText.setText("Matches: " + this.score);
+            this.recentMatchText.setText(
+                "Most Recent Match: " + this.recentMatch
+            );
+            this.turnText.setText("Turns: " + this.turnCount);
+            this.saveGameState();
+        }
+
+        this.match = this.sound.add("match", { loop: false });
 
         this.rowSelector = this.add.image(400, 220, "RS 7x7");
         this.colSelector = this.add.image(320, 340, "CS 7x7");

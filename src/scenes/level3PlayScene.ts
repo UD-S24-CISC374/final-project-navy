@@ -24,41 +24,6 @@ export default class Level3PlayScene extends Phaser.Scene {
         ];
     }
 
-    saveGameState() {
-        const gameState = {
-            board: this.board,
-            score: this.score,
-            recentMatch: this.recentMatch,
-            turnCount: this.turnCount, // Save the turn count
-        };
-        localStorage.setItem("level3GameState", JSON.stringify(gameState));
-    }
-
-    resetGameState() {
-        // Reset the game state variables
-        this.board = generateRandomBoard(9, 9, this.tileTypes);
-        this.score = 0;
-        this.recentMatch = "";
-        this.turnCount = 10;
-
-        // Update UI elements
-        this.scoreText?.setText("Matches: " + this.score);
-        this.recentMatchText.setText("Most Recent Match: " + this.recentMatch);
-        this.turnText.setText("Turns: " + this.turnCount);
-
-        this.tilesGroup.getChildren().forEach((tile, index) => {
-            const tileType = this.board[Math.floor(index / 9)][index % 9];
-            tile.setData("tileType", tileType);
-            if (tile instanceof Phaser.GameObjects.Sprite) {
-                // Cast tile to Phaser.GameObjects.Sprite
-                tile.setTexture(tileType);
-            }
-        });
-
-        // Save the reset game state
-        this.saveGameState();
-    }
-
     private board: string[][];
 
     private tilesGroup: Phaser.GameObjects.Group;
@@ -93,18 +58,6 @@ export default class Level3PlayScene extends Phaser.Scene {
         stopMusic();
         playMusic(this, "L3Song");
 
-        const savedState = localStorage.getItem("level3GameState");
-        if (savedState) {
-            const gameState = JSON.parse(savedState);
-            this.board = gameState.board;
-            this.score = gameState.score;
-            this.recentMatch = gameState.recentMatch;
-            this.turnCount = gameState.turnCount || 10;
-        } else {
-            this.resetGameState();
-        }
-
-        this.match = this.sound.add("match", { loop: false });
         this.scoreText = this.add.text(50, 90, "Matches: " + this.score, {
             fontSize: "25px",
             color: "black",
@@ -121,12 +74,42 @@ export default class Level3PlayScene extends Phaser.Scene {
         this.turnText = this.add.text(
             50,
             150,
-            "Turns: " + (this.turnCount || 10),
+            "Turns: " + (this.turnCount || 0),
             {
                 fontSize: "25px",
                 color: "black",
             }
         );
+
+        const savedState = localStorage.getItem("level3GameState");
+        if (savedState) {
+            const gameState = JSON.parse(savedState);
+            this.board = gameState.board;
+            this.score = gameState.score;
+            this.recentMatch = gameState.recentMatch;
+            this.turnCount = gameState.turnCount || 0;
+
+            this.scoreText.setText("Matches: " + this.score);
+            this.recentMatchText.setText(
+                "Most Recent Match: " + this.recentMatch
+            );
+            this.turnText.setText("Turns: " + this.turnCount);
+        } else {
+            this.board = generateRandomBoard(9, 9, this.tileTypes);
+            this.score = 0;
+            this.recentMatch = "";
+            this.turnCount = 0;
+
+            // Update UI elements
+            this.scoreText.setText("Matches: " + this.score);
+            this.recentMatchText.setText(
+                "Most Recent Match: " + this.recentMatch
+            );
+            this.turnText.setText("Turns: " + this.turnCount);
+            this.saveGameState();
+        }
+
+        this.match = this.sound.add("match", { loop: false });
 
         this.rowSelector = this.add.image(360, 220, "RS 9x9");
         this.colSelector = this.add.image(320, 300, "CS 9x9");
@@ -245,6 +228,8 @@ export default class Level3PlayScene extends Phaser.Scene {
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
             );
+
+            this.saveGameState();
             this.hasMoved = true;
             this.evaluateRowsAndColumns(9, 9);
         } else if (this.cursors?.left.isDown && !this.prevKeyState["left"]) {
@@ -257,6 +242,8 @@ export default class Level3PlayScene extends Phaser.Scene {
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
             );
+
+            this.saveGameState();
             this.hasMoved = true;
             this.evaluateRowsAndColumns(9, 9);
         } else if (this.cursors?.down.isDown && !this.prevKeyState["down"]) {
@@ -269,6 +256,8 @@ export default class Level3PlayScene extends Phaser.Scene {
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
             );
+
+            this.saveGameState();
             this.hasMoved = true;
             this.evaluateRowsAndColumns(9, 9);
         } else if (this.cursors?.up.isDown && !this.prevKeyState["up"]) {
@@ -281,6 +270,8 @@ export default class Level3PlayScene extends Phaser.Scene {
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
             );
+
+            this.saveGameState();
             this.hasMoved = true;
             this.evaluateRowsAndColumns(9, 9);
         }
@@ -364,6 +355,41 @@ export default class Level3PlayScene extends Phaser.Scene {
 
     // FUNCTIONS THAT CAN BE PUT INTO SEPARATE FILES
     //-----------------------------------------------------------------------------
+    saveGameState() {
+        const gameState = {
+            board: this.board,
+            score: this.score,
+            recentMatch: this.recentMatch,
+            turnCount: this.turnCount, // Save the turn count
+        };
+        localStorage.setItem("level3GameState", JSON.stringify(gameState));
+    }
+
+    resetGameState() {
+        // Reset the game state variables
+        this.board = generateRandomBoard(9, 9, this.tileTypes);
+        this.score = 0;
+        this.recentMatch = "";
+        this.turnCount = 10;
+
+        // Update UI elements
+        this.scoreText?.setText("Matches: " + this.score);
+        this.recentMatchText.setText("Most Recent Match: " + this.recentMatch);
+        this.turnText.setText("Turns: " + this.turnCount);
+
+        this.tilesGroup.getChildren().forEach((tile, index) => {
+            const tileType = this.board[Math.floor(index / 9)][index % 9];
+            tile.setData("tileType", tileType);
+            if (tile instanceof Phaser.GameObjects.Sprite) {
+                // Cast tile to Phaser.GameObjects.Sprite
+                tile.setTexture(tileType);
+            }
+        });
+
+        // Save the reset game state
+        this.saveGameState();
+    }
+
     evaluateRowsAndColumns(numRows: number, numCols: number) {
         // Evaluate all rows
         for (let row = 0; row < numRows; row++) {
