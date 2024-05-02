@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { Button } from "../objects/button";
+import { playMusic, stopMusic } from "../objects/musicManager";
 
 export default class SelectScene extends Phaser.Scene {
     constructor() {
@@ -13,6 +14,28 @@ export default class SelectScene extends Phaser.Scene {
             fontSize: "32px",
             color: "black",
         });
+
+        new Button(
+            this,
+            650,
+            35,
+            "Tutorial",
+            {
+                fontSize: "25px",
+                color: "red",
+            },
+            () => {
+                this.cameras.main.fadeOut(500, 0, 0, 0);
+                this.cameras.main.on(
+                    Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
+                    () => {
+                        stopMusic("MainSong");
+                        playMusic(this, "TutSong");
+                        this.scene.start("TutScene");
+                    }
+                );
+            }
+        );
 
         const levelButtons = [];
         const levels = [

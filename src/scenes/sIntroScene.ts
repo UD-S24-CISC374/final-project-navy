@@ -98,6 +98,15 @@ export default class SIntroScene extends Phaser.Scene {
                     this.currentDialogue = [];
                     this.currentDialogueIndex = 0;
                     this.storyText.setText("");
+                    this.cameras.main.fadeOut(500, 0, 0, 0);
+                    this.cameras.main.on(
+                        Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
+                        () => {
+                            stopMusic("IntroSong");
+                            playMusic(this, "MainSong");
+                            this.scene.start("SelectScene");
+                        }
+                    );
                 }
             }
         });

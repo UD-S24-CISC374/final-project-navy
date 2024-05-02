@@ -18,6 +18,7 @@ import P3InfoScene from "./scenes/p3InfoScene";
 import P3PlayScene from "./scenes/p3PlayScene";
 import SIntroScene from "./scenes/sIntroScene";
 import HtpScene from "./scenes/htpScene";
+import TutScene from "./scenes/tutScene";
 
 const DEFAULT_WIDTH = 800;
 const DEFAULT_HEIGHT = 600;
@@ -54,6 +55,7 @@ export const CONFIG = {
         SIntroScene,
         Level3LoseScene,
         Level3WinScene,
+        TutScene,
     ],
     physics: {
         default: "arcade",
