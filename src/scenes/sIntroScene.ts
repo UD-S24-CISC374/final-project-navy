@@ -20,8 +20,7 @@ export default class SIntroScene extends Phaser.Scene {
 
         // stopMusic("MainSong");
         // playMusic(this, "IntroSong");
-
-        this.sound.pauseOnBlur = false;
+        //this.sound.pauseOnBlur = false;
 
         this.add.text(300, 100, "Intro Scene", {
             fontSize: "32px",
