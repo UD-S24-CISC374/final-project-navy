@@ -284,7 +284,7 @@ export default class P1PlayScene extends Phaser.Scene {
                     this.tileTypes
                 );
                 this.score += 1;
-                this.scoreText?.setText("Matches: " + this.score);
+                this.scoreText.setText("Matches: " + this.score);
                 this.recentMatchText.setText(
                     "Most Recent Match: " + this.recentMatch
                 );
@@ -311,7 +311,7 @@ export default class P1PlayScene extends Phaser.Scene {
                     this.tileTypes
                 );
                 this.score += 1;
-                this.scoreText?.setText("Matches: " + this.score);
+                this.scoreText.setText("Matches: " + this.score);
                 this.recentMatchText.setText(
                     "Most Recent Match: " + this.recentMatch
                 );
