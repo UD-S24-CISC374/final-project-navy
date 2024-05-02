@@ -66,29 +66,7 @@ export default class Level1PlayScene extends Phaser.Scene {
     private turnCount: number = 0; // Track the number of turns
     private turnText: Phaser.GameObjects.Text;
 
-    init() {
-        const savedState = localStorage.getItem("level1GameState");
-        if (savedState) {
-            const gameState = JSON.parse(savedState);
-            this.board = gameState.board;
-            this.score = gameState.score;
-            this.recentMatch = gameState.recentMatch;
-            this.turnCount = gameState.turnCount || 0;
-        } else {
-            this.board = generateRandomBoard(5, 5, this.tileTypes);
-            this.score = 0;
-            this.recentMatch = "";
-            this.turnCount = 0;
-
-            // Update UI elements
-            this.scoreText.setText("Matches: " + this.score);
-            this.recentMatchText.setText(
-                "Most Recent Match: " + this.recentMatch
-            );
-            this.turnText.setText("Turns: " + this.turnCount);
-            this.saveGameState();
-        }
-    }
+    init() {}
     create() {
         // Create the help display
         this.createHelpDisplay();
@@ -134,6 +112,34 @@ export default class Level1PlayScene extends Phaser.Scene {
                 color: "black",
             }
         );
+
+        const savedState = localStorage.getItem("level1GameState");
+        if (savedState) {
+            const gameState = JSON.parse(savedState);
+            this.board = gameState.board;
+            this.score = gameState.score;
+            this.recentMatch = gameState.recentMatch;
+            this.turnCount = gameState.turnCount || 0;
+
+            this.scoreText.setText("Matches: " + this.score);
+            this.recentMatchText.setText(
+                "Most Recent Match: " + this.recentMatch
+            );
+            this.turnText.setText("Turns: " + this.turnCount);
+        } else {
+            this.board = generateRandomBoard(5, 5, this.tileTypes);
+            this.score = 0;
+            this.recentMatch = "";
+            this.turnCount = 0;
+
+            // Update UI elements
+            this.scoreText.setText("Matches: " + this.score);
+            this.recentMatchText.setText(
+                "Most Recent Match: " + this.recentMatch
+            );
+            this.turnText.setText("Turns: " + this.turnCount);
+            this.saveGameState();
+        }
 
         this.match = this.sound.add("match", { loop: false });
 
