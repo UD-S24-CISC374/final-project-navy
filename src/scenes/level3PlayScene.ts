@@ -317,7 +317,7 @@ export default class Level3PlayScene extends Phaser.Scene {
             // add new music here?
             //playMusic(this, "MainSong");
             this.win = true;
-            this.scene.start("Level3LoseScene");
+            this.scene.start("Level3WinScene");
         }
 
         if (this.turnCount === 0 && this.score < matchReq) {
