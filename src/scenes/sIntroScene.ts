@@ -7,7 +7,7 @@ export default class SIntroScene extends Phaser.Scene {
     private textContainer: Phaser.GameObjects.Container;
     private currentDialogue: string[] = [];
     private currentDialogueIndex: number = 0;
-    private typingSpeed: number = 50;
+    private typingSpeed: number = 20;
     private isTyping: boolean = false;
     private timer: Phaser.Time.TimerEvent | null = null;
 
