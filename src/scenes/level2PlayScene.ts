@@ -22,41 +22,6 @@ export default class Level2PlayScene extends Phaser.Scene {
         ];
     }
 
-    saveGameState() {
-        const gameState = {
-            board: this.board,
-            score: this.score,
-            recentMatch: this.recentMatch,
-            turnCount: this.turnCount, // Save the turn count
-        };
-        localStorage.setItem("level2GameState", JSON.stringify(gameState));
-    }
-
-    resetGameState() {
-        // Reset the game state variables
-        this.board = generateRandomBoard(7, 7, this.tileTypes);
-        this.score = 0;
-        this.recentMatch = "";
-        this.turnCount = 0;
-
-        // Update UI elements
-        this.scoreText?.setText("Matches: " + this.score);
-        this.recentMatchText.setText("Most Recent Match: " + this.recentMatch);
-        this.turnText.setText("Turns: " + this.turnCount);
-
-        this.tilesGroup.getChildren().forEach((tile, index) => {
-            const tileType = this.board[Math.floor(index / 7)][index % 7];
-            tile.setData("tileType", tileType);
-            if (tile instanceof Phaser.GameObjects.Sprite) {
-                // Cast tile to Phaser.GameObjects.Sprite
-                tile.setTexture(tileType);
-            }
-        });
-
-        // Save the reset game state
-        this.saveGameState();
-    }
-
     private board: string[][];
 
     private tilesGroup: Phaser.GameObjects.Group;
@@ -246,6 +211,7 @@ export default class Level2PlayScene extends Phaser.Scene {
             );
             this.hasMoved = true;
             this.evaluateRowsAndColumns(7, 7);
+            this.saveGameState();
         } else if (this.cursors?.left.isDown && !this.prevKeyState["left"]) {
             shiftValues(
                 1,
@@ -258,6 +224,7 @@ export default class Level2PlayScene extends Phaser.Scene {
             );
             this.hasMoved = true;
             this.evaluateRowsAndColumns(7, 7);
+            this.saveGameState();
         } else if (this.cursors?.down.isDown && !this.prevKeyState["down"]) {
             shiftValues(
                 0,
@@ -270,6 +237,7 @@ export default class Level2PlayScene extends Phaser.Scene {
             );
             this.hasMoved = true;
             this.evaluateRowsAndColumns(7, 7);
+            this.saveGameState();
         } else if (this.cursors?.up.isDown && !this.prevKeyState["up"]) {
             shiftValues(
                 0,
@@ -282,6 +250,7 @@ export default class Level2PlayScene extends Phaser.Scene {
             );
             this.hasMoved = true;
             this.evaluateRowsAndColumns(7, 7);
+            this.saveGameState();
         }
 
         // Board movement
@@ -340,6 +309,41 @@ export default class Level2PlayScene extends Phaser.Scene {
 
     // FUNCTIONS THAT CAN BE PUT INTO SEPARATE FILES
     //-----------------------------------------------------------------------------
+    saveGameState() {
+        const gameState = {
+            board: this.board,
+            score: this.score,
+            recentMatch: this.recentMatch,
+            turnCount: this.turnCount, // Save the turn count
+        };
+        localStorage.setItem("level2GameState", JSON.stringify(gameState));
+    }
+
+    resetGameState() {
+        // Reset the game state variables
+        this.board = generateRandomBoard(7, 7, this.tileTypes);
+        this.score = 0;
+        this.recentMatch = "";
+        this.turnCount = 0;
+
+        // Update UI elements
+        this.scoreText?.setText("Matches: " + this.score);
+        this.recentMatchText.setText("Most Recent Match: " + this.recentMatch);
+        this.turnText.setText("Turns: " + this.turnCount);
+
+        this.tilesGroup.getChildren().forEach((tile, index) => {
+            const tileType = this.board[Math.floor(index / 7)][index % 7];
+            tile.setData("tileType", tileType);
+            if (tile instanceof Phaser.GameObjects.Sprite) {
+                // Cast tile to Phaser.GameObjects.Sprite
+                tile.setTexture(tileType);
+            }
+        });
+
+        // Save the reset game state
+        this.saveGameState();
+    }
+
     evaluateRowsAndColumns(numRows: number, numCols: number) {
         // Evaluate all rows
         for (let row = 0; row < numRows; row++) {

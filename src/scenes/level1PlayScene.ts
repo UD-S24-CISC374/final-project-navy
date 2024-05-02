@@ -66,7 +66,6 @@ export default class Level1PlayScene extends Phaser.Scene {
     private turnCount: number = 0; // Track the number of turns
     private turnText: Phaser.GameObjects.Text;
 
-    init() {}
     create() {
         // Create the help display
         this.createHelpDisplay();
@@ -251,6 +250,7 @@ export default class Level1PlayScene extends Phaser.Scene {
             );
             this.hasMoved = true;
             this.evaluateRowsAndColumns(5, 5);
+            this.saveGameState();
         } else if (this.cursors?.left.isDown && !this.prevKeyState["left"]) {
             shiftValues(
                 1,
@@ -263,6 +263,7 @@ export default class Level1PlayScene extends Phaser.Scene {
             );
             this.hasMoved = true;
             this.evaluateRowsAndColumns(5, 5);
+            this.saveGameState();
         } else if (this.cursors?.down.isDown && !this.prevKeyState["down"]) {
             shiftValues(
                 0,
@@ -275,6 +276,7 @@ export default class Level1PlayScene extends Phaser.Scene {
             );
             this.hasMoved = true;
             this.evaluateRowsAndColumns(5, 5);
+            this.saveGameState();
         } else if (this.cursors?.up.isDown && !this.prevKeyState["up"]) {
             shiftValues(
                 0,
@@ -287,6 +289,7 @@ export default class Level1PlayScene extends Phaser.Scene {
             );
             this.hasMoved = true;
             this.evaluateRowsAndColumns(5, 5);
+            this.saveGameState();
         }
 
         // Board movement
