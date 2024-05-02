@@ -35,41 +35,6 @@ export default class Level1PlayScene extends Phaser.Scene {
         ];
     }
 
-    saveGameState() {
-        const gameState = {
-            board: this.board,
-            score: this.score,
-            recentMatch: this.recentMatch,
-            turnCount: this.turnCount, // Save the turn count
-        };
-        localStorage.setItem("level1GameState", JSON.stringify(gameState));
-    }
-
-    resetGameState() {
-        // Reset the game state variables
-        this.board = generateRandomBoard(5, 5, this.tileTypes);
-        this.score = 0;
-        this.recentMatch = "";
-        this.turnCount = 0;
-
-        // Update UI elements
-        this.scoreText.setText("Matches: " + this.score);
-        this.recentMatchText.setText("Most Recent Match: " + this.recentMatch);
-        this.turnText.setText("Turns: " + this.turnCount);
-
-        this.tilesGroup.getChildren().forEach((tile, index) => {
-            const tileType = this.board[Math.floor(index / 5)][index % 5];
-            tile.setData("tileType", tileType);
-            if (tile instanceof Phaser.GameObjects.Sprite) {
-                // Cast tile to Phaser.GameObjects.Sprite
-                tile.setTexture(tileType);
-            }
-        });
-
-        // Save the reset game state
-        this.saveGameState();
-    }
-
     helpDisplay: Phaser.GameObjects.Graphics;
     helpText: Phaser.GameObjects.Text;
     helpContainer: Phaser.GameObjects.Container;
@@ -101,6 +66,29 @@ export default class Level1PlayScene extends Phaser.Scene {
     private turnCount: number = 0; // Track the number of turns
     private turnText: Phaser.GameObjects.Text;
 
+    init() {
+        const savedState = localStorage.getItem("level1GameState");
+        if (savedState) {
+            const gameState = JSON.parse(savedState);
+            this.board = gameState.board;
+            this.score = gameState.score;
+            this.recentMatch = gameState.recentMatch;
+            this.turnCount = gameState.turnCount || 0;
+        } else {
+            this.board = generateRandomBoard(5, 5, this.tileTypes);
+            this.score = 0;
+            this.recentMatch = "";
+            this.turnCount = 0;
+
+            // Update UI elements
+            this.scoreText.setText("Matches: " + this.score);
+            this.recentMatchText.setText(
+                "Most Recent Match: " + this.recentMatch
+            );
+            this.turnText.setText("Turns: " + this.turnCount);
+            this.saveGameState();
+        }
+    }
     create() {
         // Create the help display
         this.createHelpDisplay();
@@ -146,17 +134,6 @@ export default class Level1PlayScene extends Phaser.Scene {
                 color: "black",
             }
         );
-
-        const savedState = localStorage.getItem("level1GameState");
-        if (savedState) {
-            const gameState = JSON.parse(savedState);
-            this.board = gameState.board;
-            this.score = gameState.score;
-            this.recentMatch = gameState.recentMatch;
-            this.turnCount = gameState.turnCount || 0;
-        } else {
-            this.resetGameState();
-        }
 
         this.match = this.sound.add("match", { loop: false });
 
@@ -391,6 +368,41 @@ export default class Level1PlayScene extends Phaser.Scene {
     };
 
     //-----------------------------------------------------------------------------
+    saveGameState() {
+        const gameState = {
+            board: this.board,
+            score: this.score,
+            recentMatch: this.recentMatch,
+            turnCount: this.turnCount, // Save the turn count
+        };
+        localStorage.setItem("level1GameState", JSON.stringify(gameState));
+    }
+
+    resetGameState() {
+        // Reset the game state variables
+        this.board = generateRandomBoard(5, 5, this.tileTypes);
+        this.score = 0;
+        this.recentMatch = "";
+        this.turnCount = 0;
+
+        // Update UI elements
+        this.scoreText.setText("Matches: " + this.score);
+        this.recentMatchText.setText("Most Recent Match: " + this.recentMatch);
+        this.turnText.setText("Turns: " + this.turnCount);
+
+        this.tilesGroup.getChildren().forEach((tile, index) => {
+            const tileType = this.board[Math.floor(index / 5)][index % 5];
+            tile.setData("tileType", tileType);
+            if (tile instanceof Phaser.GameObjects.Sprite) {
+                // Cast tile to Phaser.GameObjects.Sprite
+                tile.setTexture(tileType);
+            }
+        });
+
+        // Save the reset game state
+        this.saveGameState();
+    }
+
     createHelpDisplay() {
         // Create background for the help display
         this.helpDisplay = this.add.graphics();
