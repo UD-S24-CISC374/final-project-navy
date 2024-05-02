@@ -19,6 +19,10 @@ import P3PlayScene from "./scenes/p3PlayScene";
 import SIntroScene from "./scenes/sIntroScene";
 import HtpScene from "./scenes/htpScene";
 import TutScene from "./scenes/tutScene";
+import Level1WinScene from "./scenes/level1WinScene";
+import Level1LoseScene from "./scenes/level1LoseScene";
+import Level2WinScene from "./scenes/level2WinScene";
+import Level2LoseScene from "./scenes/level2LoseScene";
 
 const DEFAULT_WIDTH = 800;
 const DEFAULT_HEIGHT = 600;
@@ -56,6 +60,10 @@ export const CONFIG = {
         Level3LoseScene,
         Level3WinScene,
         TutScene,
+        Level1WinScene,
+        Level1LoseScene,
+        Level2WinScene,
+        Level2LoseScene,
     ],
     physics: {
         default: "arcade",

@@ -1,13 +1,13 @@
 import Phaser from "phaser";
 import { Button } from "../objects/button";
 
-export default class Level3WinScene extends Phaser.Scene {
+export default class Level1LoseScene extends Phaser.Scene {
     constructor() {
-        super({ key: "Level3WinScene" });
+        super({ key: "Level1LoseScene" });
     }
 
     create() {
-        this.add.text(150, 100, "YAY you won", {
+        this.add.text(150, 100, "Sorry you lost :(", {
             fontSize: "20px",
             color: "black",
         });

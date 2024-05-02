@@ -1,9 +1,9 @@
 import Phaser from "phaser";
 import { Button } from "../objects/button";
 
-export default class Level3WinScene extends Phaser.Scene {
+export default class Level1WinScene extends Phaser.Scene {
     constructor() {
-        super({ key: "Level3WinScene" });
+        super({ key: "Level1WinScene" });
     }
 
     create() {

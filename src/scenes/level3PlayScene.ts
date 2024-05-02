@@ -30,8 +30,6 @@ export default class Level3PlayScene extends Phaser.Scene {
             score: this.score,
             recentMatch: this.recentMatch,
             turnCount: this.turnCount, // Save the turn count
-            win: this.win,
-            lose: this.lose,
         };
         localStorage.setItem("level3GameState", JSON.stringify(gameState));
     }
@@ -147,15 +145,9 @@ export default class Level3PlayScene extends Phaser.Scene {
             },
             () => {
                 this.saveGameState(); // Save state before leaving
-                this.cameras.main.fadeOut(500, 0, 0, 0);
-                this.cameras.main.on(
-                    Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
-                    () => {
-                        stopMusic("L3Song");
-                        playMusic(this, "MainSong");
-                        this.scene.start("SelectScene");
-                    }
-                );
+                stopMusic("L3Song");
+                playMusic(this, "MainSong");
+                this.scene.start("SelectScene");
             }
         );
 
@@ -318,24 +310,23 @@ export default class Level3PlayScene extends Phaser.Scene {
             this.turnText.setText("Turns: " + this.turnCount);
         }
 
-        let matchReq = 1; // Required matches to win
-
-        // Check for win condition
+        let matchReq = 1;
         if (this.turnCount >= 0 && this.score == matchReq) {
-            this.win = true;
-            this.lose = false;
+            this.saveGameState(); // Save state before leaving
             stopMusic("L3Song");
-            this.saveGameState(); // Save the game state as a win
-            this.scene.start("Level3WinScene"); // Transition to the win scene
+            // add new music here?
+            //playMusic(this, "MainSong");
+            this.win = true;
+            this.scene.start("Level3LoseScene");
         }
 
-        // Check for lose condition
         if (this.turnCount === 0 && this.score < matchReq) {
-            this.lose = true;
-            this.win = false; // Ensure win is set to false
+            this.saveGameState(); // Save state before leaving
             stopMusic("L3Song");
-            this.saveGameState(); // Save the game state as a loss
-            this.scene.start("Level3LoseScene"); // Transition to the lose scene
+            // add new music here?
+            //playMusic(this, "MainSong");
+            this.lose = true;
+            this.scene.start("Level3LoseScene");
         }
 
         // Update previous key state so it resets

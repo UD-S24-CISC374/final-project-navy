@@ -12,18 +12,18 @@ export default class Level3LoseScene extends Phaser.Scene {
             color: "black",
         });
 
-        // play button
-        new Button(
-            this,
-            200,
-            150,
-            "Restart",
-            {
-                fontSize: "25px",
-                color: "red",
-            },
-            () => this.scene.start("Level3PlayScene")
-        );
+        // // play button
+        // new Button(
+        //     this,
+        //     200,
+        //     150,
+        //     "Restart",
+        //     {
+        //         fontSize: "25px",
+        //         color: "red",
+        //     },
+        //     () => this.scene.start("Level3PlayScene")
+        // );
 
         // back to levels button
         new Button(
