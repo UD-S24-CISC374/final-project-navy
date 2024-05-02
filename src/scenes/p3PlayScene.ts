@@ -44,25 +44,15 @@ export default class P3PlayScene extends Phaser.Scene {
     private recentMatch: string = "";
     private score: number = 0;
     private recentMatchText: Phaser.GameObjects.Text;
-    scoreText?: Phaser.GameObjects.Text;
+    private scoreText: Phaser.GameObjects.Text;
     private match: Phaser.Sound.BaseSound;
 
     create() {
         stopMusic();
         playMusic(this, "L3Song");
+        this.sound.pauseOnBlur = false;
 
-        const savedState = localStorage.getItem("p3GameState");
-        if (savedState) {
-            const gameState = JSON.parse(savedState);
-            this.board = gameState.board;
-            this.score = gameState.score;
-            this.recentMatch = gameState.recentMatch;
-        } else {
-            this.board = generateRandomBoard(9, 9, this.tileTypes);
-            this.score = 0;
-            this.recentMatch = "";
-        }
-
+        this.board = generateRandomBoard(9, 9, this.tileTypes);
         this.match = this.sound.add("match", { loop: false });
         this.scoreText = this.add.text(50, 100, "Matches: " + this.score, {
             fontSize: "25px",
@@ -100,6 +90,7 @@ export default class P3PlayScene extends Phaser.Scene {
                     () => {
                         stopMusic("L3Song");
                         playMusic(this, "MainSong");
+                        this.resetGameState();
                         this.scene.start("SelectScene");
                     }
                 );
@@ -116,12 +107,7 @@ export default class P3PlayScene extends Phaser.Scene {
                 color: "red",
             },
             () => {
-                this.board = generateRandomBoard(9, 9, this.tileTypes);
-                this.score = 0;
-                this.recentMatch = "";
-                this.recentMatchText.setText(
-                    "Most Recent Match: " + this.recentMatch
-                );
+                this.resetGameState();
             }
         );
 
@@ -263,6 +249,26 @@ export default class P3PlayScene extends Phaser.Scene {
         this.prevKeyState["left"] = this.cursors?.left.isDown || false;
         this.prevKeyState["down"] = this.cursors?.down.isDown || false;
         this.prevKeyState["up"] = this.cursors?.up.isDown || false;
+    }
+
+    resetGameState() {
+        // Reset the game state variables
+        this.board = generateRandomBoard(9, 9, this.tileTypes);
+        this.score = 0;
+        this.recentMatch = "";
+
+        // Update UI elements
+        this.scoreText.setText("Matches: " + this.score);
+        this.recentMatchText.setText("Most Recent Match: " + this.recentMatch);
+
+        this.tilesGroup.getChildren().forEach((tile, index) => {
+            const tileType = this.board[Math.floor(index / 9)][index % 9];
+            tile.setData("tileType", tileType);
+            if (tile instanceof Phaser.GameObjects.Sprite) {
+                // Cast tile to Phaser.GameObjects.Sprite
+                tile.setTexture(tileType);
+            }
+        });
     }
 
     //TODO: Make moveSelection its own file that can be called for diff levels

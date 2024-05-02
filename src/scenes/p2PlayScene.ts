@@ -42,25 +42,15 @@ export default class P2PlayScene extends Phaser.Scene {
     private recentMatch: string = "";
     private score: number = 0;
     private recentMatchText: Phaser.GameObjects.Text;
-    scoreText?: Phaser.GameObjects.Text;
+    private scoreText: Phaser.GameObjects.Text;
     private match: Phaser.Sound.BaseSound;
 
     create() {
         stopMusic();
         playMusic(this, "L2Song");
+        this.sound.pauseOnBlur = false;
 
-        const savedState = localStorage.getItem("p2GameState");
-        if (savedState) {
-            const gameState = JSON.parse(savedState);
-            this.board = gameState.board;
-            this.score = gameState.score;
-            this.recentMatch = gameState.recentMatch;
-        } else {
-            this.board = generateRandomBoard(7, 7, this.tileTypes);
-            this.score = 0;
-            this.recentMatch = "";
-        }
-
+        this.board = generateRandomBoard(7, 7, this.tileTypes);
         this.match = this.sound.add("match", { loop: false });
         this.scoreText = this.add.text(50, 100, "Matches: " + this.score, {
             fontSize: "25px",
@@ -98,6 +88,7 @@ export default class P2PlayScene extends Phaser.Scene {
                     () => {
                         stopMusic("L2Song");
                         playMusic(this, "MainSong");
+                        this.resetGameState();
                         this.scene.start("SelectScene");
                     }
                 );
@@ -114,12 +105,7 @@ export default class P2PlayScene extends Phaser.Scene {
                 color: "red",
             },
             () => {
-                this.board = generateRandomBoard(7, 7, this.tileTypes);
-                this.score = 0;
-                this.recentMatch = "";
-                this.recentMatchText.setText(
-                    "Most Recent Match: " + this.recentMatch
-                );
+                this.resetGameState();
             }
         );
 
@@ -279,6 +265,26 @@ export default class P2PlayScene extends Phaser.Scene {
 
     // FUNCTIONS THAT CAN BE PUT INTO SEPARATE FILES
     //-----------------------------------------------------------------------------
+    resetGameState() {
+        // Reset the game state variables
+        this.board = generateRandomBoard(7, 7, this.tileTypes);
+        this.score = 0;
+        this.recentMatch = "";
+
+        // Update UI elements
+        this.scoreText.setText("Matches: " + this.score);
+        this.recentMatchText.setText("Most Recent Match: " + this.recentMatch);
+
+        this.tilesGroup.getChildren().forEach((tile, index) => {
+            const tileType = this.board[Math.floor(index / 7)][index % 7];
+            tile.setData("tileType", tileType);
+            if (tile instanceof Phaser.GameObjects.Sprite) {
+                // Cast tile to Phaser.GameObjects.Sprite
+                tile.setTexture(tileType);
+            }
+        });
+    }
+
     evaluateRowsAndColumns(numRows: number, numCols: number) {
         // Evaluate all rows
         for (let row = 0; row < numRows; row++) {
@@ -296,7 +302,7 @@ export default class P2PlayScene extends Phaser.Scene {
                     this.tileTypes
                 );
                 this.score += 1;
-                this.scoreText?.setText("Matches: " + this.score);
+                this.scoreText.setText("Matches: " + this.score);
                 this.recentMatchText.setText(
                     "Most Recent Match: " + this.recentMatch
                 );
@@ -323,7 +329,7 @@ export default class P2PlayScene extends Phaser.Scene {
                     this.tileTypes
                 );
                 this.score += 1;
-                this.scoreText?.setText("Matches: " + this.score);
+                this.scoreText.setText("Matches: " + this.score);
                 this.recentMatchText.setText(
                     "Most Recent Match: " + this.recentMatch
                 );
