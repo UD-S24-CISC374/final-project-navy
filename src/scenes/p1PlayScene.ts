@@ -34,38 +34,6 @@ export default class P1PlayScene extends Phaser.Scene {
         ];
     }
 
-    saveGameState() {
-        const gameState = {
-            board: this.board,
-            score: this.score,
-            recentMatch: this.recentMatch,
-        };
-        localStorage.setItem("p1GameState", JSON.stringify(gameState));
-    }
-
-    resetGameState() {
-        // Reset the game state variables
-        this.board = generateRandomBoard(5, 5, this.tileTypes);
-        this.score = 0;
-        this.recentMatch = "";
-
-        // Update UI elements
-        this.scoreText?.setText("Matches: " + this.score);
-        this.recentMatchText.setText("Most Recent Match: " + this.recentMatch);
-
-        this.tilesGroup.getChildren().forEach((tile, index) => {
-            const tileType = this.board[Math.floor(index / 5)][index % 5];
-            tile.setData("tileType", tileType);
-            if (tile instanceof Phaser.GameObjects.Sprite) {
-                // Cast tile to Phaser.GameObjects.Sprite
-                tile.setTexture(tileType);
-            }
-        });
-
-        // Save the reset game state
-        this.saveGameState();
-    }
-
     private board: string[][];
 
     private tilesGroup: Phaser.GameObjects.Group;
@@ -136,7 +104,6 @@ export default class P1PlayScene extends Phaser.Scene {
                 color: "red",
             },
             () => {
-                this.saveGameState(); // Save state before leaving
                 this.cameras.main.fadeOut(500, 0, 0, 0);
                 this.cameras.main.on(
                     Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
@@ -159,7 +126,12 @@ export default class P1PlayScene extends Phaser.Scene {
                 color: "red",
             },
             () => {
-                this.resetGameState(); // Save state before leaving
+                this.board = generateRandomBoard(5, 5, this.tileTypes);
+                this.score = 0;
+                this.recentMatch = "";
+                this.recentMatchText.setText(
+                    "Most Recent Match: " + this.recentMatch
+                );
             }
         );
 
