@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { Button } from "../objects/button";
+import { playMusic } from "../objects/musicManager";
 
 export default class Level1WinScene extends Phaser.Scene {
     constructor() {
@@ -7,7 +8,7 @@ export default class Level1WinScene extends Phaser.Scene {
     }
 
     create() {
-        this.add.text(150, 100, "YAY you won", {
+        this.add.text(150, 100, "YAY you won Level 1", {
             fontSize: "20px",
             color: "black",
         });
@@ -22,7 +23,7 @@ export default class Level1WinScene extends Phaser.Scene {
         //         fontSize: "25px",
         //         color: "red",
         //     },
-        //     () => this.scene.start("Level3PlayScene")
+        //     () => this.scene.start("Level1PlayScene")
         // );
 
         // back to levels button
@@ -35,7 +36,10 @@ export default class Level1WinScene extends Phaser.Scene {
                 fontSize: "25px",
                 color: "red",
             },
-            () => this.scene.start("SelectScene")
+            () => {
+                this.scene.start("SelectScene");
+                playMusic(this, "MainSong");
+            }
         );
     }
 

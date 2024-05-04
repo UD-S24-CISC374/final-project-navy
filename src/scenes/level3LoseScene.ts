@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { Button } from "../objects/button";
+import { playMusic } from "../objects/musicManager";
 
 export default class Level3LoseScene extends Phaser.Scene {
     constructor() {
@@ -7,7 +8,7 @@ export default class Level3LoseScene extends Phaser.Scene {
     }
 
     create() {
-        this.add.text(150, 100, "Sorry you lost :(", {
+        this.add.text(150, 100, "Sorry you lost Level 3:(", {
             fontSize: "20px",
             color: "black",
         });
@@ -35,7 +36,10 @@ export default class Level3LoseScene extends Phaser.Scene {
                 fontSize: "25px",
                 color: "red",
             },
-            () => this.scene.start("SelectScene")
+            () => {
+                this.scene.start("SelectScene");
+                playMusic(this, "MainSong");
+            }
         );
     }
 

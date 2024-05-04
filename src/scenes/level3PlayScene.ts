@@ -48,7 +48,7 @@ export default class Level3PlayScene extends Phaser.Scene {
     private match: Phaser.Sound.BaseSound;
 
     private hasMoved: boolean = false; // Track if any movement has happened
-    private turnCount: number = 10; // Track the number of turns
+    private turnCount: number = 20; // Track the number of turns
     private turnText: Phaser.GameObjects.Text;
 
     private win: boolean = false;
@@ -301,23 +301,23 @@ export default class Level3PlayScene extends Phaser.Scene {
             this.turnText.setText("Turns: " + this.turnCount);
         }
 
-        let matchReq = 1;
+        let matchReq = 3;
         if (this.turnCount >= 0 && this.score == matchReq) {
-            this.saveGameState(); // Save state before leaving
             stopMusic("L3Song");
             // add new music here?
             //playMusic(this, "MainSong");
             this.win = true;
             this.scene.start("Level3WinScene");
+            this.resetGameState();
         }
 
         if (this.turnCount === 0 && this.score < matchReq) {
-            this.saveGameState(); // Save state before leaving
             stopMusic("L3Song");
             // add new music here?
             //playMusic(this, "MainSong");
             this.lose = true;
             this.scene.start("Level3LoseScene");
+            this.resetGameState();
         }
 
         // Update previous key state so it resets
@@ -370,7 +370,7 @@ export default class Level3PlayScene extends Phaser.Scene {
         this.board = generateRandomBoard(9, 9, this.tileTypes);
         this.score = 0;
         this.recentMatch = "";
-        this.turnCount = 10;
+        this.turnCount = 20;
 
         // Update UI elements
         this.scoreText?.setText("Matches: " + this.score);

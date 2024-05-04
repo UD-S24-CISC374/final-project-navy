@@ -63,8 +63,11 @@ export default class Level1PlayScene extends Phaser.Scene {
     private match: Phaser.Sound.BaseSound;
 
     private hasMoved: boolean = false; // Track if any movement has happened
-    private turnCount: number = 0; // Track the number of turns
+    private turnCount: number = 10; // Track the number of turns
     private turnText: Phaser.GameObjects.Text;
+
+    private win: boolean = false;
+    private lose: boolean = false;
 
     create() {
         // Create the help display
@@ -343,10 +346,29 @@ export default class Level1PlayScene extends Phaser.Scene {
         }
 
         if (this.hasMoved && selectionChanged) {
-            this.turnCount = isNaN(this.turnCount) ? 1 : this.turnCount + 1;
+            this.turnCount = this.turnCount - 1;
             this.hasMoved = false;
             console.log("Turn " + this.turnCount + " completed.");
             this.turnText.setText("Turns: " + this.turnCount);
+        }
+
+        let matchReq = 1;
+        if (this.turnCount >= 0 && this.score == matchReq) {
+            stopMusic("L3Song");
+            // add new music here?
+            //playMusic(this, "MainSong");
+            this.win = true;
+            this.scene.start("Level1WinScene");
+            this.resetGameState();
+        }
+
+        if (this.turnCount === 0 && this.score < matchReq) {
+            stopMusic("L3Song");
+            // add new music here?
+            //playMusic(this, "MainSong");
+            this.lose = true;
+            this.scene.start("Level1LoseScene");
+            this.resetGameState();
         }
 
         // Update previous key state so it resets
@@ -392,7 +414,7 @@ export default class Level1PlayScene extends Phaser.Scene {
         this.board = generateRandomBoard(5, 5, this.tileTypes);
         this.score = 0;
         this.recentMatch = "";
-        this.turnCount = 0;
+        this.turnCount = 10;
 
         // Update UI elements
         this.scoreText.setText("Matches: " + this.score);
