@@ -7,6 +7,8 @@ import { shiftValues } from "../objects/shiftValues";
 import { removeRow } from "../objects/removeRow";
 import { removeCol } from "../objects/removeCol";
 
+const globals = require("../objects/globalVars");
+
 export default class Level3PlayScene extends Phaser.Scene {
     constructor() {
         super({ key: "Level3PlayScene" });
@@ -50,9 +52,6 @@ export default class Level3PlayScene extends Phaser.Scene {
     private hasMoved: boolean = false; // Track if any movement has happened
     private turnCount: number = 20; // Track the number of turns
     private turnText: Phaser.GameObjects.Text;
-
-    private win: boolean = false;
-    private lose: boolean = false;
 
     create() {
         stopMusic();
@@ -98,7 +97,7 @@ export default class Level3PlayScene extends Phaser.Scene {
             this.board = generateRandomBoard(9, 9, this.tileTypes);
             this.score = 0;
             this.recentMatch = "";
-            this.turnCount = 0;
+            this.turnCount = 20;
 
             // Update UI elements
             this.scoreText.setText("Matches: " + this.score);
@@ -106,6 +105,23 @@ export default class Level3PlayScene extends Phaser.Scene {
                 "Most Recent Match: " + this.recentMatch
             );
             this.turnText.setText("Turns: " + this.turnCount);
+            this.saveGameState();
+        }
+
+        if (globals.level3Reset) {
+            globals.level3Reset = false;
+            this.board = generateRandomBoard(9, 9, this.tileTypes);
+            this.score = 0;
+            this.recentMatch = "";
+            this.turnCount = 20;
+
+            // Update UI elements
+            this.scoreText.setText("Matches: " + this.score);
+            this.recentMatchText.setText(
+                "Most Recent Match: " + this.recentMatch
+            );
+            this.turnText.setText("Turns: " + this.turnCount);
+            globals.level3Lose = false;
             this.saveGameState();
         }
 
@@ -220,6 +236,7 @@ export default class Level3PlayScene extends Phaser.Scene {
 
         if (this.cursors?.right.isDown && !this.prevKeyState["right"]) {
             shiftValues(
+                this,
                 -1,
                 0,
                 9,
@@ -234,6 +251,7 @@ export default class Level3PlayScene extends Phaser.Scene {
             this.evaluateRowsAndColumns(9, 9);
         } else if (this.cursors?.left.isDown && !this.prevKeyState["left"]) {
             shiftValues(
+                this,
                 1,
                 0,
                 9,
@@ -248,6 +266,7 @@ export default class Level3PlayScene extends Phaser.Scene {
             this.evaluateRowsAndColumns(9, 9);
         } else if (this.cursors?.down.isDown && !this.prevKeyState["down"]) {
             shiftValues(
+                this,
                 0,
                 -1,
                 9,
@@ -262,6 +281,7 @@ export default class Level3PlayScene extends Phaser.Scene {
             this.evaluateRowsAndColumns(9, 9);
         } else if (this.cursors?.up.isDown && !this.prevKeyState["up"]) {
             shiftValues(
+                this,
                 0,
                 1,
                 9,
@@ -306,16 +326,15 @@ export default class Level3PlayScene extends Phaser.Scene {
             stopMusic("L3Song");
             // add new music here?
             //playMusic(this, "MainSong");
-            this.win = true;
+            globals.level3Win = true;
             this.scene.start("Level3WinScene");
-            this.resetGameState();
         }
 
         if (this.turnCount === 0 && this.score < matchReq) {
             stopMusic("L3Song");
             // add new music here?
             //playMusic(this, "MainSong");
-            this.lose = true;
+            globals.level3Lose = true;
             this.scene.start("Level3LoseScene");
             this.resetGameState();
         }

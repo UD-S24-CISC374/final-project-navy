@@ -7,6 +7,8 @@ import { shiftValues } from "../objects/shiftValues";
 import { removeRow } from "../objects/removeRow";
 import { removeCol } from "../objects/removeCol";
 
+const globals = require("../objects/globalVars");
+
 export default class Level2PlayScene extends Phaser.Scene {
     constructor() {
         super({ key: "Level2PlayScene" });
@@ -48,9 +50,6 @@ export default class Level2PlayScene extends Phaser.Scene {
     private hasMoved: boolean = false; // Track if any movement has happened
     private turnCount: number = 15; // Track the number of turns
     private turnText: Phaser.GameObjects.Text;
-
-    private win: boolean = false;
-    private lose: boolean = false;
 
     create() {
         stopMusic();
@@ -96,7 +95,7 @@ export default class Level2PlayScene extends Phaser.Scene {
             this.board = generateRandomBoard(7, 7, this.tileTypes);
             this.score = 0;
             this.recentMatch = "";
-            this.turnCount = 0;
+            this.turnCount = 15;
 
             // Update UI elements
             this.scoreText.setText("Matches: " + this.score);
@@ -104,6 +103,23 @@ export default class Level2PlayScene extends Phaser.Scene {
                 "Most Recent Match: " + this.recentMatch
             );
             this.turnText.setText("Turns: " + this.turnCount);
+            this.saveGameState();
+        }
+
+        if (globals.level2Reset) {
+            globals.level2Reset = false;
+            this.board = generateRandomBoard(7, 7, this.tileTypes);
+            this.score = 0;
+            this.recentMatch = "";
+            this.turnCount = 15;
+
+            // Update UI elements
+            this.scoreText.setText("Matches: " + this.score);
+            this.recentMatchText.setText(
+                "Most Recent Match: " + this.recentMatch
+            );
+            this.turnText.setText("Turns: " + this.turnCount);
+            globals.level2Lose = false;
             this.saveGameState();
         }
 
@@ -222,6 +238,7 @@ export default class Level2PlayScene extends Phaser.Scene {
 
         if (this.cursors?.right.isDown && !this.prevKeyState["right"]) {
             shiftValues(
+                this,
                 -1,
                 0,
                 7,
@@ -235,6 +252,7 @@ export default class Level2PlayScene extends Phaser.Scene {
             this.saveGameState();
         } else if (this.cursors?.left.isDown && !this.prevKeyState["left"]) {
             shiftValues(
+                this,
                 1,
                 0,
                 7,
@@ -248,6 +266,7 @@ export default class Level2PlayScene extends Phaser.Scene {
             this.saveGameState();
         } else if (this.cursors?.down.isDown && !this.prevKeyState["down"]) {
             shiftValues(
+                this,
                 0,
                 -1,
                 7,
@@ -261,6 +280,7 @@ export default class Level2PlayScene extends Phaser.Scene {
             this.saveGameState();
         } else if (this.cursors?.up.isDown && !this.prevKeyState["up"]) {
             shiftValues(
+                this,
                 0,
                 1,
                 7,
@@ -301,19 +321,18 @@ export default class Level2PlayScene extends Phaser.Scene {
 
         let matchReq = 2;
         if (this.turnCount >= 0 && this.score == matchReq) {
-            stopMusic("L3Song");
+            stopMusic("L2Song");
             // add new music here?
             //playMusic(this, "MainSong");
-            this.win = true;
+            globals.level2Win = true;
             this.scene.start("Level2WinScene");
-            this.resetGameState();
         }
 
         if (this.turnCount === 0 && this.score < matchReq) {
-            stopMusic("L3Song");
+            stopMusic("L2Song");
             // add new music here?
             //playMusic(this, "MainSong");
-            this.lose = true;
+            globals.level2Lose = true;
             this.scene.start("Level2LoseScene");
             this.resetGameState();
         }

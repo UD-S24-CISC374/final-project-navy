@@ -195,6 +195,7 @@ export default class P2PlayScene extends Phaser.Scene {
 
         if (this.cursors?.right.isDown && !this.prevKeyState["right"]) {
             shiftValues(
+                this,
                 -1,
                 0,
                 7,
@@ -206,6 +207,7 @@ export default class P2PlayScene extends Phaser.Scene {
             this.evaluateRowsAndColumns(7, 7);
         } else if (this.cursors?.left.isDown && !this.prevKeyState["left"]) {
             shiftValues(
+                this,
                 1,
                 0,
                 7,
@@ -217,6 +219,7 @@ export default class P2PlayScene extends Phaser.Scene {
             this.evaluateRowsAndColumns(7, 7);
         } else if (this.cursors?.down.isDown && !this.prevKeyState["down"]) {
             shiftValues(
+                this,
                 0,
                 -1,
                 7,
@@ -228,6 +231,7 @@ export default class P2PlayScene extends Phaser.Scene {
             this.evaluateRowsAndColumns(7, 7);
         } else if (this.cursors?.up.isDown && !this.prevKeyState["up"]) {
             shiftValues(
+                this,
                 0,
                 1,
                 7,

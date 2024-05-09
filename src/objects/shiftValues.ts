@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 
 export function shiftValues(
+    scene: Phaser.Scene,
     deltaX: number,
     deltaY: number,
     numRows: number,
@@ -9,13 +10,13 @@ export function shiftValues(
     selectedTileIndex: number,
     tiles: Phaser.GameObjects.Sprite[]
 ) {
-    const totalTiles = numRows * numCols;
+    const totalTiles: number = numRows * numCols;
 
-    const currentIndex = selectedTileIndex;
-    const selectedRow = Math.floor(currentIndex / numCols);
-    const selectedCol = currentIndex % numCols;
+    const currentIndex: number = selectedTileIndex;
+    const selectedRow: number = Math.floor(currentIndex / numCols);
+    const selectedCol: number = currentIndex % numCols;
 
-    const newTileTypes = [];
+    const newTileTypes: string[] = [];
 
     // Shift values in the row
     if (deltaX !== 0) {

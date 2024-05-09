@@ -8,6 +8,8 @@ import { removeRow } from "../objects/removeRow";
 import { removeCol } from "../objects/removeCol";
 import { moveSelection } from "../objects/moveSelection";
 
+const globals = require("../objects/globalVars");
+
 export default class Level1PlayScene extends Phaser.Scene {
     constructor() {
         super({ key: "Level1PlayScene" });
@@ -66,10 +68,9 @@ export default class Level1PlayScene extends Phaser.Scene {
     private turnCount: number = 10; // Track the number of turns
     private turnText: Phaser.GameObjects.Text;
 
-    private win: boolean = false;
-    private lose: boolean = false;
-
     create() {
+        // Check if player wanted to restart round
+
         // Create the help display
         this.createHelpDisplay();
 
@@ -132,7 +133,7 @@ export default class Level1PlayScene extends Phaser.Scene {
             this.board = generateRandomBoard(5, 5, this.tileTypes);
             this.score = 0;
             this.recentMatch = "";
-            this.turnCount = 0;
+            this.turnCount = 10;
 
             // Update UI elements
             this.scoreText.setText("Matches: " + this.score);
@@ -140,6 +141,23 @@ export default class Level1PlayScene extends Phaser.Scene {
                 "Most Recent Match: " + this.recentMatch
             );
             this.turnText.setText("Turns: " + this.turnCount);
+            this.saveGameState();
+        }
+
+        if (globals.level1Reset) {
+            globals.level1Reset = false;
+            this.board = generateRandomBoard(5, 5, this.tileTypes);
+            this.score = 0;
+            this.recentMatch = "";
+            this.turnCount = 10;
+
+            // Update UI elements
+            this.scoreText.setText("Matches: " + this.score);
+            this.recentMatchText.setText(
+                "Most Recent Match: " + this.recentMatch
+            );
+            this.turnText.setText("Turns: " + this.turnCount);
+            globals.level1Lose = false;
             this.saveGameState();
         }
 
@@ -243,6 +261,7 @@ export default class Level1PlayScene extends Phaser.Scene {
         //-----------------------------------------------------------------------------
         if (this.cursors?.right.isDown && !this.prevKeyState["right"]) {
             shiftValues(
+                this,
                 -1,
                 0,
                 5,
@@ -256,6 +275,7 @@ export default class Level1PlayScene extends Phaser.Scene {
             this.saveGameState();
         } else if (this.cursors?.left.isDown && !this.prevKeyState["left"]) {
             shiftValues(
+                this,
                 1,
                 0,
                 5,
@@ -269,6 +289,7 @@ export default class Level1PlayScene extends Phaser.Scene {
             this.saveGameState();
         } else if (this.cursors?.down.isDown && !this.prevKeyState["down"]) {
             shiftValues(
+                this,
                 0,
                 -1,
                 5,
@@ -282,6 +303,7 @@ export default class Level1PlayScene extends Phaser.Scene {
             this.saveGameState();
         } else if (this.cursors?.up.isDown && !this.prevKeyState["up"]) {
             shiftValues(
+                this,
                 0,
                 1,
                 5,
@@ -354,19 +376,18 @@ export default class Level1PlayScene extends Phaser.Scene {
 
         let matchReq = 1;
         if (this.turnCount >= 0 && this.score == matchReq) {
-            stopMusic("L3Song");
+            stopMusic("L1Song");
             // add new music here?
             //playMusic(this, "MainSong");
-            this.win = true;
+            globals.level1Win = true;
             this.scene.start("Level1WinScene");
-            this.resetGameState();
         }
 
         if (this.turnCount === 0 && this.score < matchReq) {
             stopMusic("L3Song");
             // add new music here?
             //playMusic(this, "MainSong");
-            this.lose = true;
+            globals.level1Lose = true;
             this.scene.start("Level1LoseScene");
             this.resetGameState();
         }
