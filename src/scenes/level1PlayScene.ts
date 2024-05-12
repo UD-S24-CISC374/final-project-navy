@@ -37,9 +37,9 @@ export default class Level1PlayScene extends Phaser.Scene {
         ];
     }
 
-    helpDisplay: Phaser.GameObjects.Graphics;
-    helpText: Phaser.GameObjects.Text;
-    helpContainer: Phaser.GameObjects.Container;
+    private helpDisplay: Phaser.GameObjects.Graphics;
+    private helpText: Phaser.GameObjects.Text;
+    private helpContainer: Phaser.GameObjects.Container;
 
     private board: string[][];
 
@@ -462,9 +462,9 @@ export default class Level1PlayScene extends Phaser.Scene {
         // Create background for the help display
         this.helpDisplay = this.add.graphics();
         this.helpDisplay.fillStyle(0xfe9883, 1);
-        this.helpDisplay.fillRect(500, 75, 300, 600); // Adjust position and size as needed
+        this.helpDisplay.fillRect(800, 75, 300, 600); // Adjust position and size as needed
 
-        this.helpContainer = this.add.container(525, 100);
+        this.helpContainer = this.add.container(825, 100);
 
         // Add help text
         this.helpText = this.add.text(
@@ -477,7 +477,7 @@ export default class Level1PlayScene extends Phaser.Scene {
             }
         );
         this.helpText.setWordWrapWidth(260); // Adjust width for wrapping
-        this.helpContainer.setInteractive(); // Enable input for scrolling
+        //this.helpContainer.setInteractive(); // Enable input for scrolling
 
         // Add background color to the container for visualization
         const containerBackground = this.add.graphics();
@@ -493,8 +493,33 @@ export default class Level1PlayScene extends Phaser.Scene {
     }
 
     toggleHelpDisplay() {
-        this.helpDisplay.visible = !this.helpDisplay.visible;
-        this.helpContainer.visible = !this.helpContainer.visible;
+        // Check if help display is currently visible
+        const isHelpVisible = this.helpDisplay.visible;
+
+        if (!isHelpVisible) {
+            // If help display is not visible, slide in
+            this.helpDisplay.visible = true; // Make help display visible
+            this.helpContainer.visible = true; // Make help container visible
+
+            this.tweens.add({
+                targets: [this.helpDisplay, this.helpContainer],
+                x: "-=300", // Slide to the left to make it visible
+                ease: "Power1",
+                duration: 500, // Animation duration in milliseconds
+            });
+        } else {
+            // If help display is visible, slide out
+            this.tweens.add({
+                targets: [this.helpDisplay, this.helpContainer],
+                x: "+=300", // Slide to the right to make it invisible
+                ease: "Power1",
+                duration: 500, // Animation duration in milliseconds
+                onComplete: () => {
+                    this.helpDisplay.visible = false; // Hide help display after sliding out
+                    this.helpContainer.visible = false; // Hide help container after sliding out
+                },
+            });
+        }
     }
 
     evaluateRowsAndColumns(numRows: number, numCols: number) {

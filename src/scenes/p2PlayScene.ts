@@ -22,6 +22,10 @@ export default class P2PlayScene extends Phaser.Scene {
         ];
     }
 
+    private helpDisplay: Phaser.GameObjects.Graphics;
+    private helpText: Phaser.GameObjects.Text;
+    private helpContainer: Phaser.GameObjects.Container;
+
     private board: string[][];
 
     private tilesGroup: Phaser.GameObjects.Group;
