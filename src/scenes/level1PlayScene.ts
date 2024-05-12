@@ -37,7 +37,7 @@ export default class Level1PlayScene extends Phaser.Scene {
         ];
     }
 
-    private helpDisplay: Phaser.GameObjects.Graphics;
+    private helpDisplay: Phaser.GameObjects.Image;
     private helpText: Phaser.GameObjects.Text;
     private helpContainer: Phaser.GameObjects.Container;
 
@@ -460,20 +460,19 @@ export default class Level1PlayScene extends Phaser.Scene {
 
     createHelpDisplay() {
         // Create background for the help display
-        this.helpDisplay = this.add.graphics();
-        this.helpDisplay.fillStyle(0xfe9883, 1);
-        this.helpDisplay.fillRect(800, 75, 300, 600); // Adjust position and size as needed
+        this.helpDisplay = this.add.image(800, 75, "HelpBox");
+        this.helpDisplay.setOrigin(0, 0);
 
         this.helpContainer = this.add.container(825, 100);
 
         // Add help text
         this.helpText = this.add.text(
-            10,
-            10,
+            15,
+            30,
             "Text in the help section\nmore text\nmore text\neeyup more text\nText in the help section\nmore text\nmore text\neeyup more text",
             {
                 fontSize: "15px",
-                color: "black",
+                color: "white",
             }
         );
         this.helpText.setWordWrapWidth(260); // Adjust width for wrapping
@@ -482,7 +481,7 @@ export default class Level1PlayScene extends Phaser.Scene {
         // Add background color to the container for visualization
         const containerBackground = this.add.graphics();
         containerBackground.fillStyle(0x00ff00, 0.5); // Green color with 50% opacity
-        containerBackground.fillRect(0, 0, 260, 450); // Adjust size as needed
+        containerBackground.fillRect(15, 30, 265, 450); // Adjust size as needed
         this.helpContainer.add(containerBackground); // Add background to the container
 
         this.helpContainer.add(this.helpText);
@@ -496,6 +495,9 @@ export default class Level1PlayScene extends Phaser.Scene {
         // Check if help display is currently visible
         const isHelpVisible = this.helpDisplay.visible;
 
+        // Define the final x-coordinate for the display
+        const finalX = isHelpVisible ? 800 : 500;
+
         if (!isHelpVisible) {
             // If help display is not visible, slide in
             this.helpDisplay.visible = true; // Make help display visible
@@ -503,17 +505,17 @@ export default class Level1PlayScene extends Phaser.Scene {
 
             this.tweens.add({
                 targets: [this.helpDisplay, this.helpContainer],
-                x: "-=300", // Slide to the left to make it visible
+                x: finalX, // Slide to the final x-coordinate
                 ease: "Power1",
-                duration: 500, // Animation duration in milliseconds
+                duration: 400, // Animation duration in milliseconds
             });
         } else {
             // If help display is visible, slide out
             this.tweens.add({
                 targets: [this.helpDisplay, this.helpContainer],
-                x: "+=300", // Slide to the right to make it invisible
+                x: finalX, // Slide to the final x-coordinate
                 ease: "Power1",
-                duration: 500, // Animation duration in milliseconds
+                duration: 400, // Animation duration in milliseconds
                 onComplete: () => {
                     this.helpDisplay.visible = false; // Hide help display after sliding out
                     this.helpContainer.visible = false; // Hide help container after sliding out
