@@ -6,6 +6,7 @@ import { evaluate9x9Expression } from "../objects/evaluateExpression";
 import { shiftValues } from "../objects/shiftValues";
 import { removeRow } from "../objects/removeRow";
 import { removeCol } from "../objects/removeCol";
+import { createHelpDisplay, toggleHelpDisplay } from "../objects/helpDisplay";
 
 const globals = require("../objects/globalVars");
 
@@ -26,8 +27,7 @@ export default class Level3PlayScene extends Phaser.Scene {
         ];
     }
 
-    private helpDisplay: Phaser.GameObjects.Graphics;
-    private helpText: Phaser.GameObjects.Text;
+    private helpDisplay: Phaser.GameObjects.Image;
     private helpContainer: Phaser.GameObjects.Container;
 
     private board: string[][];
@@ -61,6 +61,27 @@ export default class Level3PlayScene extends Phaser.Scene {
     create() {
         stopMusic();
         playMusic(this, "L3Song");
+        this.sound.pauseOnBlur = false;
+
+        // Create the help display
+        const { helpDisplay, helpContainer } = createHelpDisplay(this);
+        this.helpDisplay = helpDisplay;
+        this.helpContainer = helpContainer;
+
+        // Create the help button
+        new Button(
+            this,
+            550,
+            35,
+            "Help",
+            {
+                fontSize: "25px",
+                color: "red",
+            },
+            () => {
+                toggleHelpDisplay(this, this.helpDisplay, this.helpContainer);
+            }
+        );
 
         this.scoreText = this.add.text(50, 90, "Matches: " + this.score, {
             fontSize: "25px",

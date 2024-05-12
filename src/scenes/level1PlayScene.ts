@@ -7,6 +7,7 @@ import { shiftValues } from "../objects/shiftValues";
 import { removeRow } from "../objects/removeRow";
 import { removeCol } from "../objects/removeCol";
 import { moveSelection } from "../objects/moveSelection";
+import { createHelpDisplay, toggleHelpDisplay } from "../objects/helpDisplay";
 
 const globals = require("../objects/globalVars");
 
@@ -38,7 +39,6 @@ export default class Level1PlayScene extends Phaser.Scene {
     }
 
     private helpDisplay: Phaser.GameObjects.Image;
-    private helpText: Phaser.GameObjects.Text;
     private helpContainer: Phaser.GameObjects.Container;
 
     private board: string[][];
@@ -70,10 +70,14 @@ export default class Level1PlayScene extends Phaser.Scene {
     private turnText: Phaser.GameObjects.Text;
 
     create() {
-        // Check if player wanted to restart round
+        stopMusic("MainSong");
+        playMusic(this, "L1Song");
+        this.sound.pauseOnBlur = false;
 
         // Create the help display
-        this.createHelpDisplay();
+        const { helpDisplay, helpContainer } = createHelpDisplay(this);
+        this.helpDisplay = helpDisplay;
+        this.helpContainer = helpContainer;
 
         // Create the help button
         new Button(
@@ -86,13 +90,9 @@ export default class Level1PlayScene extends Phaser.Scene {
                 color: "red",
             },
             () => {
-                this.toggleHelpDisplay();
+                toggleHelpDisplay(this, this.helpDisplay, this.helpContainer);
             }
         );
-
-        stopMusic("MainSong");
-        playMusic(this, "L1Song");
-        this.sound.pauseOnBlur = false;
 
         this.scoreText = this.add.text(50, 90, "Matches: " + this.score, {
             fontSize: "25px",
@@ -456,72 +456,6 @@ export default class Level1PlayScene extends Phaser.Scene {
 
         // Save the reset game state
         this.saveGameState();
-    }
-
-    createHelpDisplay() {
-        // Create background for the help display
-        this.helpDisplay = this.add.image(800, 75, "HelpBox");
-        this.helpDisplay.setOrigin(0, 0);
-
-        this.helpContainer = this.add.container(825, 100);
-
-        // Add help text
-        this.helpText = this.add.text(
-            15,
-            30,
-            "Text in the help section\nmore text\nmore text\neeyup more text\nText in the help section\nmore text\nmore text\neeyup more text",
-            {
-                fontSize: "15px",
-                color: "white",
-            }
-        );
-        this.helpText.setWordWrapWidth(260); // Adjust width for wrapping
-        //this.helpContainer.setInteractive(); // Enable input for scrolling
-
-        // Add background color to the container for visualization
-        const containerBackground = this.add.graphics();
-        containerBackground.fillStyle(0x00ff00, 0.5); // Green color with 50% opacity
-        containerBackground.fillRect(15, 30, 265, 450); // Adjust size as needed
-        this.helpContainer.add(containerBackground); // Add background to the container
-
-        this.helpContainer.add(this.helpText);
-
-        // Hide help display initially
-        this.helpDisplay.visible = false;
-        this.helpContainer.visible = false;
-    }
-
-    toggleHelpDisplay() {
-        // Check if help display is currently visible
-        const isHelpVisible = this.helpDisplay.visible;
-
-        // Define the final x-coordinate for the display
-        const finalX = isHelpVisible ? 800 : 500;
-
-        if (!isHelpVisible) {
-            // If help display is not visible, slide in
-            this.helpDisplay.visible = true; // Make help display visible
-            this.helpContainer.visible = true; // Make help container visible
-
-            this.tweens.add({
-                targets: [this.helpDisplay, this.helpContainer],
-                x: finalX, // Slide to the final x-coordinate
-                ease: "Power1",
-                duration: 400, // Animation duration in milliseconds
-            });
-        } else {
-            // If help display is visible, slide out
-            this.tweens.add({
-                targets: [this.helpDisplay, this.helpContainer],
-                x: finalX, // Slide to the final x-coordinate
-                ease: "Power1",
-                duration: 400, // Animation duration in milliseconds
-                onComplete: () => {
-                    this.helpDisplay.visible = false; // Hide help display after sliding out
-                    this.helpContainer.visible = false; // Hide help container after sliding out
-                },
-            });
-        }
     }
 
     evaluateRowsAndColumns(numRows: number, numCols: number) {

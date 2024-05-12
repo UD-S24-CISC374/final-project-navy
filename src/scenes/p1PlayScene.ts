@@ -6,6 +6,7 @@ import { evaluateExpression } from "../objects/evaluateExpression";
 import { shiftValues } from "../objects/shiftValues";
 import { removeRow } from "../objects/removeRow";
 import { removeCol } from "../objects/removeCol";
+import { createHelpDisplay, toggleHelpDisplay } from "../objects/helpDisplay";
 
 export default class P1PlayScene extends Phaser.Scene {
     constructor() {
@@ -34,8 +35,7 @@ export default class P1PlayScene extends Phaser.Scene {
         ];
     }
 
-    private helpDisplay: Phaser.GameObjects.Graphics;
-    private helpText: Phaser.GameObjects.Text;
+    private helpDisplay: Phaser.GameObjects.Image;
     private helpContainer: Phaser.GameObjects.Container;
 
     private board: string[][];
@@ -66,6 +66,26 @@ export default class P1PlayScene extends Phaser.Scene {
         stopMusic("MainSong");
         playMusic(this, "L1Song");
         this.sound.pauseOnBlur = false;
+
+        // Create the help display
+        const { helpDisplay, helpContainer } = createHelpDisplay(this);
+        this.helpDisplay = helpDisplay;
+        this.helpContainer = helpContainer;
+
+        // Create the help button
+        new Button(
+            this,
+            550,
+            35,
+            "Help",
+            {
+                fontSize: "25px",
+                color: "red",
+            },
+            () => {
+                toggleHelpDisplay(this, this.helpDisplay, this.helpContainer);
+            }
+        );
 
         this.board = generateRandomBoard(5, 5, this.tileTypes);
         this.match = this.sound.add("match", { loop: false });
