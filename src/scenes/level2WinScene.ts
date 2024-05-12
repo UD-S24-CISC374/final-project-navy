@@ -27,7 +27,13 @@ export default class Level2WinScene extends Phaser.Scene {
             },
             () => {
                 globals.level2Reset = true;
-                this.scene.start("Level2PlayScene");
+                this.cameras.main.fadeOut(300, 0, 0, 0);
+                this.cameras.main.on(
+                    Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
+                    () => {
+                        this.scene.start("Level2PlayScene");
+                    }
+                );
             }
         );
 
@@ -42,8 +48,14 @@ export default class Level2WinScene extends Phaser.Scene {
                 color: "red",
             },
             () => {
-                this.scene.start("SelectScene");
-                playMusic(this, "MainSong");
+                this.cameras.main.fadeOut(300, 0, 0, 0);
+                this.cameras.main.on(
+                    Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
+                    () => {
+                        this.scene.start("SelectScene");
+                        playMusic(this, "MainSong");
+                    }
+                );
             }
         );
     }

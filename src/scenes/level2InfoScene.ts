@@ -22,7 +22,15 @@ export default class Level2InfoScene extends Phaser.Scene {
                 fontSize: "25px",
                 color: "red",
             },
-            () => this.scene.start("Level2PlayScene")
+            () => {
+                this.cameras.main.fadeOut(300, 0, 0, 0);
+                this.cameras.main.on(
+                    Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
+                    () => {
+                        this.scene.start("Level2PlayScene");
+                    }
+                );
+            }
         );
 
         // back to levels button
@@ -36,19 +44,11 @@ export default class Level2InfoScene extends Phaser.Scene {
                 color: "red",
             },
             () => {
-                this.cameras.main.fadeOut(
-                    500,
-                    0,
-                    0,
-                    0,
-                    (
-                        camera: Phaser.Cameras.Scene2D.Camera,
-                        progress: number
-                    ) => {
-                        console.log(progress);
-                        if (progress === 1) {
-                            this.scene.start("SelectScene");
-                        }
+                this.cameras.main.fadeOut(300, 0, 0, 0);
+                this.cameras.main.on(
+                    Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
+                    () => {
+                        this.scene.start("SelectScene");
                     }
                 );
             }

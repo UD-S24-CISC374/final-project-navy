@@ -10,7 +10,7 @@ export default class MainScene extends Phaser.Scene {
     }
 
     create() {
-        this.cameras.main.fadeIn(500, 0, 0, 0);
+        this.cameras.main.fadeIn(300, 0, 0, 0);
         this.add.text(180, 200, "Boolean Bonanza (add img)", {
             fontSize: "32px",
             color: "black",
@@ -36,7 +36,7 @@ export default class MainScene extends Phaser.Scene {
             () => {
                 if (globals.storyTriggered) {
                     this.cameras.main.fadeOut(
-                        500,
+                        300,
                         0,
                         0,
                         0,
@@ -52,21 +52,21 @@ export default class MainScene extends Phaser.Scene {
                     );
                 } else {
                     globals.storyTriggered = true;
-                    this.cameras.main.fadeOut(
-                        500,
-                        0,
-                        0,
-                        0,
-                        (
-                            camera: Phaser.Cameras.Scene2D.Camera,
-                            progress: number
-                        ) => {
-                            console.log(progress);
-                            if (progress === 1) {
-                                this.scene.start("SIntroScene");
-                            }
-                        }
-                    );
+                    // this.cameras.main.fadeOut(
+                    //     500,
+                    //     0,
+                    //     0,
+                    //     0,
+                    //     (
+                    //         camera: Phaser.Cameras.Scene2D.Camera,
+                    //         progress: number
+                    //     ) => {
+                    //         console.log(progress);
+                    //         if (progress === 1) {
+                    //             this.scene.start("SIntroScene");
+                    //         }
+                    //     }
+                    // );
                     this.cameras.main.fadeOut(500, 0, 0, 0);
                     this.cameras.main.on(
                         Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
@@ -90,19 +90,11 @@ export default class MainScene extends Phaser.Scene {
                 color: "red",
             },
             () => {
-                this.cameras.main.fadeOut(
-                    500,
-                    0,
-                    0,
-                    0,
-                    (
-                        camera: Phaser.Cameras.Scene2D.Camera,
-                        progress: number
-                    ) => {
-                        console.log(progress);
-                        if (progress === 1) {
-                            this.scene.start("HtpScene");
-                        }
+                this.cameras.main.fadeOut(300, 0, 0, 0);
+                this.cameras.main.on(
+                    Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
+                    () => {
+                        this.scene.start("HtpScene");
                     }
                 );
             }

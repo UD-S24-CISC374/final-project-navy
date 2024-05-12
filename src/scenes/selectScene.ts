@@ -8,6 +8,8 @@ export default class SelectScene extends Phaser.Scene {
     }
 
     create() {
+        this.cameras.main.fadeIn(300, 0, 0, 0);
+
         this.add.text(300, 100, "Level Select", {
             fontSize: "32px",
             color: "black",
@@ -72,7 +74,6 @@ export default class SelectScene extends Phaser.Scene {
         });
 
         // main menu button
-        // had "const mmButton = new Button" but it never got read so I removed it for now
         new Button(
             this,
             350,
@@ -82,7 +83,15 @@ export default class SelectScene extends Phaser.Scene {
                 fontSize: "25px",
                 color: "red",
             },
-            () => this.scene.start("MainScene")
+            () => {
+                this.cameras.main.fadeOut(300, 0, 0, 0);
+                this.cameras.main.on(
+                    Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
+                    () => {
+                        this.scene.start("MainScene");
+                    }
+                );
+            }
         );
     }
 

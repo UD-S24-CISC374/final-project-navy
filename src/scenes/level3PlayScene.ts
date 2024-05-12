@@ -6,6 +6,7 @@ import { evaluate9x9Expression } from "../objects/evaluateExpression";
 import { shiftValues } from "../objects/shiftValues";
 import { removeRow } from "../objects/removeRow";
 import { removeCol } from "../objects/removeCol";
+import { moveSelection } from "../objects/moveSelection";
 import { createHelpDisplay, toggleHelpDisplay } from "../objects/helpDisplay";
 
 const globals = require("../objects/globalVars");
@@ -45,13 +46,12 @@ export default class Level3PlayScene extends Phaser.Scene {
 
     private rowSelector: Phaser.GameObjects.Image;
     private colSelector: Phaser.GameObjects.Image;
-    private boardBg: Phaser.GameObjects.Image;
     private tileTypes: string[];
 
     private recentMatch: string = "";
     private score: number = 0;
     private recentMatchText: Phaser.GameObjects.Text;
-    scoreText?: Phaser.GameObjects.Text;
+    private scoreText: Phaser.GameObjects.Text;
     private match: Phaser.Sound.BaseSound;
 
     private hasMoved: boolean = false; // Track if any movement has happened
@@ -59,16 +59,29 @@ export default class Level3PlayScene extends Phaser.Scene {
     private turnText: Phaser.GameObjects.Text;
 
     create() {
+        this.cameras.main.fadeIn(300, 0, 0, 0);
+        // Adding in audio and images into level
+        //-----------------------------------------------------------------------------
+        // Change music at beginning of level
         stopMusic();
         playMusic(this, "L3Song");
         this.sound.pauseOnBlur = false;
+
+        // Add sound effects and images
+        this.match = this.sound.add("match", { loop: false });
+
+        this.add.image(400, 350, "Board 9x9");
+        this.rowSelector = this.add.image(360, 220, "RS 9x9");
+        this.colSelector = this.add.image(320, 300, "CS 9x9");
 
         // Create the help display
         const { helpDisplay, helpContainer } = createHelpDisplay(this);
         this.helpDisplay = helpDisplay;
         this.helpContainer = helpContainer;
-
-        // Create the help button
+        //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        // Adding in buttons players can click in the level
+        //-----------------------------------------------------------------------------
+        // Help button to toggle help display
         new Button(
             this,
             550,
@@ -82,6 +95,52 @@ export default class Level3PlayScene extends Phaser.Scene {
                 toggleHelpDisplay(this, this.helpDisplay, this.helpContainer);
             }
         );
+
+        // Back to levels button to return to level select screen
+        new Button(
+            this,
+            50,
+            35,
+            "Back to Levels",
+            {
+                fontSize: "25px",
+                color: "red",
+            },
+            () => {
+                this.saveGameState(); // Save state before leaving
+                this.cameras.main.fadeOut(300, 0, 0, 0);
+                this.cameras.main.on(
+                    Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
+                    () => {
+                        stopMusic("L3Song");
+                        playMusic(this, "MainSong");
+                        this.scene.start("SelectScene");
+                    }
+                );
+            }
+        );
+
+        // Reset button to get new gameboard and reset progress
+        new Button(
+            this,
+            675,
+            35,
+            "Reset",
+            {
+                fontSize: "25px",
+                color: "red",
+            },
+            () => {
+                this.resetGameState();
+            }
+        );
+        //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        // Create text displaying level, score, recent match, number of moves left
+        //-----------------------------------------------------------------------------
+        this.add.text(330, 90, "Level 3", {
+            fontSize: "35px",
+            color: "black",
+        });
 
         this.scoreText = this.add.text(50, 90, "Matches: " + this.score, {
             fontSize: "25px",
@@ -105,9 +164,12 @@ export default class Level3PlayScene extends Phaser.Scene {
                 color: "black",
             }
         );
-
+        //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        // Create save progress so players can resume game on different days
+        //-----------------------------------------------------------------------------
         const savedState = localStorage.getItem("level3GameState");
         if (savedState) {
+            // If players already have previously saved data, load it
             const gameState = JSON.parse(savedState);
             this.board = gameState.board;
             this.score = gameState.score;
@@ -120,12 +182,13 @@ export default class Level3PlayScene extends Phaser.Scene {
             );
             this.turnText.setText("Turns: " + this.turnCount);
         } else {
+            // If players are playing game for first time, initialize values
             this.board = generateRandomBoard(9, 9, this.tileTypes);
             this.score = 0;
             this.recentMatch = "";
             this.turnCount = 20;
 
-            // Update UI elements
+            // Initialize text for score values
             this.scoreText.setText("Matches: " + this.score);
             this.recentMatchText.setText(
                 "Most Recent Match: " + this.recentMatch
@@ -133,7 +196,9 @@ export default class Level3PlayScene extends Phaser.Scene {
             this.turnText.setText("Turns: " + this.turnCount);
             this.saveGameState();
         }
-
+        //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        // Reset saved data if players reach ending screen of level (win or lose)
+        //-----------------------------------------------------------------------------
         if (globals.level3Reset) {
             globals.level3Reset = false;
             this.board = generateRandomBoard(9, 9, this.tileTypes);
@@ -141,7 +206,7 @@ export default class Level3PlayScene extends Phaser.Scene {
             this.recentMatch = "";
             this.turnCount = 20;
 
-            // Update UI elements
+            // Update text
             this.scoreText.setText("Matches: " + this.score);
             this.recentMatchText.setText(
                 "Most Recent Match: " + this.recentMatch
@@ -150,68 +215,19 @@ export default class Level3PlayScene extends Phaser.Scene {
             globals.level3Lose = false;
             this.saveGameState();
         }
-
-        this.match = this.sound.add("match", { loop: false });
-
-        this.boardBg = this.add.image(400, 350, "Board 9x9");
-        this.boardBg.setVisible(true);
-        this.rowSelector = this.add.image(360, 220, "RS 9x9");
-        this.colSelector = this.add.image(320, 300, "CS 9x9");
-        this.rowSelector.setVisible(false);
-        this.colSelector.setVisible(false);
-
-        // back to levels button
-        new Button(
-            this,
-            50,
-            35,
-            "Back to Levels",
-            {
-                fontSize: "25px",
-                color: "red",
-            },
-            () => {
-                this.saveGameState(); // Save state before leaving
-                stopMusic("L3Song");
-                playMusic(this, "MainSong");
-                this.scene.start("SelectScene");
-            }
-        );
-
-        new Button(
-            this,
-            675,
-            35,
-            "Reset",
-            {
-                fontSize: "25px",
-                color: "red",
-            },
-            () => {
-                this.resetGameState(); // Save state before leaving
-            }
-        );
-
-        this.add.text(330, 90, "Level 3", {
-            fontSize: "35px",
-            color: "black",
-        });
-
-        // These coordinates are for 9x9 board to ensure it's centered
-        let startx = 200;
+        //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        // Creating the tiles for the game board and putting them on the screen
+        //-----------------------------------------------------------------------------
+        let startx = 200; // Starting positions change based off of grid size
         let starty = 150;
-
-        // These values will be updated in loop
         let newx = startx;
         let newy = starty;
 
         this.tilesGroup = this.add.group();
-
-        // Loops through board and creates sprites for each tile
+        // Loop through board and create sprites for each tile
         for (let row = 0; row < this.board.length; row++) {
             for (let col = 0; col < this.board[row].length; col++) {
                 const tileType = this.board[row][col];
-                // the value being added to newx/y depends on board size
                 const xPos = newx + 40;
                 const yPos = newy + 40;
 
@@ -222,9 +238,8 @@ export default class Level3PlayScene extends Phaser.Scene {
                 this.tilesGroup.add(tileSprite);
                 newx += 40;
             }
-            // Have to reset newx so row below is at same x coordinate as one above
-            newx = startx;
-            newy += 40;
+            newx = startx; // Reset newx so row below is at same x coordinate as one above
+            newy += 40; // 40 = block image (32 px) + space between next block (8 px)
         }
 
         //Selected tile (initially the one at row 0 col 0)
@@ -233,15 +248,13 @@ export default class Level3PlayScene extends Phaser.Scene {
         this.selectedTile =
             this.tilesGroup.getChildren()[0] as Phaser.GameObjects.Sprite;
 
-        // Highlights selected tile
-        //TODO: adjust row and coloum selectors for bigger board
-        this.selectedTile.setTint(0xa9a9a9);
+        this.selectedTile.setTint(0xa9a9a9); // Add tint so players know what block they're on
+        // Selectors indicate which row/column selected block is in
         this.rowSelector.setPosition(400, this.selectedTile.y);
         this.colSelector.setPosition(this.selectedTile.x, 350);
-        this.rowSelector.setVisible(true);
-        this.colSelector.setVisible(true);
-
-        // Enables WASD key input
+        //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        // Enabling input for WASD & arrow keys
+        //-----------------------------------------------------------------------------
         this.keyW = this.input.keyboard?.addKey(
             Phaser.Input.Keyboard.KeyCodes.W
         );
@@ -257,11 +270,16 @@ export default class Level3PlayScene extends Phaser.Scene {
 
         this.cursors = this.input.keyboard?.createCursorKeys();
         this.evaluateRowsAndColumns(9, 9);
+        //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     }
 
     update() {
-        let selectionChanged = false;
+        let selectionChanged = false; // Determines if current block player is on has changed
 
+        // Movement for shifting locations of blocks (arrow keys)
+        //-----------------------------------------------------------------------------
+        // Must check key state otherwise clicking once moves 3/5 blocks
+        // Has to do with update being called so many times per second
         if (this.cursors?.right.isDown && !this.prevKeyState["right"]) {
             shiftValues(
                 this,
@@ -273,10 +291,9 @@ export default class Level3PlayScene extends Phaser.Scene {
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
             );
-
-            this.saveGameState();
             this.hasMoved = true;
-            this.evaluateRowsAndColumns(9, 9);
+            this.evaluateRowsAndColumns(9, 9); // Check if there's a match
+            this.saveGameState(); // Same game state after each block shift
         } else if (this.cursors?.left.isDown && !this.prevKeyState["left"]) {
             shiftValues(
                 this,
@@ -288,10 +305,9 @@ export default class Level3PlayScene extends Phaser.Scene {
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
             );
-
-            this.saveGameState();
             this.hasMoved = true;
             this.evaluateRowsAndColumns(9, 9);
+            this.saveGameState();
         } else if (this.cursors?.down.isDown && !this.prevKeyState["down"]) {
             shiftValues(
                 this,
@@ -303,10 +319,9 @@ export default class Level3PlayScene extends Phaser.Scene {
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
             );
-
-            this.saveGameState();
             this.hasMoved = true;
             this.evaluateRowsAndColumns(9, 9);
+            this.saveGameState();
         } else if (this.cursors?.up.isDown && !this.prevKeyState["up"]) {
             shiftValues(
                 this,
@@ -318,37 +333,70 @@ export default class Level3PlayScene extends Phaser.Scene {
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
             );
-
-            this.saveGameState();
             this.hasMoved = true;
             this.evaluateRowsAndColumns(9, 9);
+            this.saveGameState();
         }
-
-        // Board movement
+        //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        // Movement around board (WASD keys)
         //-----------------------------------------------------------------------------
-        // Had to check key state otherwise clicking once would make it move like 3 or 5 blocks
-        // Has to do with update being called so many times per second, need a workaround
         if (this.keyW?.isDown && !this.prevKeyState["W"]) {
-            this.moveSelection(0, -1);
             selectionChanged = true;
+            const { newIndex, selectedTile } = moveSelection(
+                this.selectedTileIndex,
+                0,
+                -1,
+                9,
+                9,
+                this.tilesGroup
+            );
+            this.updateSelection(newIndex, selectedTile);
         } else if (this.keyS?.isDown && !this.prevKeyState["S"]) {
-            this.moveSelection(0, 1);
             selectionChanged = true;
+            const { newIndex, selectedTile } = moveSelection(
+                this.selectedTileIndex,
+                0,
+                1,
+                9,
+                9,
+                this.tilesGroup
+            );
+            this.updateSelection(newIndex, selectedTile);
         } else if (this.keyA?.isDown && !this.prevKeyState["A"]) {
-            this.moveSelection(-1, 0);
             selectionChanged = true;
+            const { newIndex, selectedTile } = moveSelection(
+                this.selectedTileIndex,
+                -1,
+                0,
+                9,
+                9,
+                this.tilesGroup
+            );
+            this.updateSelection(newIndex, selectedTile);
         } else if (this.keyD?.isDown && !this.prevKeyState["D"]) {
-            this.moveSelection(1, 0);
             selectionChanged = true;
+            const { newIndex, selectedTile } = moveSelection(
+                this.selectedTileIndex,
+                1,
+                0,
+                9,
+                9,
+                this.tilesGroup
+            );
+            this.updateSelection(newIndex, selectedTile);
         }
-
+        //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        // Update number of moves once block is shifted and moved away
+        //-----------------------------------------------------------------------------
         if (this.hasMoved && selectionChanged) {
             this.turnCount = this.turnCount - 1;
             this.hasMoved = false;
             console.log("Turn " + this.turnCount + " completed.");
             this.turnText.setText("Turns: " + this.turnCount);
         }
-
+        //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        // Check if level has ended yet (based off num moves & level requirements)
+        //-----------------------------------------------------------------------------
         let matchReq = 3;
         if (this.turnCount >= 0 && this.score == matchReq) {
             stopMusic("L3Song");
@@ -366,8 +414,9 @@ export default class Level3PlayScene extends Phaser.Scene {
             this.scene.start("Level3LoseScene");
             this.resetGameState();
         }
-
-        // Update previous key state so it resets
+        //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        // Update previously pressed key state so it resets
+        //-----------------------------------------------------------------------------
         this.prevKeyState["W"] = this.keyW?.isDown || false;
         this.prevKeyState["S"] = this.keyS?.isDown || false;
         this.prevKeyState["A"] = this.keyA?.isDown || false;
@@ -376,8 +425,11 @@ export default class Level3PlayScene extends Phaser.Scene {
         this.prevKeyState["left"] = this.cursors?.left.isDown || false;
         this.prevKeyState["down"] = this.cursors?.down.isDown || false;
         this.prevKeyState["up"] = this.cursors?.up.isDown || false;
+        //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     }
 
+    //-----------------------------------------------------------------------------
+    // Used to evaluate logical expressions in rows/columns
     logicalOperators: { [key: string]: string } = {
         And: "&&",
         Or: "||",
@@ -389,6 +441,7 @@ export default class Level3PlayScene extends Phaser.Scene {
         RParen: ")",
     };
 
+    // Used to display recent match
     matchOperators: { [key: string]: string } = {
         And: "&",
         Or: "|",
@@ -400,7 +453,8 @@ export default class Level3PlayScene extends Phaser.Scene {
         RParen: ")",
     };
 
-    // FUNCTIONS THAT CAN BE PUT INTO SEPARATE FILES
+    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    // Functions involving the game state
     //-----------------------------------------------------------------------------
     saveGameState() {
         const gameState = {
@@ -412,18 +466,20 @@ export default class Level3PlayScene extends Phaser.Scene {
         localStorage.setItem("level3GameState", JSON.stringify(gameState));
     }
 
+    // Function to reset game state
     resetGameState() {
-        // Reset the game state variables
+        // Reset the values
         this.board = generateRandomBoard(9, 9, this.tileTypes);
         this.score = 0;
         this.recentMatch = "";
         this.turnCount = 20;
 
-        // Update UI elements
-        this.scoreText?.setText("Matches: " + this.score);
+        // Update text
+        this.scoreText.setText("Matches: " + this.score);
         this.recentMatchText.setText("Most Recent Match: " + this.recentMatch);
         this.turnText.setText("Turns: " + this.turnCount);
 
+        // Set the tiles to have new values
         this.tilesGroup.getChildren().forEach((tile, index) => {
             const tileType = this.board[Math.floor(index / 9)][index % 9];
             tile.setData("tileType", tileType);
@@ -433,10 +489,12 @@ export default class Level3PlayScene extends Phaser.Scene {
             }
         });
 
-        // Save the reset game state
+        // Save the game state
         this.saveGameState();
     }
-
+    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    // Function to check if there is a match after every block shift
+    //-----------------------------------------------------------------------------
     evaluateRowsAndColumns(numRows: number, numCols: number) {
         // Evaluate all rows
         for (let row = 0; row < numRows; row++) {
@@ -447,19 +505,21 @@ export default class Level3PlayScene extends Phaser.Scene {
                 );
                 this.recentMatch = convertVals.join(" ");
                 removeRow(
+                    // Get rid of the row & add new blocks
                     row,
                     numCols,
                     this.board,
                     this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[],
                     this.tileTypes
                 );
-                this.score += 1;
-                this.scoreText?.setText("Matches: " + this.score);
+                this.score += 1; // Increase score
+                // Modify text values to display changes
+                this.scoreText.setText("Matches: " + this.score);
                 this.recentMatchText.setText(
                     "Most Recent Match: " + this.recentMatch
                 );
+                // Play sound when a match is made
                 this.match.play();
-                //this.moveBlocksDown(row); Maybe use a diff function for moving blocks down?
             }
         }
 
@@ -481,7 +541,7 @@ export default class Level3PlayScene extends Phaser.Scene {
                     this.tileTypes
                 );
                 this.score += 1;
-                this.scoreText?.setText("Matches: " + this.score);
+                this.scoreText.setText("Matches: " + this.score);
                 this.recentMatchText.setText(
                     "Most Recent Match: " + this.recentMatch
                 );
@@ -489,48 +549,20 @@ export default class Level3PlayScene extends Phaser.Scene {
             }
         }
     }
-    //---------------------------------------------------------------------
-
-    //TODO: Make moveSelection its own file that can be called for diff levels
-    moveSelection(deltaX: number, deltaY: number) {
-        const numRows = 9;
-        const numCols = 9;
-        const totalTiles = numRows * numCols;
-
-        const currentIndex = this.selectedTileIndex;
-        let newIndex = currentIndex + deltaX + deltaY * numCols;
-
-        // Wrap horizontally
-        if (deltaX !== 0) {
-            newIndex =
-                ((currentIndex + deltaX + numCols) % numCols) +
-                Math.floor(currentIndex / numCols) * numCols;
-        }
-
-        // Wrap vertically
-        if (deltaY !== 0) {
-            newIndex =
-                (currentIndex + totalTiles + deltaY * numCols) % totalTiles;
-        }
-
-        // make sure newIndex doesn't go out of range
-        // clamp function is pretty cool haven't used it till now
-        newIndex = Phaser.Math.Clamp(newIndex, 0, totalTiles - 1);
-
-        // Remove tint from previously selected tile
+    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    // Function to change currently selected block every time player moves
+    //-----------------------------------------------------------------------------
+    updateSelection(newIndex: number, selectedTile: Phaser.GameObjects.Sprite) {
+        // Clear tint from previously selected tile
         this.selectedTile.clearTint();
 
-        // Update selected tile index, cast GameObject to Sprite
+        // Update selected tile index and the tile itself
         this.selectedTileIndex = newIndex;
-        this.selectedTile = this.tilesGroup.getChildren()[
-            newIndex
-        ] as Phaser.GameObjects.Sprite;
+        this.selectedTile = selectedTile;
 
-        // Highlight newly selected tile (red tint)
+        // Add new tint to selected tile and update selectors' position
         this.selectedTile.setTint(0xa9a9a9);
         this.rowSelector.setPosition(400, this.selectedTile.y);
         this.colSelector.setPosition(this.selectedTile.x, 350);
-        this.rowSelector.setVisible(true);
-        this.colSelector.setVisible(true);
     }
 }
