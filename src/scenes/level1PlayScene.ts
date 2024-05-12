@@ -56,6 +56,7 @@ export default class Level1PlayScene extends Phaser.Scene {
 
     private rowSelector: Phaser.GameObjects.Image;
     private colSelector: Phaser.GameObjects.Image;
+    private boardBg: Phaser.GameObjects.Image;
     private tileTypes: string[];
 
     private recentMatch: string = "";
@@ -163,6 +164,8 @@ export default class Level1PlayScene extends Phaser.Scene {
 
         this.match = this.sound.add("match", { loop: false });
 
+        this.boardBg = this.add.image(400, 300, "Board");
+        this.boardBg.setVisible(true);
         this.rowSelector = this.add.image(400, 220, "Row Selector");
         this.colSelector = this.add.image(320, 300, "Col Selector");
         this.rowSelector.setVisible(false);

@@ -39,6 +39,7 @@ export default class P3PlayScene extends Phaser.Scene {
 
     private rowSelector: Phaser.GameObjects.Image;
     private colSelector: Phaser.GameObjects.Image;
+    private boardBg: Phaser.GameObjects.Image;
     private tileTypes: string[];
 
     private recentMatch: string = "";
@@ -68,6 +69,8 @@ export default class P3PlayScene extends Phaser.Scene {
             }
         );
 
+        this.boardBg = this.add.image(400, 350, "Board 9x9");
+        this.boardBg.setVisible(true);
         this.rowSelector = this.add.image(360, 220, "RS 9x9");
         this.colSelector = this.add.image(320, 300, "CS 9x9");
         this.rowSelector.setVisible(false);

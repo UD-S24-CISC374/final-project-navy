@@ -39,6 +39,7 @@ export default class Level2PlayScene extends Phaser.Scene {
 
     private rowSelector: Phaser.GameObjects.Image;
     private colSelector: Phaser.GameObjects.Image;
+    private boardBg: Phaser.GameObjects.Image;
     private tileTypes: string[];
 
     private recentMatch: string = "";
@@ -125,6 +126,8 @@ export default class Level2PlayScene extends Phaser.Scene {
 
         this.match = this.sound.add("match", { loop: false });
 
+        this.boardBg = this.add.image(400, 340, "Board 7x7");
+        this.boardBg.setVisible(true);
         this.rowSelector = this.add.image(400, 220, "RS 7x7");
         this.colSelector = this.add.image(320, 340, "CS 7x7");
         this.rowSelector.setVisible(false);
