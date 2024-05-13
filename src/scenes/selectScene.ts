@@ -10,10 +10,7 @@ export default class SelectScene extends Phaser.Scene {
     create() {
         this.cameras.main.fadeIn(300, 0, 0, 0);
 
-        this.add.text(300, 100, "Level Select", {
-            fontSize: "32px",
-            color: "black",
-        });
+        this.add.image(400, 300, "LevelSelect");
 
         new Button(
             this,
@@ -36,7 +33,27 @@ export default class SelectScene extends Phaser.Scene {
                 );
             }
         );
-        //TODO: create button class and handle all this in there to make simpler
+
+        // main menu button
+        new Button(
+            this,
+            60,
+            35,
+            "Main Menu",
+            {
+                fontSize: "25px",
+                color: "red",
+            },
+            () => {
+                this.cameras.main.fadeOut(300, 0, 0, 0);
+                this.cameras.main.on(
+                    Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
+                    () => {
+                        this.scene.start("MainScene");
+                    }
+                );
+            }
+        );
 
         const levelButtons = [];
         const levels = [
@@ -59,7 +76,7 @@ export default class SelectScene extends Phaser.Scene {
                 level.text,
                 {
                     fontSize: "25px",
-                    color: "red",
+                    color: "white",
                 },
                 () => this.scene.start(level.sceneKey)
             );
@@ -72,27 +89,6 @@ export default class SelectScene extends Phaser.Scene {
                 y += 150;
             }
         });
-
-        // main menu button
-        new Button(
-            this,
-            350,
-            450,
-            "Main Menu",
-            {
-                fontSize: "25px",
-                color: "red",
-            },
-            () => {
-                this.cameras.main.fadeOut(300, 0, 0, 0);
-                this.cameras.main.on(
-                    Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
-                    () => {
-                        this.scene.start("MainScene");
-                    }
-                );
-            }
-        );
     }
 
     update() {}
