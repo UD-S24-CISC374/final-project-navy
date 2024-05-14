@@ -607,6 +607,7 @@ export default class Level1PlayScene extends Phaser.Scene {
                         console.log("Incremented req match");
                     }
                 });
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 if (foundT && foundF) {
                     this.reqCounts["T&F"]++;
                     console.log("Incremented T and F");
@@ -651,6 +652,7 @@ export default class Level1PlayScene extends Phaser.Scene {
                         console.log("Incremented req match");
                     }
                 });
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 if (foundT && foundF) {
                     this.reqCounts["T&F"]++;
                     console.log("Incremented T and F");
