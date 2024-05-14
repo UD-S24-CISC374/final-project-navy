@@ -14,15 +14,27 @@ const globals = require("../objects/globalVars");
 export default class Level2PlayScene extends Phaser.Scene {
     constructor() {
         super({ key: "Level2PlayScene" });
+
+        // added multiples to adjust probability of each tile
         this.tileTypes = [
             "True",
-            "False",
-            "And",
-            "Or",
-            "Not",
-            "Equals",
+            "True",
+            "True",
             "True",
             "False",
+            "False",
+            "False",
+            "False",
+            "And",
+            "And",
+            "And",
+            "Or",
+            "Or",
+            "Or",
+            "Not",
+            "Not",
+            "Equals",
+            "Equals",
         ];
     }
 
@@ -55,6 +67,21 @@ export default class Level2PlayScene extends Phaser.Scene {
     private hasMoved: boolean = false; // Track if any movement has happened
     private turnCount: number = 15; // Track the number of turns
     private turnText: Phaser.GameObjects.Text;
+    private reqText: { [key: string]: Phaser.GameObjects.Text } = {};
+
+    private matchReq: { [key: string]: number } = {
+        "=": 4,
+        "!, T": 4,
+        "|, &": 5,
+        "T, F": 5,
+    };
+
+    private reqCounts: { [key: string]: number } = {
+        "=": 0,
+        "!, T": 0,
+        "|, &": 0,
+        "T, F": 0,
+    };
 
     create() {
         this.cameras.main.fadeIn(300, 0, 0, 0);
@@ -144,6 +171,7 @@ export default class Level2PlayScene extends Phaser.Scene {
             fontSize: "25px",
             color: "black",
         });
+
         this.recentMatchText = this.add.text(
             50,
             120,
@@ -153,6 +181,7 @@ export default class Level2PlayScene extends Phaser.Scene {
                 color: "black",
             }
         );
+
         this.turnText = this.add.text(
             50,
             150,
@@ -162,6 +191,23 @@ export default class Level2PlayScene extends Phaser.Scene {
                 color: "black",
             }
         );
+
+        this.add.text(50, 250, "Matches Containing:", {
+            fontSize: "20px",
+            color: "black",
+        });
+        let yPos = 280;
+        for (const type in this.reqCounts) {
+            this.reqText[type] = this.add.text(
+                50,
+                yPos,
+                `${type}: 0/${this.reqCounts[type]}`,
+                {
+                    fontSize: "20px",
+                }
+            );
+            yPos += 30;
+        }
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // Create save progress so players can resume game on different days
         //-----------------------------------------------------------------------------
@@ -185,6 +231,12 @@ export default class Level2PlayScene extends Phaser.Scene {
             this.score = 0;
             this.recentMatch = "";
             this.turnCount = 15;
+            this.reqCounts = {
+                "=": 0,
+                "!, T": 0,
+                "|, &": 0,
+                "T, F": 0,
+            };
 
             // Initialize text for score values
             this.scoreText.setText("Matches: " + this.score);
@@ -203,6 +255,12 @@ export default class Level2PlayScene extends Phaser.Scene {
             this.score = 0;
             this.recentMatch = "";
             this.turnCount = 15;
+            this.reqCounts = {
+                "=": 0,
+                "!, T": 0,
+                "|, &": 0,
+                "T, F": 0,
+            };
 
             // Update text
             this.scoreText.setText("Matches: " + this.score);
@@ -394,8 +452,40 @@ export default class Level2PlayScene extends Phaser.Scene {
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // Check if level has ended yet (based off num moves & level requirements)
         //-----------------------------------------------------------------------------
-        let matchReq = 2;
-        if (this.turnCount >= 0 && this.score == matchReq) {
+
+        let allReqMet: boolean = true;
+        for (const type in this.matchReq) {
+            if (this.reqCounts[type] < this.matchReq[type]) {
+                allReqMet = false;
+                break;
+            }
+        }
+
+        for (const type in this.reqCounts) {
+            const requirementsMet: number = this.reqCounts[type];
+            const requiredCount: number = this.matchReq[type];
+
+            // Check if requiredCount is defined
+            if (typeof requiredCount === "undefined") {
+                continue; // Skip processing if requiredCount is undefined
+            }
+
+            // Check if the player has met the requirement for this type
+            const requirementMet: boolean = requirementsMet >= requiredCount;
+
+            // Update the corresponding text element
+            const textElement = this.reqText[type];
+            if (textElement instanceof Phaser.GameObjects.Text) {
+                textElement.setText(
+                    `${type}: ${requirementsMet}/${requiredCount}`
+                );
+
+                // Optionally, change text color based on completion status
+                textElement.setColor(requirementMet ? "green" : "red");
+            }
+        }
+
+        if (this.turnCount >= 0 && allReqMet) {
             stopMusic("L2Song");
             // add new music here?
             //playMusic(this, "MainSong");
@@ -403,7 +493,7 @@ export default class Level2PlayScene extends Phaser.Scene {
             this.scene.start("Level2WinScene");
         }
 
-        if (this.turnCount === 0 && this.score < matchReq) {
+        if (this.turnCount === 0 && !allReqMet) {
             stopMusic("L2Song");
             // add new music here?
             //playMusic(this, "MainSong");
@@ -467,6 +557,12 @@ export default class Level2PlayScene extends Phaser.Scene {
         this.score = 0;
         this.recentMatch = "";
         this.turnCount = 15;
+        this.reqCounts = {
+            "=": 0,
+            "!, T": 0,
+            "|, &": 0,
+            "T, F": 0,
+        };
 
         // Update text
         this.scoreText.setText("Matches: " + this.score);
@@ -486,6 +582,7 @@ export default class Level2PlayScene extends Phaser.Scene {
         // Save the game state
         this.saveGameState();
     }
+
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     // Function to check if there is a match after every block shift
     //-----------------------------------------------------------------------------
@@ -497,6 +594,46 @@ export default class Level2PlayScene extends Phaser.Scene {
                 const convertVals = this.board[row].map(
                     (value) => this.matchOperators[value]
                 );
+
+                let foundT: boolean = false;
+                let foundNot: boolean = false;
+                let foundOr: boolean = false;
+                let foundAnd: boolean = false;
+                let foundF: boolean = false;
+                convertVals.forEach((value) => {
+                    if (value === "T") {
+                        foundT = true;
+                    } else if (value === "!") {
+                        foundNot = true;
+                    } else if (value === "|") {
+                        foundOr = true;
+                    } else if (value === "&") {
+                        foundAnd = true;
+                    } else if (value === "F") {
+                        foundF = true;
+                    } else {
+                        this.reqCounts[value]++;
+                        console.log("Incremented req match");
+                    }
+                });
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                if (foundNot && foundT) {
+                    this.reqCounts["!, T"]++;
+                    console.log("Incremented Not and True");
+                }
+
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                if (foundOr && foundAnd) {
+                    this.reqCounts["|, &"]++;
+                    console.log("Incremented Or and And");
+                }
+
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                if (foundT && foundF) {
+                    this.reqCounts["T, F"]++;
+                    console.log("Incremented Equal and Not");
+                }
+
                 this.recentMatch = convertVals.join(" ");
                 removeRow(
                     // Get rid of the row & add new blocks
@@ -525,6 +662,46 @@ export default class Level2PlayScene extends Phaser.Scene {
                 const convertVals = column.map(
                     (value) => this.matchOperators[value]
                 );
+
+                let foundT: boolean = false;
+                let foundNot: boolean = false;
+                let foundOr: boolean = false;
+                let foundAnd: boolean = false;
+                let foundF: boolean = false;
+                convertVals.forEach((value) => {
+                    if (value === "T") {
+                        foundT = true;
+                    } else if (value === "!") {
+                        foundNot = true;
+                    } else if (value === "|") {
+                        foundOr = true;
+                    } else if (value === "&") {
+                        foundAnd = true;
+                    } else if (value === "F") {
+                        foundF = true;
+                    } else {
+                        this.reqCounts[value]++;
+                        console.log("Incremented req match");
+                    }
+                });
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                if (foundNot && foundT) {
+                    this.reqCounts["!, T"]++;
+                    console.log("Incremented Not and True");
+                }
+
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                if (foundOr && foundAnd) {
+                    this.reqCounts["|, &"]++;
+                    console.log("Incremented Or and And");
+                }
+
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                if (foundT && foundF) {
+                    this.reqCounts["T, F"]++;
+                    console.log("Incremented Equal and Not");
+                }
+
                 this.recentMatch = convertVals.join(" ");
                 removeCol(
                     col,

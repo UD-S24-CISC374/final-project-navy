@@ -139,7 +139,6 @@ export default class Level1PlayScene extends Phaser.Scene {
                     () => {
                         stopMusic("L1Song");
                         playMusic(this, "MainSong");
-                        this.resetGameState();
                         this.scene.start("SelectScene");
                     }
                 );
@@ -220,8 +219,6 @@ export default class Level1PlayScene extends Phaser.Scene {
             this.score = gameState.score;
             this.recentMatch = gameState.recentMatch;
             this.turnCount = gameState.turnCount || 0;
-            //this.reqCounts = gameState.reqCounts;
-            //console.log(this.reqCounts);
 
             this.scoreText.setText("Matches: " + this.score);
             this.recentMatchText.setText(
@@ -297,8 +294,7 @@ export default class Level1PlayScene extends Phaser.Scene {
                 this.tilesGroup.add(tileSprite);
                 newx += 40;
             }
-            // Reset newx so row below is at same x coordinate as one above
-            newx = startx;
+            newx = startx; // Reset newx so row below is at same x coordinate as one above
             newy += 40; // 40 = block image (32 px) + space between next block (8 px)
         }
 
@@ -537,6 +533,9 @@ export default class Level1PlayScene extends Phaser.Scene {
         True: "T",
         False: "F",
     };
+
+    //+++++++++++++++++++++++
+    //+++++++++++++++++++++++
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     // Functions involving the game state
     //-----------------------------------------------------------------------------
@@ -595,6 +594,7 @@ export default class Level1PlayScene extends Phaser.Scene {
                 const convertVals = this.board[row].map(
                     (value) => this.matchOperators[value]
                 );
+
                 let foundT: boolean = false;
                 let foundF: boolean = false;
                 convertVals.forEach((value) => {
@@ -612,6 +612,7 @@ export default class Level1PlayScene extends Phaser.Scene {
                     this.reqCounts["T&F"]++;
                     console.log("Incremented T and F");
                 }
+
                 this.recentMatch = convertVals.join(" ");
                 removeRow(
                     // Get rid of the row & add new blocks
