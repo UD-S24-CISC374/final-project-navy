@@ -28,6 +28,10 @@ export default class PreloadScene extends Phaser.Scene {
         this.load.image("textbox-arrow", "assets/textbox-arrow.png");
         this.load.image("Textbox", "assets/Textbox.png");
         this.load.image("LevelSelect", "assets/LevelSelect.png");
+        this.load.image("L1Info", "assets/L1Info.png");
+        this.load.image("L2Info", "assets/L2Info.png");
+        this.load.image("L3Info", "assets/L3Info.png");
+        this.load.image("PInfo", "assets/PInfo.png");
 
         this.load.audio("MainSong", ["assets/Vibing-Over-Venus.mp3"]);
         this.load.audio("L1Song", ["assets/Thief-in-the-Night.mp3"]);

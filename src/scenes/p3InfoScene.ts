@@ -7,16 +7,17 @@ export default class P3InfoScene extends Phaser.Scene {
     }
 
     create() {
-        this.add.text(150, 100, "We will display level requirements here!", {
+        this.add.image(400, 280, "PInfo");
+        this.add.text(300, 200, "Level requirements", {
             fontSize: "20px",
-            color: "black",
+            color: "white",
         });
 
         // play button
         new Button(
             this,
-            250,
-            150,
+            375,
+            400,
             "Play",
             {
                 fontSize: "25px",
@@ -36,8 +37,8 @@ export default class P3InfoScene extends Phaser.Scene {
         // back to levels button
         new Button(
             this,
-            365,
-            150,
+            50,
+            35,
             "Back to Levels",
             {
                 fontSize: "25px",
