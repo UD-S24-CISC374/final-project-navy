@@ -602,7 +602,7 @@ export default class Level1PlayScene extends Phaser.Scene {
                         foundT = true;
                     } else if (value === "F") {
                         foundF = true;
-                    } else if (this.reqCounts[value] !== undefined) {
+                    } else {
                         this.reqCounts[value]++;
                         console.log("Incremented req match");
                     }
@@ -641,13 +641,12 @@ export default class Level1PlayScene extends Phaser.Scene {
                 );
                 let foundT: boolean = false;
                 let foundF: boolean = false;
-                let incremented: boolean = false;
                 convertVals.forEach((value) => {
                     if (value === "T") {
                         foundT = true;
                     } else if (value === "F") {
                         foundF = true;
-                    } else if (this.reqCounts[value] !== undefined) {
+                    } else {
                         this.reqCounts[value]++;
                         console.log("Incremented req match");
                     }
