@@ -193,15 +193,18 @@ export default class Level1PlayScene extends Phaser.Scene {
             }
         );
 
-        let yPos = 410;
+        this.add.text(50, 250, "Matches Containing:", {
+            fontSize: "20px",
+            color: "black",
+        });
+        let yPos = 280;
         for (const type in this.reqCounts) {
             this.reqText[type] = this.add.text(
                 50,
                 yPos,
-                `Matches Containing ${type}: 0/${this.reqCounts[type]}`,
+                `${type}: 0/${this.reqCounts[type]}`,
                 {
-                    fontSize: "25px",
-                    color: "black",
+                    fontSize: "20px",
                 }
             );
             yPos += 30;
@@ -478,7 +481,7 @@ export default class Level1PlayScene extends Phaser.Scene {
             const textElement = this.reqText[type];
             if (textElement instanceof Phaser.GameObjects.Text) {
                 textElement.setText(
-                    `Matches containing ${type}: ${requirementsMet}/${requiredCount}`
+                    `${type}: ${requirementsMet}/${requiredCount}`
                 );
 
                 // Optionally, change text color based on completion status
