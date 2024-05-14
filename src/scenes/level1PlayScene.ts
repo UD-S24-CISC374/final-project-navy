@@ -65,8 +65,23 @@ export default class Level1PlayScene extends Phaser.Scene {
     private match: Phaser.Sound.BaseSound;
 
     private hasMoved: boolean = false; // Track if any movement has happened
-    private turnCount: number = 10; // Track the number of turns
+    private turnCount: number = 20; // Track the number of turns
     private turnText: Phaser.GameObjects.Text;
+    private reqText: { [key: string]: Phaser.GameObjects.Text } = {};
+
+    private matchReq: { [key: string]: number } = {
+        "&": 5,
+        "|": 5,
+        "T&F": 4,
+        "!": 2,
+    };
+
+    private reqCounts: { [key: string]: number } = {
+        "&": 0,
+        "|": 0,
+        "T&F": 0,
+        "!": 0,
+    };
 
     create() {
         this.cameras.main.fadeIn(300, 0, 0, 0);
@@ -177,6 +192,20 @@ export default class Level1PlayScene extends Phaser.Scene {
                 color: "black",
             }
         );
+
+        let yPos = 410;
+        for (const type in this.reqCounts) {
+            this.reqText[type] = this.add.text(
+                50,
+                yPos,
+                `Matches Containing ${type}: 0/${this.reqCounts[type]}`,
+                {
+                    fontSize: "25px",
+                    color: "black",
+                }
+            );
+            yPos += 30;
+        }
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // Create save progress so players can resume game on different days
         //-----------------------------------------------------------------------------
@@ -188,6 +217,8 @@ export default class Level1PlayScene extends Phaser.Scene {
             this.score = gameState.score;
             this.recentMatch = gameState.recentMatch;
             this.turnCount = gameState.turnCount || 0;
+            //this.reqCounts = gameState.reqCounts;
+            //console.log(this.reqCounts);
 
             this.scoreText.setText("Matches: " + this.score);
             this.recentMatchText.setText(
@@ -199,7 +230,13 @@ export default class Level1PlayScene extends Phaser.Scene {
             this.board = generateRandomBoard(5, 5, this.tileTypes);
             this.score = 0;
             this.recentMatch = "";
-            this.turnCount = 10;
+            this.turnCount = 20;
+            this.reqCounts = {
+                "&": 0,
+                "|": 0,
+                "T&F": 0,
+                "!": 0,
+            };
 
             // Initialize text for score values
             this.scoreText.setText("Matches: " + this.score);
@@ -217,7 +254,13 @@ export default class Level1PlayScene extends Phaser.Scene {
             this.board = generateRandomBoard(5, 5, this.tileTypes);
             this.score = 0;
             this.recentMatch = "";
-            this.turnCount = 10;
+            this.turnCount = 20;
+            this.reqCounts = {
+                "&": 0,
+                "|": 0,
+                "T&F": 0,
+                "!": 0,
+            };
 
             // Update text elements
             this.scoreText.setText("Matches: " + this.score);
@@ -410,8 +453,40 @@ export default class Level1PlayScene extends Phaser.Scene {
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // Check if level has ended yet (based off num moves & level requirements)
         //-----------------------------------------------------------------------------
-        let matchReq = 1;
-        if (this.turnCount >= 0 && this.score == matchReq) {
+
+        let allReqMet: boolean = true;
+        for (const type in this.matchReq) {
+            if (this.reqCounts[type] < this.matchReq[type]) {
+                allReqMet = false;
+                break;
+            }
+        }
+
+        for (const type in this.reqCounts) {
+            const requirementsMet: number = this.reqCounts[type];
+            const requiredCount: number = this.matchReq[type];
+
+            // Check if requiredCount is defined
+            if (typeof requiredCount === "undefined") {
+                continue; // Skip processing if requiredCount is undefined
+            }
+
+            // Check if the player has met the requirement for this type
+            const requirementMet: boolean = requirementsMet >= requiredCount;
+
+            // Update the corresponding text element
+            const textElement = this.reqText[type];
+            if (textElement instanceof Phaser.GameObjects.Text) {
+                textElement.setText(
+                    `Matches containing ${type}: ${requirementsMet}/${requiredCount}`
+                );
+
+                // Optionally, change text color based on completion status
+                textElement.setColor(requirementMet ? "green" : "red");
+            }
+        }
+
+        if (this.turnCount >= 0 && allReqMet) {
             stopMusic("L1Song");
             // add new music here?
             //playMusic(this, "MainSong");
@@ -419,7 +494,7 @@ export default class Level1PlayScene extends Phaser.Scene {
             this.scene.start("Level1WinScene");
         }
 
-        if (this.turnCount === 0 && this.score < matchReq) {
+        if (this.turnCount === 0 && !allReqMet) {
             stopMusic("L3Song");
             // add new music here?
             //playMusic(this, "MainSong");
@@ -479,7 +554,13 @@ export default class Level1PlayScene extends Phaser.Scene {
         this.board = generateRandomBoard(5, 5, this.tileTypes);
         this.score = 0;
         this.recentMatch = "";
-        this.turnCount = 10;
+        this.turnCount = 20;
+        this.reqCounts = {
+            "&": 0,
+            "|": 0,
+            "T&F": 0,
+            "!": 0,
+        };
 
         // Update text
         this.scoreText.setText("Matches: " + this.score);
@@ -511,6 +592,22 @@ export default class Level1PlayScene extends Phaser.Scene {
                 const convertVals = this.board[row].map(
                     (value) => this.matchOperators[value]
                 );
+                let foundT: boolean = false;
+                let foundF: boolean = false;
+                convertVals.forEach((value) => {
+                    if (value === "T") {
+                        foundT = true;
+                    } else if (value === "F") {
+                        foundF = true;
+                    } else if (this.reqCounts[value] !== undefined) {
+                        this.reqCounts[value]++;
+                        console.log("Incremented req match");
+                    }
+                });
+                if (foundT && foundF) {
+                    this.reqCounts["T&F"]++;
+                    console.log("Incremented T and F");
+                }
                 this.recentMatch = convertVals.join(" ");
                 removeRow(
                     // Get rid of the row & add new blocks
@@ -539,6 +636,23 @@ export default class Level1PlayScene extends Phaser.Scene {
                 const convertVals = column.map(
                     (value) => this.matchOperators[value]
                 );
+                let foundT: boolean = false;
+                let foundF: boolean = false;
+                let incremented: boolean = false;
+                convertVals.forEach((value) => {
+                    if (value === "T") {
+                        foundT = true;
+                    } else if (value === "F") {
+                        foundF = true;
+                    } else if (this.reqCounts[value] !== undefined) {
+                        this.reqCounts[value]++;
+                        console.log("Incremented req match");
+                    }
+                });
+                if (foundT && foundF) {
+                    this.reqCounts["T&F"]++;
+                    console.log("Incremented T and F");
+                }
                 this.recentMatch = convertVals.join(" ");
                 removeCol(
                     col,
