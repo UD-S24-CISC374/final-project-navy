@@ -11,7 +11,7 @@ export default class MainScene extends Phaser.Scene {
 
     create() {
         this.cameras.main.fadeIn(300, 0, 0, 0);
-        this.add.text(180, 200, "Boolean Bonanza (add img)", {
+        this.add.text(250, 180, "Boolean Bonanza", {
             fontSize: "32px",
             color: "black",
         });
@@ -26,7 +26,7 @@ export default class MainScene extends Phaser.Scene {
         // start button
         new Button(
             this,
-            275,
+            260,
             400,
             "Start",
             {
