@@ -8,16 +8,39 @@ export default class P3InfoScene extends Phaser.Scene {
 
     create() {
         this.add.image(400, 280, "PInfo");
-        this.add.text(300, 200, "Level requirements", {
-            fontSize: "20px",
-            color: "white",
-        });
+        this.add
+            .text(400, 160, "Level Information", {
+                fontSize: "25px",
+                color: "white",
+            })
+            .setOrigin(0.5, 0.5);
+        this.add
+            .text(400, 200, "Board size: 9x9\nPossible tiles:")
+            .setOrigin(0.5, 0.5)
+            .setLineSpacing(5);
+
+        this.add.rectangle(400, 250, 32, 32, 33333, 0.5);
+        this.add
+            .text(400, 290, "Level Description", {
+                fontSize: "25px",
+                color: "white",
+            })
+            .setOrigin(0.5, 0.5);
+        this.add
+            .text(
+                400,
+                370,
+                "Practice round for level 3.\nNo requirements, no moves, great for making as many matches as possible!"
+            )
+            .setOrigin(0.5, 0.5)
+            .setLineSpacing(5)
+            .setWordWrapWidth(260);
 
         // play button
         new Button(
             this,
             375,
-            400,
+            440,
             "Play",
             {
                 fontSize: "25px",
