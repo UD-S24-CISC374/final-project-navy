@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { Button } from "./button";
 
 export function createHelpDisplay(scene: Phaser.Scene) {
     // Create background for the help display
@@ -11,18 +12,44 @@ export function createHelpDisplay(scene: Phaser.Scene) {
     // Add help text
     const helpText = scene.add.text(
         15,
-        30,
-        "Text in the help section\nmore text\nmore text\neeyup more text\nText in the help section\nmore text\nmore text\neeyup more text",
+        40,
+        "'T' Block = True\n'F' Block = False\n\n\nThese blocks must go in between two boolean blocks (except for !).\n'&' Block = And'\nBoth values on either side of this block must be true for the entire expression to be true\n'|' Block = Or\nAs long as one of the sides is true, the entire expression will be true\n'!' Block = Not\nThis block will swap the value of whatever boolean block it comes after\n",
         {
             fontSize: "15px",
             color: "white",
         }
     );
-    helpText.setWordWrapWidth(260); // Adjust width for wrapping
+    helpText.setWordWrapWidth(260).setLineSpacing(5);
     //this.helpContainer.setInteractive(); // Enable input for scrolling
 
     // Add background color to the container for visualization
     const containerBackground = scene.add.graphics();
+    helpContainer.add(
+        new Button(
+            scene,
+            200,
+            0,
+            "Back",
+            {
+                fontSize: "15px",
+                color: "red",
+            },
+            () => {}
+        )
+    );
+    helpContainer.add(
+        new Button(
+            scene,
+            250,
+            0,
+            "Next",
+            {
+                fontSize: "15px",
+                color: "red",
+            },
+            () => {}
+        )
+    );
     containerBackground.fillStyle(0x00ff00, 0.5); // Green color with 50% opacity
     containerBackground.fillRect(15, 30, 265, 450); // Adjust size as needed
     helpContainer.add(containerBackground); // Add background to the container
@@ -30,8 +57,20 @@ export function createHelpDisplay(scene: Phaser.Scene) {
 
     helpContainer.add(helpText);
     helpContainer.add(
-        scene.add.text(120, -18, "Help", {
+        scene.add.text(120, -20, "Help", {
             fontSize: "25px",
+            color: "white",
+        })
+    );
+    helpContainer.add(
+        scene.add.text(15, 15, "Boolean Blocks", {
+            fontSize: "20px",
+            color: "white",
+        })
+    );
+    helpContainer.add(
+        scene.add.text(15, 85, "Operator Blocks", {
+            fontSize: "20px",
             color: "white",
         })
     );
