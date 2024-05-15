@@ -1,7 +1,7 @@
 {
-    "name": "final-project",
+    "name": "boolean-bonanza",
     "version": "4.0.0",
-    "description": "Phaser 3 Final Project",
+    "description": "Phaser 3 Final Project for CISC374",
     "homepage": "https://github.com/UD-S24-CISC374/final-project-template#readme",
     "main": "index.js",
     "scripts": {
@@ -24,12 +24,12 @@
         "starter"
     ],
     "author": {
-        "name": "Austin Cory Bart",
-        "url": "https://github.com/acbart"
+        "name": "Mercedes Mathews, Rana Tuncer",
+        "url": "https://github.com/UD-S24-CISC374/final-project-navy"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/UD-S24-CISC374/final-project-template.git"
+        "url": "https://github.com/UD-S24-CISC374/final-project-navy"
     },
     "engines": {
         "node": ">=12"
