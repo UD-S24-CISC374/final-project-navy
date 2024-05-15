@@ -55,38 +55,56 @@ export default class SelectScene extends Phaser.Scene {
             }
         );
 
-        const levelButtons = [];
+        const levelButtons = [
+            "L1Button",
+            "L2BLock",
+            "L3BLock",
+            "P1Button",
+            "P2BLock",
+            "P3BLock",
+        ];
         const levels = [
-            { text: "L1", sceneKey: "Level1InfoScene" },
-            { text: "L2", sceneKey: "Level2InfoScene" },
-            { text: "L3", sceneKey: "Level3InfoScene" },
-            { text: "P1", sceneKey: "P1InfoScene" },
-            { text: "P2", sceneKey: "P2InfoScene" },
-            { text: "P3", sceneKey: "P3InfoScene" },
+            { key: "L1", sceneKey: "Level1InfoScene" },
+            { key: "L2", sceneKey: "Level2InfoScene" },
+            { key: "L3", sceneKey: "Level3InfoScene" },
+            { key: "P1", sceneKey: "P1InfoScene" },
+            { key: "P2", sceneKey: "P2InfoScene" },
+            { key: "P3", sceneKey: "P3InfoScene" },
         ];
 
-        let x = 150;
-        let y = 200;
+        let x = 200;
+        let y = 230;
 
         levels.forEach((level, index) => {
-            const button = new Button(
-                this,
-                x,
-                y,
-                level.text,
-                {
-                    fontSize: "25px",
-                    color: "white",
-                },
-                () => this.scene.start(level.sceneKey)
-            );
+            // Will add after locked levels is implemented
+            //const buttonKey = level.locked ? `${level.key}_locked` : level.key;
 
-            levelButtons.push(button);
+            const button = this.add
+                .image(x, y, levelButtons[index])
+                .setInteractive()
+                .on("pointerdown", () => {
+                    this.scene.start(level.sceneKey);
+                    // Will add after locked levels is implemented
+                    // if (!level.locked) {
+                    //     this.scene.start(level.sceneKey);
+                    // } else {
+                    //     // Handle locked level click
+                    //     console.log("This level is locked!");
+                    // }
+                });
+
+            button.on("pointerover", () => {
+                button.setTint(0xaaaaaa); // Tint on hover
+            });
+
+            button.on("pointerout", () => {
+                button.clearTint(); // Clear tint on hover out
+            });
 
             x += 200;
             if ((index + 1) % 3 === 0) {
-                x = 150;
-                y += 150;
+                x = 200;
+                y += 180;
             }
         });
     }
