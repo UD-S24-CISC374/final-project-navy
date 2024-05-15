@@ -58,6 +58,30 @@ export default class Level1LoseScene extends Phaser.Scene {
                 );
             }
         );
+
+        new Button(
+            this,
+            275, // Adjust the X position as needed
+            200, // Adjust Y position as needed
+            "View Matches",
+            {
+                fontSize: "25px",
+                color: "red",
+            },
+            () => {
+                const savedState = localStorage.getItem("level1GameState");
+                if (savedState) {
+                    const gameState = JSON.parse(savedState);
+                    if (gameState.matchList) {
+                        globals.displayMatchHistory(gameState.matchList);
+                    } else {
+                        console.log("No matches recorded.");
+                    }
+                } else {
+                    console.log("No game state saved.");
+                }
+            }
+        );
     }
 
     update() {}

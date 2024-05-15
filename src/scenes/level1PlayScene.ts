@@ -63,9 +63,10 @@ export default class Level1PlayScene extends Phaser.Scene {
     private recentMatchText: Phaser.GameObjects.Text;
     private scoreText: Phaser.GameObjects.Text;
     private match: Phaser.Sound.BaseSound;
+    private matchList: string[] = [];
 
     private hasMoved: boolean = false; // Track if any movement has happened
-    private turnCount: number = 20; // Track the number of turns
+    private turnCount: number = 30; // Track the number of turns
     private turnText: Phaser.GameObjects.Text;
     private reqText: { [key: string]: Phaser.GameObjects.Text } = {};
 
@@ -219,6 +220,7 @@ export default class Level1PlayScene extends Phaser.Scene {
             this.score = gameState.score;
             this.recentMatch = gameState.recentMatch;
             this.turnCount = gameState.turnCount || 0;
+            this.matchList = gameState.matchList || [];
 
             this.scoreText.setText("Matches: " + this.score);
             this.recentMatchText.setText(
@@ -230,7 +232,8 @@ export default class Level1PlayScene extends Phaser.Scene {
             this.board = generateRandomBoard(5, 5, this.tileTypes);
             this.score = 0;
             this.recentMatch = "";
-            this.turnCount = 20;
+            this.turnCount = 30;
+            this.matchList = [];
             this.reqCounts = {
                 "&": 0,
                 "|": 0,
@@ -254,7 +257,8 @@ export default class Level1PlayScene extends Phaser.Scene {
             this.board = generateRandomBoard(5, 5, this.tileTypes);
             this.score = 0;
             this.recentMatch = "";
-            this.turnCount = 20;
+            this.turnCount = 30;
+            this.matchList = [];
             this.reqCounts = {
                 "&": 0,
                 "|": 0,
@@ -494,7 +498,7 @@ export default class Level1PlayScene extends Phaser.Scene {
         }
 
         if (this.turnCount === 0 && !allReqMet) {
-            stopMusic("L3Song");
+            stopMusic("L1Song");
             // add new music here?
             //playMusic(this, "MainSong");
             globals.level1Lose = true;
@@ -546,6 +550,7 @@ export default class Level1PlayScene extends Phaser.Scene {
             score: this.score,
             recentMatch: this.recentMatch,
             turnCount: this.turnCount,
+            matchList: this.matchList,
         };
         localStorage.setItem("level1GameState", JSON.stringify(gameState));
     }
@@ -556,7 +561,8 @@ export default class Level1PlayScene extends Phaser.Scene {
         this.board = generateRandomBoard(5, 5, this.tileTypes);
         this.score = 0;
         this.recentMatch = "";
-        this.turnCount = 20;
+        this.turnCount = 30;
+        this.matchList = [];
         this.reqCounts = {
             "&": 0,
             "|": 0,
@@ -614,6 +620,7 @@ export default class Level1PlayScene extends Phaser.Scene {
                 }
 
                 this.recentMatch = convertVals.join(" ");
+                this.matchList.push(this.recentMatch);
                 removeRow(
                     // Get rid of the row & add new blocks
                     row,
@@ -659,6 +666,7 @@ export default class Level1PlayScene extends Phaser.Scene {
                     console.log("Incremented T and F");
                 }
                 this.recentMatch = convertVals.join(" ");
+                this.matchList.push(this.recentMatch);
                 removeCol(
                     col,
                     numRows,

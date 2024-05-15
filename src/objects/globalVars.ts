@@ -1,15 +1,23 @@
-let storyTriggered: boolean = false;
-let level1Reset: boolean = false;
-let level1Win: boolean = false;
-let level1Lose: boolean = false;
+let storyTriggered = false;
+let level1Reset = false;
+let level1Win = false;
+let level1Lose = false;
 
-let level2Reset: boolean = false;
-let level2Win: boolean = false;
-let level2Lose: boolean = false;
+let level2Reset = false;
+let level2Win = false;
+let level2Lose = false;
 
-let level3Reset: boolean = false;
-let level3Win: boolean = false;
-let level3Lose: boolean = false;
+let level3Reset = false;
+let level3Win = false;
+let level3Lose = false;
+
+// Define the function to display match history
+function displayMatchHistory(matchList: string[]) {
+    console.log("Match History:");
+    matchList.forEach((match, index) => {
+        console.log(`${index + 1}: ${match}`);
+    });
+}
 
 module.exports = {
     storyTriggered: storyTriggered,
@@ -22,4 +30,5 @@ module.exports = {
     level3Reset: level3Reset,
     level3Win: level3Win,
     level3Lose: level3Lose,
+    displayMatchHistory: displayMatchHistory, // Export the function
 };
