@@ -46,3 +46,4 @@ Link to our [egdd](https://ud-s24-cisc374.github.io/final-project-navy/docs/egdd
 -   "ZigZag" Kevin MacLeod (incompetech.com)
     Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/
 -   "Select Button Sound Effect" Free Gaming Sound Effects https://www.youtube.com/watch?v=KsDg-ggEOvk
+-   "Jazz Chords SOUND Effect" SOUND Effects Public Domain https://www.youtube.com/watch?v=7jSUfGcXkDc

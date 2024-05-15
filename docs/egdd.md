@@ -272,7 +272,7 @@ _The aesthetics should be happy and cartoonish, with a light-hearted feel. The c
     -   Fulfilling a criterion: A small "ding" sound like [this one](https://www.youtube.com/watch?v=KsDg-ggEOvk&ab_channel=FreeGamingSoundEffects)
     -   Few moves left: _Players can be warned of having few moves left with a small sound [like this one](https://www.youtube.com/watch?v=zR2m4NvohJQ&ab_channel=POGW)_
     -   Completing a level: _When successful, players could hear a small sound [like this one](https://www.youtube.com/watch?v=DdCjg1lX-Bc&ab_channel=BackgroundColor),[this one](https://www.youtube.com/watch?v=AFYWsbUSasw&ab_channel=SFXWARD), or [this one](https://www.youtube.com/watch?v=c9Yb_a4R7ts&ab_channel=SFXWARD) once the end screen of a completed level appears_
-    -   Level incomplete: _When unsuccessful, players could hear a small sound [like this one](https://www.youtube.com/watch?v=sq48A8xsxfU&ab_channel=CheeseballsCharles), or [this one](https://www.youtube.com/watch?v=7jSUfGcXkDc&ab_channel=SOUNDEffectsPublicDomain) once the end screen of an incomplete level appears_
+    -   Level incomplete: _When unsuccessful, players hear [this small sound](https://www.youtube.com/watch?v=7jSUfGcXkDc&ab_channel=SOUNDEffectsPublicDomain) and the end screen of an incomplete level appears_
 
 # Metadata
 

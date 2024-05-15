@@ -9,7 +9,11 @@ export default class Level2WinScene extends Phaser.Scene {
         super({ key: "Level2WinScene" });
     }
 
+    private win: Phaser.Sound.BaseSound;
+
     create() {
+        this.win = this.sound.add("level-win", { loop: false });
+        this.win.play();
         this.add.text(150, 100, "YAY you won Level 2", {
             fontSize: "20px",
             color: "black",

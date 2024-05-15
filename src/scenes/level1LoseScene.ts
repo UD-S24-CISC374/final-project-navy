@@ -8,8 +8,12 @@ export default class Level1LoseScene extends Phaser.Scene {
     constructor() {
         super({ key: "Level1LoseScene" });
     }
+    private loss: Phaser.Sound.BaseSound;
 
     create() {
+        this.loss = this.sound.add("level-lost", { loop: false });
+        this.loss.play();
+
         this.add.text(150, 100, "Sorry you lost Level 1:(", {
             fontSize: "20px",
             color: "black",

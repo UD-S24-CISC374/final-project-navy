@@ -491,17 +491,14 @@ export default class Level1PlayScene extends Phaser.Scene {
 
         if (this.turnCount >= 0 && allReqMet) {
             stopMusic("L1Song");
-            // add new music here?
-            //playMusic(this, "MainSong");
             globals.level1Win = true;
             this.scene.start("Level1WinScene");
         }
 
         if (this.turnCount === 0 && !allReqMet) {
             stopMusic("L1Song");
-            // add new music here?
-            //playMusic(this, "MainSong");
             globals.level1Lose = true;
+
             this.scene.start("Level1LoseScene");
             this.resetGameState();
         }

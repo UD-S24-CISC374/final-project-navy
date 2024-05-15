@@ -57,6 +57,8 @@ export default class PreloadScene extends Phaser.Scene {
         this.load.audio("TutSong", ["assets/Bossa-Antigua.mp3"]);
 
         this.load.audio("match", ["assets/match-made.mp3"]);
+        this.load.audio("level-lost", ["assets/level-lost.mp3"]);
+        this.load.audio("level-win", ["assets/level-win.mp3"]);
     }
 
     create() {
