@@ -23,7 +23,7 @@ export default class SIntroScene extends Phaser.Scene {
         // playMusic(this, "IntroSong");
         //this.sound.pauseOnBlur = false;
 
-        this.add.image(400, 350, "Blurbus");
+        this.add.image(400, 315, "Blurbus");
 
         new Button(
             this,
@@ -32,7 +32,7 @@ export default class SIntroScene extends Phaser.Scene {
             "Skip",
             {
                 fontSize: "25px",
-                color: "black",
+                color: "white",
             },
             () => {
                 this.cameras.main.fadeOut(500, 0, 0, 0);
@@ -53,7 +53,7 @@ export default class SIntroScene extends Phaser.Scene {
             .setTint(0x7b5e57);
         arrowButton.setInteractive();
 
-        this.add.text(156, 418, "Greebus", {
+        this.add.text(156, 418, "Blurbus", {
             fontSize: "25px",
             color: "white",
             align: "center",
@@ -113,7 +113,7 @@ export default class SIntroScene extends Phaser.Scene {
         // );
         this.dialogue("...");
         this.dialogue("...Oh! Sorry, didn't see ya there");
-        this.dialogue("My name's Greebus, Greebus the green frog!");
+        this.dialogue("My name's Blurbus, Blurbus the blue frog!");
         this.dialogue(
             "I haven't seen you around here before...you must be new!"
         );
