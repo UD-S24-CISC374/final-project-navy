@@ -65,7 +65,7 @@ export default class Level2PlayScene extends Phaser.Scene {
     private match: Phaser.Sound.BaseSound;
 
     private hasMoved: boolean = false; // Track if any movement has happened
-    private turnCount: number = 15; // Track the number of turns
+    private turnCount: number = 30; // Track the number of turns
     private turnText: Phaser.GameObjects.Text;
     private reqText: { [key: string]: Phaser.GameObjects.Text } = {};
 
@@ -97,6 +97,7 @@ export default class Level2PlayScene extends Phaser.Scene {
         this.match = this.sound.add("match", { loop: false });
 
         this.add.image(400, 340, "Board 7x7");
+        this.add.image(125, 322, "ReqBg");
         this.rowSelector = this.add.image(400, 220, "RS 7x7");
         this.colSelector = this.add.image(320, 340, "CS 7x7");
 
@@ -226,7 +227,7 @@ export default class Level2PlayScene extends Phaser.Scene {
             this.board = generateRandomBoard(7, 7, this.tileTypes);
             this.score = 0;
             this.recentMatch = "";
-            this.turnCount = 15;
+            this.turnCount = 30;
             this.reqCounts = {
                 "=": 0,
                 "!, T": 0,
@@ -248,7 +249,7 @@ export default class Level2PlayScene extends Phaser.Scene {
             this.board = generateRandomBoard(7, 7, this.tileTypes);
             this.score = 0;
             this.recentMatch = "";
-            this.turnCount = 15;
+            this.turnCount = 30;
             this.reqCounts = {
                 "=": 0,
                 "!, T": 0,
@@ -548,7 +549,7 @@ export default class Level2PlayScene extends Phaser.Scene {
         this.board = generateRandomBoard(7, 7, this.tileTypes);
         this.score = 0;
         this.recentMatch = "";
-        this.turnCount = 15;
+        this.turnCount = 30;
         this.reqCounts = {
             "=": 0,
             "!, T": 0,

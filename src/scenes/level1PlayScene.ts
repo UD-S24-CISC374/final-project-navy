@@ -73,14 +73,14 @@ export default class Level1PlayScene extends Phaser.Scene {
     private matchReq: { [key: string]: number } = {
         "&": 5,
         "|": 5,
-        "T&F": 4,
+        "T, F": 4,
         "!": 2,
     };
 
     private reqCounts: { [key: string]: number } = {
         "&": 0,
         "|": 0,
-        "T&F": 0,
+        "T, F": 0,
         "!": 0,
     };
 
@@ -98,6 +98,7 @@ export default class Level1PlayScene extends Phaser.Scene {
         this.match = this.sound.add("match", { loop: false });
 
         this.add.image(400, 300, "Board");
+        this.add.image(125, 322, "ReqBg");
         this.rowSelector = this.add.image(400, 220, "Row Selector");
         this.colSelector = this.add.image(320, 300, "Col Selector");
 
@@ -233,7 +234,7 @@ export default class Level1PlayScene extends Phaser.Scene {
             this.reqCounts = {
                 "&": 0,
                 "|": 0,
-                "T&F": 0,
+                "T, F": 0,
                 "!": 0,
             };
 
@@ -256,7 +257,7 @@ export default class Level1PlayScene extends Phaser.Scene {
             this.reqCounts = {
                 "&": 0,
                 "|": 0,
-                "T&F": 0,
+                "T, F": 0,
                 "!": 0,
             };
 
@@ -555,7 +556,7 @@ export default class Level1PlayScene extends Phaser.Scene {
         this.reqCounts = {
             "&": 0,
             "|": 0,
-            "T&F": 0,
+            "T, F": 0,
             "!": 0,
         };
 
@@ -604,7 +605,7 @@ export default class Level1PlayScene extends Phaser.Scene {
                 });
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 if (foundT && foundF) {
-                    this.reqCounts["T&F"]++;
+                    this.reqCounts["T, F"]++;
                     console.log("Incremented T and F");
                 }
 
@@ -651,7 +652,7 @@ export default class Level1PlayScene extends Phaser.Scene {
                 });
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 if (foundT && foundF) {
-                    this.reqCounts["T&F"]++;
+                    this.reqCounts["T, F"]++;
                     console.log("Incremented T and F");
                 }
                 this.recentMatch = convertVals.join(" ");
