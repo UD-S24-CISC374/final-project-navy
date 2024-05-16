@@ -1,5 +1,4 @@
 import Phaser from "phaser";
-import { Button } from "../objects/button";
 import { playMusic, stopMusic } from "../objects/musicManager";
 import { generateRandomBoard } from "../objects/generateBoard";
 import { evaluateExpression } from "../objects/evaluateExpression";
