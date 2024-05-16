@@ -132,10 +132,7 @@ export default class P3PlayScene extends Phaser.Scene {
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // Create text displaying level, score, recent match
         //-----------------------------------------------------------------------------
-        this.add.text(330, 100, "Practice 3", {
-            fontSize: "35px",
-            color: "black",
-        });
+        this.add.image(400, 60, "PTitle");
 
         this.scoreText = this.add.text(50, 100, "Matches: " + this.score, {
             fontSize: "25px",

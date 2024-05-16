@@ -163,10 +163,7 @@ export default class Level2PlayScene extends Phaser.Scene {
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // Create text displaying level, score, recent match, number of moves left
         //-----------------------------------------------------------------------------
-        this.add.text(330, 90, "Level 2", {
-            fontSize: "35px",
-            color: "black",
-        });
+        this.add.image(400, 60, "L2Title");
 
         this.scoreText = this.add.text(50, 90, "Matches: " + this.score, {
             fontSize: "25px",
