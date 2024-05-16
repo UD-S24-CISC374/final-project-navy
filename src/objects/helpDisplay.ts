@@ -1,5 +1,4 @@
 import Phaser from "phaser";
-import { Button } from "./button";
 
 export function createHelpDisplay(scene: Phaser.Scene) {
     // Create background for the help display
