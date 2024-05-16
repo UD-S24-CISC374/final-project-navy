@@ -8,19 +8,30 @@ export default class Level1WinScene extends Phaser.Scene {
     constructor() {
         super({ key: "Level1WinScene" });
     }
-    private win: Phaser.Sound.BaseSound;
+    private loss: Phaser.Sound.BaseSound;
+    private matchTextGroup: Phaser.GameObjects.Group;
 
     create() {
         this.add.image(400, 300, "Valley");
-        this.win = this.sound.add("level-win", { loop: false });
-        this.win.play();
+        this.loss = this.sound.add("level-lost", { loop: false });
+        this.loss.play();
 
-        this.add.text(150, 100, "YAY you won Level 1", {
+        this.add.text(150, 100, "Yayyyyy you won Level 1", {
             fontSize: "20px",
             color: "black",
         });
 
-        // play button
+        // Initialize the group for match text
+        this.matchTextGroup = this.add.group();
+
+        // Set up other buttons
+        this.setupButtons();
+
+        // Automatically display match history
+        this.displayMatches();
+    }
+
+    setupButtons() {
         new Button(
             this,
             200,
@@ -44,7 +55,6 @@ export default class Level1WinScene extends Phaser.Scene {
             }
         );
 
-        // back to levels button
         new Button(
             this,
             375,
@@ -65,30 +75,40 @@ export default class Level1WinScene extends Phaser.Scene {
                 );
             }
         );
+    }
 
-        new Button(
-            this,
-            275, // Adjust the X position as needed
-            200, // Adjust Y position as needed
-            "View Matches",
-            {
-                fontSize: "25px",
-                color: "red",
-            },
-            () => {
-                const savedState = localStorage.getItem("level1GameState");
-                if (savedState) {
-                    const gameState = JSON.parse(savedState);
-                    if (gameState.matchList) {
-                        globals.displayMatchHistory(gameState.matchList);
-                    } else {
-                        console.log("No matches recorded.");
-                    }
-                } else {
-                    console.log("No game state saved.");
-                }
+    displayMatches() {
+        const savedState = localStorage.getItem("level1GameState");
+        if (savedState) {
+            const gameState = JSON.parse(savedState);
+            if (gameState.matchList) {
+                this.showMatchHistory(gameState.matchList);
+            } else {
+                console.log("No matches recorded.");
             }
-        );
+        } else {
+            console.log("No game state saved.");
+        }
+    }
+
+    showMatchHistory(matches: string[]) {
+        // Clear existing match history texts
+        this.matchTextGroup.clear(true, true);
+
+        matches.forEach((match, index) => {
+            const yPos =
+                this.cameras.main.height - 20 * (matches.length - index); // Displays at the bottom
+            const matchText = this.add.text(
+                250,
+                yPos - 200,
+                `Match ${index + 1}: ${match}`,
+                {
+                    fontSize: "25px",
+                    color: "white",
+                }
+            );
+            this.matchTextGroup.add(matchText);
+        });
     }
 
     update() {}

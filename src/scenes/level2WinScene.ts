@@ -8,19 +8,30 @@ export default class Level2WinScene extends Phaser.Scene {
     constructor() {
         super({ key: "Level2WinScene" });
     }
-
-    private win: Phaser.Sound.BaseSound;
+    private loss: Phaser.Sound.BaseSound;
+    private matchTextGroup: Phaser.GameObjects.Group;
 
     create() {
         this.add.image(400, 300, "Valley");
-        this.win = this.sound.add("level-win", { loop: false });
-        this.win.play();
-        this.add.text(150, 100, "YAY you won Level 2", {
+        this.loss = this.sound.add("level-lost", { loop: false });
+        this.loss.play();
+
+        this.add.text(150, 100, "Yayyyyy you won Level 2", {
             fontSize: "20px",
             color: "black",
         });
 
-        // play button
+        // Initialize the group for match text
+        this.matchTextGroup = this.add.group();
+
+        // Set up other buttons
+        this.setupButtons();
+
+        // Automatically display match history
+        this.displayMatches();
+    }
+
+    setupButtons() {
         new Button(
             this,
             200,
@@ -32,6 +43,8 @@ export default class Level2WinScene extends Phaser.Scene {
             },
             () => {
                 globals.level2Reset = true;
+                globals.level2Win = false;
+                globals.level2Lose = false;
                 this.cameras.main.fadeOut(300, 0, 0, 0);
                 this.cameras.main.on(
                     Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
@@ -42,7 +55,6 @@ export default class Level2WinScene extends Phaser.Scene {
             }
         );
 
-        // back to levels button
         new Button(
             this,
             375,
@@ -63,6 +75,40 @@ export default class Level2WinScene extends Phaser.Scene {
                 );
             }
         );
+    }
+
+    displayMatches() {
+        const savedState = localStorage.getItem("level2GameState");
+        if (savedState) {
+            const gameState = JSON.parse(savedState);
+            if (gameState.matchList) {
+                this.showMatchHistory(gameState.matchList);
+            } else {
+                console.log("No matches recorded.");
+            }
+        } else {
+            console.log("No game state saved.");
+        }
+    }
+
+    showMatchHistory(matches: string[]) {
+        // Clear existing match history texts
+        this.matchTextGroup.clear(true, true);
+
+        matches.forEach((match, index) => {
+            const yPos =
+                this.cameras.main.height - 20 * (matches.length - index); // Displays at the bottom
+            const matchText = this.add.text(
+                250,
+                yPos - 200,
+                `Match ${index + 1}: ${match}`,
+                {
+                    fontSize: "25px",
+                    color: "white",
+                }
+            );
+            this.matchTextGroup.add(matchText);
+        });
     }
 
     update() {}

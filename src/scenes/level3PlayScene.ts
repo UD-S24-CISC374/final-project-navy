@@ -52,6 +52,7 @@ export default class Level3PlayScene extends Phaser.Scene {
     private recentMatchText: Phaser.GameObjects.Text;
     private scoreText: Phaser.GameObjects.Text;
     private match: Phaser.Sound.BaseSound;
+    private matchList: string[] = [];
 
     private hasMoved: boolean = false; // Track if any movement has happened
     private turnCount: number = 20; // Track the number of turns
@@ -108,7 +109,7 @@ export default class Level3PlayScene extends Phaser.Scene {
                 this.cameras.main.on(
                     Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
                     () => {
-                        stopMusic("L1Song");
+                        stopMusic("L3Song");
                         playMusic(this, "MainSong");
                         this.scene.start("SelectScene");
                     }
@@ -176,6 +177,7 @@ export default class Level3PlayScene extends Phaser.Scene {
             this.score = gameState.score;
             this.recentMatch = gameState.recentMatch;
             this.turnCount = gameState.turnCount || 0;
+            this.matchList = gameState.matchList || [];
 
             this.scoreText.setText("Matches: " + this.score);
             this.recentMatchText.setText("Recent Match:\n" + this.recentMatch);
@@ -186,6 +188,7 @@ export default class Level3PlayScene extends Phaser.Scene {
             this.score = 0;
             this.recentMatch = "";
             this.turnCount = 20;
+            this.matchList = [];
 
             // Initialize text for score values
             this.scoreText.setText("Matches: " + this.score);
@@ -202,6 +205,7 @@ export default class Level3PlayScene extends Phaser.Scene {
             this.score = 0;
             this.recentMatch = "";
             this.turnCount = 20;
+            this.matchList = [];
 
             // Update text
             this.scoreText.setText("Matches: " + this.score);
@@ -392,6 +396,12 @@ export default class Level3PlayScene extends Phaser.Scene {
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // Check if level has ended yet (based off num moves & level requirements)
         //-----------------------------------------------------------------------------
+        if (globals.level1Win) {
+            this.scene.start("Level3WinScene");
+        } else if (globals.level1Lose) {
+            this.scene.start("Level3LoseScene");
+        }
+
         let matchReq = 3;
         if (this.turnCount >= 0 && this.score == matchReq) {
             stopMusic("L3Song");
@@ -407,7 +417,6 @@ export default class Level3PlayScene extends Phaser.Scene {
             //playMusic(this, "MainSong");
             globals.level3Lose = true;
             this.scene.start("Level3LoseScene");
-            this.resetGameState();
         }
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // Update previously pressed key state so it resets
@@ -457,6 +466,7 @@ export default class Level3PlayScene extends Phaser.Scene {
             score: this.score,
             recentMatch: this.recentMatch,
             turnCount: this.turnCount, // Save the turn count
+            matchList: this.matchList,
         };
         localStorage.setItem("level3GameState", JSON.stringify(gameState));
     }
@@ -468,6 +478,7 @@ export default class Level3PlayScene extends Phaser.Scene {
         this.score = 0;
         this.recentMatch = "";
         this.turnCount = 20;
+        this.matchList = [];
 
         // Update text
         this.scoreText.setText("Matches: " + this.score);
@@ -499,6 +510,7 @@ export default class Level3PlayScene extends Phaser.Scene {
                     (value) => this.matchOperators[value]
                 );
                 this.recentMatch = convertVals.join(" ");
+                this.matchList.push(this.recentMatch);
                 removeRow(
                     // Get rid of the row & add new blocks
                     row,
@@ -527,6 +539,7 @@ export default class Level3PlayScene extends Phaser.Scene {
                     (value) => this.matchOperators[value]
                 );
                 this.recentMatch = convertVals.join(" ");
+                this.matchList.push(this.recentMatch);
                 removeCol(
                     col,
                     numRows,

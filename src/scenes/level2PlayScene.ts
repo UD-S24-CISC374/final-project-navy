@@ -62,6 +62,7 @@ export default class Level2PlayScene extends Phaser.Scene {
     private recentMatchText: Phaser.GameObjects.Text;
     private scoreText: Phaser.GameObjects.Text;
     private match: Phaser.Sound.BaseSound;
+    private matchList: string[] = [];
 
     private hasMoved: boolean = false; // Track if any movement has happened
     private turnCount: number = 30; // Track the number of turns
@@ -220,6 +221,7 @@ export default class Level2PlayScene extends Phaser.Scene {
             this.score = gameState.score;
             this.recentMatch = gameState.recentMatch;
             this.turnCount = gameState.turnCount || 0;
+            this.matchList = gameState.matchList || [];
 
             this.scoreText.setText("Matches: " + this.score);
             this.recentMatchText.setText("Recent Match:\n" + this.recentMatch);
@@ -230,6 +232,7 @@ export default class Level2PlayScene extends Phaser.Scene {
             this.score = 0;
             this.recentMatch = "";
             this.turnCount = 30;
+            this.matchList = [];
             this.reqCounts = {
                 "=": 0,
                 "!, T": 0,
@@ -252,6 +255,7 @@ export default class Level2PlayScene extends Phaser.Scene {
             this.score = 0;
             this.recentMatch = "";
             this.turnCount = 30;
+            this.matchList = [];
             this.reqCounts = {
                 "=": 0,
                 "!, T": 0,
@@ -480,21 +484,22 @@ export default class Level2PlayScene extends Phaser.Scene {
             }
         }
 
+        if (globals.level2Win) {
+            this.scene.start("Level2WinScene");
+        } else if (globals.level2Lose) {
+            this.scene.start("Level2LoseScene");
+        }
+
         if (this.turnCount >= 0 && allReqMet) {
             stopMusic("L2Song");
-            // add new music here?
-            //playMusic(this, "MainSong");
             globals.level2Win = true;
             this.scene.start("Level2WinScene");
         }
 
         if (this.turnCount === 0 && !allReqMet) {
             stopMusic("L2Song");
-            // add new music here?
-            //playMusic(this, "MainSong");
             globals.level2Lose = true;
             this.scene.start("Level2LoseScene");
-            this.resetGameState();
         }
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // Update previously pressed key state so it resets
@@ -541,6 +546,7 @@ export default class Level2PlayScene extends Phaser.Scene {
             score: this.score,
             recentMatch: this.recentMatch,
             turnCount: this.turnCount, // Save the turn count
+            matchList: this.matchList,
         };
         localStorage.setItem("level2GameState", JSON.stringify(gameState));
     }
@@ -552,6 +558,7 @@ export default class Level2PlayScene extends Phaser.Scene {
         this.score = 0;
         this.recentMatch = "";
         this.turnCount = 30;
+        this.matchList = [];
         this.reqCounts = {
             "=": 0,
             "!, T": 0,
@@ -630,6 +637,7 @@ export default class Level2PlayScene extends Phaser.Scene {
                 }
 
                 this.recentMatch = convertVals.join(" ");
+                this.matchList.push(this.recentMatch);
                 removeRow(
                     // Get rid of the row & add new blocks
                     row,
@@ -698,6 +706,7 @@ export default class Level2PlayScene extends Phaser.Scene {
                 }
 
                 this.recentMatch = convertVals.join(" ");
+                this.matchList.push(this.recentMatch);
                 removeCol(
                     col,
                     numRows,
