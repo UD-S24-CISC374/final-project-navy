@@ -77,19 +77,20 @@ export default class P3PlayScene extends Phaser.Scene {
         // Adding in buttons players can click in the level
         //-----------------------------------------------------------------------------
         // Help button to toggle help display
-        new Button(
-            this,
-            550,
-            35,
-            "Help",
-            {
-                fontSize: "25px",
-                color: "white",
-            },
-            () => {
+        const button = this.add
+            .image(650, 50, "Help")
+            .setInteractive()
+            .on("pointerdown", () => {
                 toggleHelpDisplay(this, this.helpDisplay, this.helpContainer);
-            }
-        );
+            });
+
+        button.on("pointerover", () => {
+            button.setTint(0xaaaaaa); // Tint on hover
+        });
+
+        button.on("pointerout", () => {
+            button.clearTint(); // Clear tint on hover out
+        });
 
         // Back to levels button to return to level select screen
         new Button(
