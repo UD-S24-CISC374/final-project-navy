@@ -18,7 +18,7 @@ export default class HtpScene extends Phaser.Scene {
             "Back to Menu",
             {
                 fontSize: "25px",
-                color: "red",
+                color: "white",
             },
             () => {
                 this.cameras.main.fadeOut(300, 0, 0, 0);
