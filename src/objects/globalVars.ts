@@ -1,15 +1,15 @@
-let storyTriggered = false;
-let level1Reset = false;
-let level1Win = false;
-let level1Lose = false;
+let storyTriggered: boolean = false;
+let level1Reset: boolean = false;
+let level1Win: boolean = false;
+let level1Lose: boolean = false;
 
-let level2Reset = false;
-let level2Win = false;
-let level2Lose = false;
+let level2Reset: boolean = false;
+let level2Win: boolean = false;
+let level2Lose: boolean = false;
 
-let level3Reset = false;
-let level3Win = false;
-let level3Lose = false;
+let level3Reset: boolean = false;
+let level3Win: boolean = false;
+let level3Lose: boolean = false;
 
 // Define the function to display match history
 function displayMatchHistory(matchList: string[]) {

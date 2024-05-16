@@ -32,6 +32,8 @@ export default class Level1LoseScene extends Phaser.Scene {
             },
             () => {
                 globals.level1Reset = true;
+                globals.level1Win = false;
+                globals.level1Lose = false;
                 this.cameras.main.fadeOut(300, 0, 0, 0);
                 this.cameras.main.on(
                     Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,

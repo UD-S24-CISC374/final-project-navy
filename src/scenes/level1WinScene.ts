@@ -14,6 +14,7 @@ export default class Level1WinScene extends Phaser.Scene {
         this.add.image(400, 300, "Valley");
         this.win = this.sound.add("level-win", { loop: false });
         this.win.play();
+
         this.add.text(150, 100, "YAY you won Level 1", {
             fontSize: "20px",
             color: "black",
@@ -31,6 +32,8 @@ export default class Level1WinScene extends Phaser.Scene {
             },
             () => {
                 globals.level1Reset = true;
+                globals.level1Win = false;
+                globals.level1Lose = false;
                 this.cameras.main.fadeOut(300, 0, 0, 0);
                 this.cameras.main.on(
                     Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,

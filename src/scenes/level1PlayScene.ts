@@ -84,6 +84,7 @@ export default class Level1PlayScene extends Phaser.Scene {
     };
 
     create() {
+        console.log(globals.level1Win);
         this.add.image(400, 300, "Valley");
         this.cameras.main.fadeIn(300, 0, 0, 0);
         // Adding in audio and images into level
@@ -483,6 +484,11 @@ export default class Level1PlayScene extends Phaser.Scene {
                 textElement.setColor(requirementMet ? "green" : "red");
             }
         }
+        if (globals.level1Win) {
+            this.scene.start("Level1WinScene");
+        } else if (globals.level1Lose) {
+            this.scene.start("Level1LoseScene");
+        }
 
         if (this.turnCount >= 0 && allReqMet) {
             stopMusic("L1Song");
@@ -493,9 +499,7 @@ export default class Level1PlayScene extends Phaser.Scene {
         if (this.turnCount === 0 && !allReqMet) {
             stopMusic("L1Song");
             globals.level1Lose = true;
-
             this.scene.start("Level1LoseScene");
-            this.resetGameState();
         }
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // Update previously pressed key state so it resets
