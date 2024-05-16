@@ -35,6 +35,8 @@ Link to our [egdd](https://ud-s24-cisc374.github.io/final-project-navy/docs/egdd
 
 # Credits
 
+-   Frog vector image by kyafadhil808412, modified by Rana in Aseprite. <a href="https://www.vecteezy.com/free-vector/sign">Sign Vectors by Vecteezy</a>
+-   Background image by 16pxl, modified by Rana in Aseprite. <a href="https://8pxl.tumblr.com/post/712784334718894080/rest-now-youve-earned-it-available-as-a">Link to Image</a>
 -   "Bossa Antigua" Kevin MacLeod (incompetech.com)
     Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/
 -   "Funk Game Loop" Kevin MacLeod (incompetech.com)

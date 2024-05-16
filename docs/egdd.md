@@ -192,19 +192,23 @@ _You come across a group of friendly frogs and help them construct Boolean expre
 
 _Within the game, you meet a group of frogs preparing their pond for the annual frog festival. They have a bit of a problem though: one of the frogs got careless and messed up their lighting system. It's up to the player to go through each level and construct Boolean expressions to help fix the frogs' electrical system and light up the beautiful decorations before the annual frog festival begins_
 
-_Each frog is a different color and will interact with the player before each level to explain the new feature that is being implemented that round. The frog will offer a brief explanation of the new concept, after which the round will begin. If players feel like they need more guidance, they can refer to the help button in the level._
-
 _Here's the title screen of the game:_
 ![Title Screen](../assets/title-screen.png)
 
+Players will be greeted with an introductory story scene:
+![Story Screen](../assets/story-level.png)
+
 _This is the level select screen, where players can choose their round. Notice how the third level is locked because they haven't finished the second level yet:_
-![Level Select Screen](../assets/level-select.jpeg)
+![Level Select Screen](../assets/level-select.png)
 
 _Players can see a brief overview of what to expect before starting a level:_
-![Level Info Screen](../assets/level-info.jpeg)
+![Level Info Screen](../assets/level-info.png)
 
 _This is an example of how the board on the first level may look:_
 ![Level 1 Screen](../assets/level-start.png)
+
+Players can consult the help section for more information:
+![Level 1 Help](../assets/level-help.png)
 
 _This is an example of how the player can shift the value of a selected block:_
 ![Level 1 Normal Screen](../assets/new-row.jpeg)
@@ -219,8 +223,6 @@ _After completing a level, the following screen is shown:_
 _If a level is not successfully completed, here is the screen:_
 ![Level Incomplete Screen](../assets/level-incomplete.jpeg)
 
-_If players complete all the levels, they can see the ending where the decorations are successfully lit up and the frogs are celebrating the festival:_
-
 # Assets Needed
 
 ## Aethestics
@@ -229,34 +231,26 @@ _The aesthetics should be happy and cartoonish, with a light-hearted feel. The c
 
 ## Graphical
 
--   Characters List (Names have not been decided yet)
+-   Character List
 
-    -   Introductory Frog: Has a greenish design, happy face for use when first meeting the player, sad when talking about the lighting problem for the festival
+    -   Introductory Frog: Blurbus, has a bluish design, happy face for use when first meeting the player, may add in sad face when talking about the lighting problem for the festival
 
-    -   Level 1 Frog: Same as introductory frog, happy face
-
-    -   Level 2 Frog: Purplish design, same faces as Level 1 Frog
-
-    -   Level 3 Frog: Reddish design, same faces as Level 1 Frog
-
-    -   Additional Frogs: May be included into practice levels or as background
+    -   Additional Frogs: May be included to preface levels and offer explanations of new topics
 
 -   Textures:
 
     -   _Pixel art/16 bit style_
     -   Grassy/foresty texture, brown themes for UI elements (Ex. level select, game board, etc.)
-        ![Level 1 Screen](../assets/select-screen.png)
         ![Practice Info Screen](../assets/PInfo.png)
 
 -   Environment Art/Textures:
 
-    -   Main Menu/Level Select Scene: The background is a colorful pond during the day, with lily pads/flowers
+    -   Main Menu/Level Scenes: The background is a colorful forest during the day, with trees & flowers
 
-    -   Level Scene: The background for the levels follow the pond theme
+    Assets:
 
-    Inspirations:
-    ![Frog design](../assets/frog.jpeg)
-    ![Background design](../assets/pond.png)
+    ![Frog design](../assets/Blurbus.png)
+    ![Background design](../assets/valley.png)
 
 ## Audio
 
@@ -268,8 +262,7 @@ _The aesthetics should be happy and cartoonish, with a light-hearted feel. The c
     -   Level & Practice 2: "Miami Viceroy" Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/
     -   Level & Practice 3: "ZigZag" Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/
 -   Sound List (SFX)
-    -   Making a match: _The row/column explodes, perhaps making sounds similar to the ones [in this video](https://www.youtube.com/watch?v=EA4h8l2zZ1g&ab_channel=CreatorAssets)_
-    -   Fulfilling a criterion: A small "ding" sound like [this one](https://www.youtube.com/watch?v=KsDg-ggEOvk&ab_channel=FreeGamingSoundEffects)
+    -   Making a match: A small "ding" sound like [this one](https://www.youtube.com/watch?v=KsDg-ggEOvk&ab_channel=FreeGamingSoundEffects)
     -   Few moves left: _Players can be warned of having few moves left with a small sound [like this one](https://www.youtube.com/watch?v=zR2m4NvohJQ&ab_channel=POGW)_
     -   Completing a level: _When successful, players hear [this small sound](https://www.youtube.com/watch?v=AFYWsbUSasw&ab_channel=SFXWARD) and the end screen of a completed level appears_
     -   Level incomplete: _When unsuccessful, players hear [this small sound](https://www.youtube.com/watch?v=7jSUfGcXkDc&ab_channel=SOUNDEffectsPublicDomain) and the end screen of an incomplete level appears_

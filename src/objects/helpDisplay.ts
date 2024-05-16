@@ -22,35 +22,35 @@ export function createHelpDisplay(scene: Phaser.Scene) {
     helpText.setWordWrapWidth(260).setLineSpacing(5);
     //this.helpContainer.setInteractive(); // Enable input for scrolling
 
-    // Add background color to the container for visualization
+    // Add background to the container for visualization
     const containerBackground = scene.add.graphics();
-    helpContainer.add(
-        new Button(
-            scene,
-            200,
-            0,
-            "Back",
-            {
-                fontSize: "15px",
-                color: "red",
-            },
-            () => {}
-        )
-    );
-    helpContainer.add(
-        new Button(
-            scene,
-            250,
-            0,
-            "Next",
-            {
-                fontSize: "15px",
-                color: "red",
-            },
-            () => {}
-        )
-    );
-    containerBackground.fillStyle(0x00ff00, 0.5); // Green color with 50% opacity
+    // For when more information needs to be added
+    // helpContainer.add(
+    //     new Button(
+    //         scene,
+    //         200,
+    //         0,
+    //         "Back",
+    //         {
+    //             fontSize: "15px",
+    //             color: "red",
+    //         },
+    //         () => {}
+    //     )
+    // );
+    // helpContainer.add(
+    //     new Button(
+    //         scene,
+    //         250,
+    //         0,
+    //         "Next",
+    //         {
+    //             fontSize: "15px",
+    //             color: "red",
+    //         },
+    //         () => {}
+    //     )
+    // );
     containerBackground.fillRect(15, 30, 265, 450); // Adjust size as needed
     helpContainer.add(containerBackground); // Add background to the container
     helpContainer.setDepth(2); // Set depth to overlay other elements
