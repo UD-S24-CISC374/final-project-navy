@@ -116,7 +116,7 @@ export default class Level1PlayScene extends Phaser.Scene {
             "Help",
             {
                 fontSize: "25px",
-                color: "red",
+                color: "white",
             },
             () => {
                 toggleHelpDisplay(this, this.helpDisplay, this.helpContainer);
@@ -131,7 +131,7 @@ export default class Level1PlayScene extends Phaser.Scene {
             "Back to Levels",
             {
                 fontSize: "25px",
-                color: "red",
+                color: "white",
             },
             () => {
                 this.saveGameState(); // Save state before leaving
@@ -155,7 +155,7 @@ export default class Level1PlayScene extends Phaser.Scene {
             "Reset",
             {
                 fontSize: "25px",
-                color: "red",
+                color: "white",
             },
             () => {
                 this.resetGameState();

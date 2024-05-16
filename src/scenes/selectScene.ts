@@ -20,7 +20,7 @@ export default class SelectScene extends Phaser.Scene {
             "Tutorial",
             {
                 fontSize: "25px",
-                color: "red",
+                color: "white",
             },
             () => {
                 this.cameras.main.fadeOut(500, 0, 0, 0);
@@ -43,7 +43,7 @@ export default class SelectScene extends Phaser.Scene {
             "Main Menu",
             {
                 fontSize: "25px",
-                color: "red",
+                color: "white",
             },
             () => {
                 this.cameras.main.fadeOut(300, 0, 0, 0);

@@ -20,7 +20,7 @@ export default class Level3InfoScene extends Phaser.Scene {
             .setOrigin(0.5, 0.5)
             .setLineSpacing(5);
 
-        this.add.rectangle(400, 250, 32, 32, 33333, 0.5);
+        this.add.image(400, 250, "L3Blocks");
         this.add
             .text(400, 290, "Level requirements", {
                 fontSize: "25px",
@@ -65,7 +65,7 @@ export default class Level3InfoScene extends Phaser.Scene {
             "Back to Levels",
             {
                 fontSize: "25px",
-                color: "red",
+                color: "white",
             },
             () => {
                 this.cameras.main.fadeOut(300, 0, 0, 0);
