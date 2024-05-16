@@ -87,19 +87,19 @@ export default class P1PlayScene extends Phaser.Scene {
         // Adding in buttons players can click in the level
         //-----------------------------------------------------------------------------
         // Help button to toggle help display
-        const button = this.add
-            .image(650, 50, "Help")
+        const helpButton = this.add
+            .image(675, 50, "Help")
             .setInteractive()
             .on("pointerdown", () => {
                 toggleHelpDisplay(this, this.helpDisplay, this.helpContainer);
             });
 
-        button.on("pointerover", () => {
-            button.setTint(0xaaaaaa); // Tint on hover
+        helpButton.on("pointerover", () => {
+            helpButton.setTint(0xaaaaaa); // Tint on hover
         });
 
-        button.on("pointerout", () => {
-            button.clearTint(); // Clear tint on hover out
+        helpButton.on("pointerout", () => {
+            helpButton.clearTint(); // Clear tint on hover out
         });
 
         // Back to levels button to return to level select screen
@@ -127,19 +127,20 @@ export default class P1PlayScene extends Phaser.Scene {
         );
 
         // Reset button to get new gameboard and reset progress
-        new Button(
-            this,
-            675,
-            35,
-            "Reset",
-            {
-                fontSize: "25px",
-                color: "white",
-            },
-            () => {
+        const resetButton = this.add
+            .image(740, 50, "Restart")
+            .setInteractive()
+            .on("pointerdown", () => {
                 this.resetGameState();
-            }
-        );
+            });
+
+        resetButton.on("pointerover", () => {
+            resetButton.setTint(0xaaaaaa); // Tint on hover
+        });
+
+        resetButton.on("pointerout", () => {
+            resetButton.clearTint(); // Clear tint on hover out
+        });
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // Create text displaying level, score, recent match
         //-----------------------------------------------------------------------------
