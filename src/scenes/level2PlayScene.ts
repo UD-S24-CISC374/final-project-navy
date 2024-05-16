@@ -125,28 +125,29 @@ export default class Level2PlayScene extends Phaser.Scene {
         });
 
         // Back to levels button to return to level select screen
-        new Button(
-            this,
-            50,
-            35,
-            "Back to Levels",
-            {
-                fontSize: "25px",
-                color: "white",
-            },
-            () => {
+        const homeButton = this.add
+            .image(60, 50, "Home")
+            .setInteractive()
+            .on("pointerdown", () => {
                 this.saveGameState(); // Save state before leaving
                 this.cameras.main.fadeOut(300, 0, 0, 0);
                 this.cameras.main.on(
                     Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
                     () => {
-                        stopMusic("L2Song");
+                        stopMusic("L1Song");
                         playMusic(this, "MainSong");
                         this.scene.start("SelectScene");
                     }
                 );
-            }
-        );
+            });
+
+        homeButton.on("pointerover", () => {
+            homeButton.setTint(0xaaaaaa); // Tint on hover
+        });
+
+        homeButton.on("pointerout", () => {
+            homeButton.clearTint(); // Clear tint on hover out
+        });
 
         // Reset button to get new gameboard and reset progress
         const resetButton = this.add
