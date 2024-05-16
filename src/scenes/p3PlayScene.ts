@@ -139,16 +139,16 @@ export default class P3PlayScene extends Phaser.Scene {
 
         this.scoreText = this.add.text(50, 100, "Matches: " + this.score, {
             fontSize: "25px",
-            color: "black",
+            color: "white",
         });
 
         this.recentMatchText = this.add.text(
             50,
             130,
-            "Most Recent Match: " + this.recentMatch,
+            "Recent Match:\n" + this.recentMatch,
             {
                 fontSize: "25px",
-                color: "black",
+                color: "white",
             }
         );
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -357,7 +357,7 @@ export default class P3PlayScene extends Phaser.Scene {
 
         // Update text
         this.scoreText.setText("Matches: " + this.score);
-        this.recentMatchText.setText("Most Recent Match: " + this.recentMatch);
+        this.recentMatchText.setText("Recent Match:\n" + this.recentMatch);
 
         this.tilesGroup.getChildren().forEach((tile, index) => {
             const tileType = this.board[Math.floor(index / 9)][index % 9];
@@ -392,7 +392,7 @@ export default class P3PlayScene extends Phaser.Scene {
                 // Modify text values to display changes
                 this.scoreText.setText("Matches: " + this.score);
                 this.recentMatchText.setText(
-                    "Most Recent Match: " + this.recentMatch
+                    "Recent Match:\n" + this.recentMatch
                 );
                 // Play sound when a match is made
                 this.match.play();
@@ -419,7 +419,7 @@ export default class P3PlayScene extends Phaser.Scene {
                 this.score += 1;
                 this.scoreText.setText("Matches: " + this.score);
                 this.recentMatchText.setText(
-                    "Most Recent Match: " + this.recentMatch
+                    "Recent Match:\n" + this.recentMatch
                 );
                 this.match.play();
             }

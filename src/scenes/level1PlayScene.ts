@@ -171,32 +171,32 @@ export default class Level1PlayScene extends Phaser.Scene {
 
         this.scoreText = this.add.text(50, 90, "Matches: " + this.score, {
             fontSize: "25px",
-            color: "black",
+            color: "white",
         });
 
         this.recentMatchText = this.add.text(
             50,
             120,
-            "Most Recent Match: " + this.recentMatch,
+            "Recent Match:\n" + this.recentMatch,
             {
                 fontSize: "25px",
-                color: "black",
+                color: "white",
             }
         );
 
         this.turnText = this.add.text(
             50,
-            150,
+            175,
             "Turns: " + (this.turnCount || 0),
             {
                 fontSize: "25px",
-                color: "black",
+                color: "white",
             }
         );
 
-        this.add.text(50, 250, "Matches Containing:", {
+        this.add.text(50, 250, "Requirements:", {
             fontSize: "20px",
-            color: "black",
+            color: "white",
         });
         let yPos = 280;
         for (const type in this.reqCounts) {
@@ -224,9 +224,7 @@ export default class Level1PlayScene extends Phaser.Scene {
             this.matchList = gameState.matchList || [];
 
             this.scoreText.setText("Matches: " + this.score);
-            this.recentMatchText.setText(
-                "Most Recent Match: " + this.recentMatch
-            );
+            this.recentMatchText.setText("Recent Match:\n" + this.recentMatch);
             this.turnText.setText("Turns: " + this.turnCount);
         } else {
             // If players are playing game for first time, initialize values
@@ -244,9 +242,7 @@ export default class Level1PlayScene extends Phaser.Scene {
 
             // Initialize text for score values
             this.scoreText.setText("Matches: " + this.score);
-            this.recentMatchText.setText(
-                "Most Recent Match: " + this.recentMatch
-            );
+            this.recentMatchText.setText("Recent Match:\n" + this.recentMatch);
             this.turnText.setText("Turns: " + this.turnCount);
             this.saveGameState();
         }
@@ -269,9 +265,7 @@ export default class Level1PlayScene extends Phaser.Scene {
 
             // Update text elements
             this.scoreText.setText("Matches: " + this.score);
-            this.recentMatchText.setText(
-                "Most Recent Match: " + this.recentMatch
-            );
+            this.recentMatchText.setText("Recent Match:\n" + this.recentMatch);
             this.turnText.setText("Turns: " + this.turnCount);
             globals.level1Lose = false;
             this.saveGameState();
@@ -570,7 +564,7 @@ export default class Level1PlayScene extends Phaser.Scene {
 
         // Update text
         this.scoreText.setText("Matches: " + this.score);
-        this.recentMatchText.setText("Most Recent Match: " + this.recentMatch);
+        this.recentMatchText.setText("Recent Match:\n" + this.recentMatch);
         this.turnText.setText("Turns: " + this.turnCount);
 
         // Set the tiles to have new values
@@ -631,7 +625,7 @@ export default class Level1PlayScene extends Phaser.Scene {
                 // Modify text values to display changes
                 this.scoreText.setText("Matches: " + this.score);
                 this.recentMatchText.setText(
-                    "Most Recent Match: " + this.recentMatch
+                    "Recent Match:\n" + this.recentMatch
                 );
                 // Play sound when a match is made
                 this.match.play();
@@ -677,7 +671,7 @@ export default class Level1PlayScene extends Phaser.Scene {
                 // Modify text values to display changes
                 this.scoreText.setText("Matches: " + this.score);
                 this.recentMatchText.setText(
-                    "Most Recent Match: " + this.recentMatch
+                    "Recent Match:\n" + this.recentMatch
                 );
                 // Play sound when a match is made
                 this.match.play();
