@@ -1,5 +1,4 @@
 import Phaser from "phaser";
-import { Button } from "../objects/button";
 
 export default class HtpScene extends Phaser.Scene {
     constructor() {
@@ -11,16 +10,10 @@ export default class HtpScene extends Phaser.Scene {
         this.add.image(400, 300, "Valley");
         this.add.image(400, 300, "ControlsBg");
 
-        new Button(
-            this,
-            50,
-            35,
-            "Back to Menu",
-            {
-                fontSize: "25px",
-                color: "white",
-            },
-            () => {
+        const homeButton = this.add
+            .image(60, 50, "Home")
+            .setInteractive()
+            .on("pointerdown", () => {
                 this.cameras.main.fadeOut(300, 0, 0, 0);
                 this.cameras.main.on(
                     Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
@@ -28,8 +21,15 @@ export default class HtpScene extends Phaser.Scene {
                         this.scene.start("MainScene");
                     }
                 );
-            }
-        );
+            });
+
+        homeButton.on("pointerover", () => {
+            homeButton.setTint(0xaaaaaa); // Tint on hover
+        });
+
+        homeButton.on("pointerout", () => {
+            homeButton.clearTint(); // Clear tint on hover out
+        });
 
         this.add
             .text(190, 170, "WASD Keys", {

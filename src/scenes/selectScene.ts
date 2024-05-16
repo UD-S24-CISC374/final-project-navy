@@ -36,16 +36,10 @@ export default class SelectScene extends Phaser.Scene {
         );
 
         // main menu button
-        new Button(
-            this,
-            60,
-            35,
-            "Main Menu",
-            {
-                fontSize: "25px",
-                color: "white",
-            },
-            () => {
+        const homeButton = this.add
+            .image(60, 50, "Home")
+            .setInteractive()
+            .on("pointerdown", () => {
                 this.cameras.main.fadeOut(300, 0, 0, 0);
                 this.cameras.main.on(
                     Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
@@ -53,8 +47,15 @@ export default class SelectScene extends Phaser.Scene {
                         this.scene.start("MainScene");
                     }
                 );
-            }
-        );
+            });
+
+        homeButton.on("pointerover", () => {
+            homeButton.setTint(0xaaaaaa); // Tint on hover
+        });
+
+        homeButton.on("pointerout", () => {
+            homeButton.clearTint(); // Clear tint on hover out
+        });
 
         const levelButtons = [
             "L1Button",
@@ -84,7 +85,13 @@ export default class SelectScene extends Phaser.Scene {
                 .image(x, y, levelButtons[index])
                 .setInteractive()
                 .on("pointerdown", () => {
-                    this.scene.start(level.sceneKey);
+                    this.cameras.main.fadeOut(300, 0, 0, 0);
+                    this.cameras.main.on(
+                        Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
+                        () => {
+                            this.scene.start(level.sceneKey);
+                        }
+                    );
                     // Will add after locked levels is implemented
                     // if (!level.locked) {
                     //     this.scene.start(level.sceneKey);
