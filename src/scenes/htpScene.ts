@@ -8,6 +8,7 @@ export default class HtpScene extends Phaser.Scene {
 
     create() {
         this.cameras.main.fadeIn(300, 0, 0, 0);
+        this.add.image(400, 300, "Valley");
         this.add.text(300, 100, "How to Play", {
             fontSize: "32px",
             color: "black",

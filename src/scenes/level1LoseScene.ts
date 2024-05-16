@@ -11,6 +11,7 @@ export default class Level1LoseScene extends Phaser.Scene {
     private loss: Phaser.Sound.BaseSound;
 
     create() {
+        this.add.image(400, 300, "Valley");
         this.loss = this.sound.add("level-lost", { loop: false });
         this.loss.play();
 

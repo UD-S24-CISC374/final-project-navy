@@ -49,6 +49,9 @@ export default class PreloadScene extends Phaser.Scene {
         this.load.image("P3BLock", "assets/P3ButtonLock.png");
         this.load.image("P3BUnlock", "assets/P3ButtonUnlock.png");
 
+        this.load.image("Blurbus", "assets/Blurbus.png");
+        this.load.image("Valley", "assets/valley.png");
+
         this.load.audio("MainSong", ["assets/Vibing-Over-Venus.mp3"]);
         this.load.audio("L1Song", ["assets/Thief-in-the-Night.mp3"]);
         this.load.audio("L2Song", ["assets/Miami-Viceroy.mp3"]);

@@ -64,6 +64,7 @@ export default class TutScene extends Phaser.Scene {
     }
 
     create() {
+        this.add.image(400, 300, "Valley");
         this.cameras.main.fadeIn(500, 0, 0, 0);
         this.add.text(300, 100, "Tutorial", {
             fontSize: "32px",

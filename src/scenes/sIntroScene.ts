@@ -17,15 +17,13 @@ export default class SIntroScene extends Phaser.Scene {
 
     create() {
         this.cameras.main.fadeIn(500, 0, 0, 0);
+        this.add.image(400, 300, "Valley");
 
         // stopMusic("MainSong");
         // playMusic(this, "IntroSong");
         //this.sound.pauseOnBlur = false;
 
-        this.add.text(300, 100, "Intro Scene", {
-            fontSize: "32px",
-            color: "black",
-        });
+        this.add.image(400, 350, "Blurbus");
 
         new Button(
             this,

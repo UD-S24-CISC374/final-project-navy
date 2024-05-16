@@ -7,6 +7,7 @@ export default class Level1InfoScene extends Phaser.Scene {
     }
 
     create() {
+        this.add.image(400, 300, "Valley");
         this.add.image(400, 280, "L1Info");
         this.add
             .text(400, 160, "Level Information", {

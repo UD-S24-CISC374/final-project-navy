@@ -85,6 +85,7 @@ export default class Level2PlayScene extends Phaser.Scene {
 
     create() {
         this.cameras.main.fadeIn(300, 0, 0, 0);
+        this.add.image(400, 300, "Valley");
         // Adding in audio and images into level
         //-----------------------------------------------------------------------------
         // Change music at beginning of level

@@ -59,6 +59,7 @@ export default class Level3PlayScene extends Phaser.Scene {
     private turnText: Phaser.GameObjects.Text;
 
     create() {
+        this.add.image(400, 300, "Valley");
         this.cameras.main.fadeIn(300, 0, 0, 0);
         // Adding in audio and images into level
         //-----------------------------------------------------------------------------

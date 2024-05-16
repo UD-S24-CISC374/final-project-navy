@@ -51,6 +51,7 @@ export default class P2PlayScene extends Phaser.Scene {
     private match: Phaser.Sound.BaseSound;
 
     create() {
+        this.add.image(400, 300, "Valley");
         this.cameras.main.fadeIn(300, 0, 0, 0);
         // Adding in audio and images into level
         //-----------------------------------------------------------------------------
