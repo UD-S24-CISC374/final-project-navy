@@ -9,10 +9,7 @@ export default class HtpScene extends Phaser.Scene {
     create() {
         this.cameras.main.fadeIn(300, 0, 0, 0);
         this.add.image(400, 300, "Valley");
-        this.add.text(300, 100, "How to Play", {
-            fontSize: "32px",
-            color: "black",
-        });
+        this.add.image(400, 300, "ControlsBg");
 
         new Button(
             this,
@@ -34,15 +31,30 @@ export default class HtpScene extends Phaser.Scene {
             }
         );
 
-        this.add.text(
-            150,
-            200,
-            "WASD Keys\nW - Move up\nS - Move down\nA - Move left\nD - Move right\n\nArrow Keys\n↑ - Shift blocks in column up\n↓ - Shift blocks in column down\n← - Shift blocks in row left\n→ - Shift blocks in row right",
-            {
+        this.add
+            .text(190, 170, "WASD Keys", {
                 fontSize: "25px",
-                color: "black",
-            }
-        );
+                color: "white",
+            })
+            .setLineSpacing(3);
+        this.add
+            .text(
+                210,
+                205,
+                "W - Move up\nS - Move down\nA - Move left\nD - Move right\n\n\n\n↑ - Shift blocks in column up\n↓ - Shift blocks in column down\n← - Shift blocks in row left\n→ - Shift blocks in row right",
+                {
+                    fontSize: "20px",
+                    color: "white",
+                }
+            )
+            .setLineSpacing(3);
+
+        this.add
+            .text(190, 335, "Arrow Keys", {
+                fontSize: "25px",
+                color: "white",
+            })
+            .setLineSpacing(3);
     }
 
     update() {}
