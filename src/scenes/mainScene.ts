@@ -12,17 +12,9 @@ export default class MainScene extends Phaser.Scene {
     create() {
         this.cameras.main.fadeIn(300, 0, 0, 0);
         this.add.image(400, 300, "Valley");
-        this.add.text(250, 180, "Boolean Bonanza", {
-            fontSize: "32px",
-            color: "black",
-        });
+        this.add.image(400, 170, "Title");
 
         //Possible reference for some features: https://www.youtube.com/watch?v=OS7neDUUhPE&ab_channel=jestarray
-
-        //Pointerover useful for when implementing hover effects, pointerout is for when it's not hovering on it
-
-        //NOTE: Considering using level 1 state to determine if intro scene should appear
-        //const savedState = localStorage.getItem("level1GameState");
 
         // start button
         new Button(

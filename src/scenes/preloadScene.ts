@@ -50,6 +50,7 @@ export default class PreloadScene extends Phaser.Scene {
         this.load.image("L2Title", "assets/L2Title.png");
         this.load.image("L3Title", "assets/L3Title.png");
         this.load.image("PTitle", "assets/PTitle.png");
+        this.load.image("Title", "assets/Title.png");
 
         this.load.image("L1Button", "assets/L1Button.png");
         this.load.image("L2BLock", "assets/L2ButtonLock.png");
