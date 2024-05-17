@@ -86,16 +86,16 @@ export default class Level3PlayScene extends Phaser.Scene {
     private reqText: { [key: string]: Phaser.GameObjects.Text } = {};
 
     private matchReq: { [key: string]: number } = {
-        "()": 7,
-        "!, T, F": 7,
-        "(all)": 7,
-        "no |": 5,
+        "()": 5,
+        "!, T, F": 5,
+        "no &": 3,
+        "no |": 3,
     };
 
     private reqCounts: { [key: string]: number } = {
         "()": 0,
         "!, T, F": 0,
-        "(all)": 0,
+        "no &": 0,
         "no |": 0,
     };
 
@@ -279,7 +279,7 @@ export default class Level3PlayScene extends Phaser.Scene {
             this.reqCounts = {
                 "()": 0,
                 "!, T, F": 0,
-                "(all)": 0,
+                "no &": 0,
                 "no |": 0,
             };
 
@@ -302,7 +302,7 @@ export default class Level3PlayScene extends Phaser.Scene {
             this.reqCounts = {
                 "()": 0,
                 "!, T, F": 0,
-                "(all)": 0,
+                "no &": 0,
                 "no |": 0,
             };
 
@@ -640,7 +640,7 @@ export default class Level3PlayScene extends Phaser.Scene {
         this.reqCounts = {
             "()": 0,
             "!, T, F": 0,
-            "(all)": 0,
+            "no &": 0,
             "no |": 0,
         };
 
@@ -679,7 +679,6 @@ export default class Level3PlayScene extends Phaser.Scene {
                 let foundNot: boolean = false;
                 let foundOr: boolean = false;
                 let foundAnd: boolean = false;
-                let foundEquals: boolean = false;
                 let foundLParen: boolean = false;
                 let foundRParen: boolean = false;
                 convertVals.forEach((value) => {
@@ -693,8 +692,6 @@ export default class Level3PlayScene extends Phaser.Scene {
                         foundOr = true;
                     } else if (value === "&") {
                         foundAnd = true;
-                    } else if (value === "=") {
-                        foundEquals = true;
                     } else if (value === "(") {
                         foundLParen = true;
                     } else if (value === ")") {
@@ -714,26 +711,9 @@ export default class Level3PlayScene extends Phaser.Scene {
                 }
 
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                if (
-                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                    foundT &&
-                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                    foundF &&
-                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                    foundNot &&
-                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                    foundOr &&
-                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                    foundAnd &&
-                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                    foundEquals &&
-                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                    foundLParen &&
-                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                    foundRParen
-                ) {
-                    this.reqCounts["(all)"]++;
-                    console.log("Incremented all tiles");
+                if (!foundAnd) {
+                    this.reqCounts["no &"]++;
+                    console.log("Incremented No And");
                 }
 
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition

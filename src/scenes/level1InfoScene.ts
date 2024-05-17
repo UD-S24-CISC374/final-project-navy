@@ -32,7 +32,7 @@ export default class Level1InfoScene extends Phaser.Scene {
             .text(
                 400,
                 370,
-                "Matches containing:\n5 & blocks\n5 | blocks\n4 T and F blocks\n2 ! blocks"
+                "Matches containing:\n5 -> & blocks\n5 -> | blocks\n4 -> T and F blocks\n2 -> ! blocks"
             )
             .setOrigin(0.5, 0.5)
             .setLineSpacing(5);
