@@ -93,7 +93,7 @@ export default class P3PlayScene extends Phaser.Scene {
         //-----------------------------------------------------------------------------
         // control button to toggle control display
         const controlButton = this.add
-            .image(610, 50, "Help")
+            .image(610, 50, "ControlsIcon")
             .setInteractive()
             .on("pointerdown", () => {
                 toggleControlDisplay(

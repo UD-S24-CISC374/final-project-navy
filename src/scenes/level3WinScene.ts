@@ -8,18 +8,32 @@ export default class Level3WinScene extends Phaser.Scene {
     constructor() {
         super({ key: "Level3WinScene" });
     }
-    private loss: Phaser.Sound.BaseSound;
+    private win: Phaser.Sound.BaseSound;
     private matchTextGroup: Phaser.GameObjects.Group;
 
     create() {
         this.add.image(400, 300, "Valley");
-        this.loss = this.sound.add("level-lost", { loop: false });
-        this.loss.play();
-
-        this.add.text(150, 100, "Yayyyyy you won Level 3", {
-            fontSize: "20px",
-            color: "black",
-        });
+        this.add.image(400, 280, "Win");
+        this.add
+            .text(
+                400,
+                175,
+                "Congratulations! You have officially completed all levels!",
+                {
+                    fontSize: "15px",
+                    color: "white",
+                }
+            )
+            .setOrigin(0.5, 0.5)
+            .setWordWrapWidth(280);
+        this.add
+            .text(400, 220, "Matches Made:", {
+                fontSize: "25px",
+                color: "white",
+            })
+            .setOrigin(0.5, 0.5);
+        this.win = this.sound.add("level-win", { loop: false });
+        this.win.play();
 
         // Initialize the group for match text
         this.matchTextGroup = this.add.group();
@@ -32,16 +46,10 @@ export default class Level3WinScene extends Phaser.Scene {
     }
 
     setupButtons() {
-        new Button(
-            this,
-            200,
-            150,
-            "Restart",
-            {
-                fontSize: "25px",
-                color: "red",
-            },
-            () => {
+        const resetButton = this.add
+            .image(360, 475, "Restart")
+            .setInteractive()
+            .on("pointerdown", () => {
                 globals.level3Reset = true;
                 globals.level3Win = false;
                 globals.level3Lose = false;
@@ -52,19 +60,20 @@ export default class Level3WinScene extends Phaser.Scene {
                         this.scene.start("Level3PlayScene");
                     }
                 );
-            }
-        );
+            });
 
-        new Button(
-            this,
-            375,
-            150,
-            "Back to Levels",
-            {
-                fontSize: "25px",
-                color: "red",
-            },
-            () => {
+        resetButton.on("pointerover", () => {
+            resetButton.setTint(0xaaaaaa); // Tint on hover
+        });
+
+        resetButton.on("pointerout", () => {
+            resetButton.clearTint(); // Clear tint on hover out
+        });
+
+        const homeButton = this.add
+            .image(435, 475, "Home")
+            .setInteractive()
+            .on("pointerdown", () => {
                 this.cameras.main.fadeOut(300, 0, 0, 0);
                 this.cameras.main.on(
                     Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
@@ -73,8 +82,15 @@ export default class Level3WinScene extends Phaser.Scene {
                         playMusic(this, "MainSong");
                     }
                 );
-            }
-        );
+            });
+
+        homeButton.on("pointerover", () => {
+            homeButton.setTint(0xaaaaaa); // Tint on hover
+        });
+
+        homeButton.on("pointerout", () => {
+            homeButton.clearTint(); // Clear tint on hover out
+        });
     }
 
     displayMatches() {
@@ -98,15 +114,13 @@ export default class Level3WinScene extends Phaser.Scene {
         matches.forEach((match, index) => {
             const yPos =
                 this.cameras.main.height - 20 * (matches.length - index); // Displays at the bottom
-            const matchText = this.add.text(
-                200,
-                yPos - 200,
-                `Match ${index + 1}: ${match}`,
-                {
-                    fontSize: "25px",
+            const matchText = this.add
+                .text(400, yPos - 200, `${match}`, {
+                    fontSize: "15px",
                     color: "white",
-                }
-            );
+                })
+                .setOrigin(0.5, 0.5)
+                .setLineSpacing(3);
             this.matchTextGroup.add(matchText);
         });
     }

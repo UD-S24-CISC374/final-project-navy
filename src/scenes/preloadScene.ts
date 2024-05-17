@@ -29,6 +29,7 @@ export default class PreloadScene extends Phaser.Scene {
         this.load.image("HelpBox", "assets/HelpBox.png");
         this.load.image("Help", "assets/Help.png");
         this.load.image("Restart", "assets/Restart.png");
+        this.load.image("ControlsIcon", "assets/ControlsIcon.png");
         this.load.image("Home", "assets/Home.png");
         this.load.image("ReqBg", "assets/reqBg.png");
         this.load.image("Controls", "assets/ControlsButton.png");
@@ -48,6 +49,9 @@ export default class PreloadScene extends Phaser.Scene {
         this.load.image("L2Info", "assets/L2Info.png");
         this.load.image("L3Info", "assets/L3Info.png");
         this.load.image("PInfo", "assets/PInfo.png");
+
+        this.load.image("Win", "assets/Win.png");
+        this.load.image("Lose", "assets/Lose.png");
 
         this.load.image("L1Blocks", "assets/L1Blocks.png");
         this.load.image("L2Blocks", "assets/L2Blocks.png");
