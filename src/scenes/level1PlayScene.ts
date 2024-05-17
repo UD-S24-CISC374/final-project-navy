@@ -11,6 +11,7 @@ import {
     createControlDisplay,
     toggleControlDisplay,
 } from "../objects/controlsDisplay";
+import { createArrowAnimation } from "../objects/arrowAnimation";
 
 const globals = require("../objects/globalVars");
 
@@ -63,11 +64,11 @@ export default class Level1PlayScene extends Phaser.Scene {
     private rowSelector: Phaser.GameObjects.Image;
     private colSelector: Phaser.GameObjects.Image;
 
-    private arrows: { [key: string]: Phaser.GameObjects.Image | null } = {
-        up: null,
-        down: null,
-        left: null,
-        right: null,
+    private arrows: { [key: string]: Phaser.GameObjects.Image[] } = {
+        up: [],
+        down: [],
+        left: [],
+        right: [],
     };
 
     private tileTypes: string[];
@@ -388,6 +389,14 @@ export default class Level1PlayScene extends Phaser.Scene {
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
             );
+            createArrowAnimation(
+                this,
+                this.arrows,
+                525,
+                this.selectedTile.y,
+                270,
+                "right"
+            );
             this.hasMoved = true;
             this.evaluateRowsAndColumns(5, 5); // Check if there's a match
             this.saveGameState(); // Same game state after each block shift
@@ -401,6 +410,14 @@ export default class Level1PlayScene extends Phaser.Scene {
                 this.board,
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
+            );
+            createArrowAnimation(
+                this,
+                this.arrows,
+                275,
+                this.selectedTile.y,
+                270,
+                "left"
             );
             this.hasMoved = true;
             this.evaluateRowsAndColumns(5, 5);
@@ -416,6 +433,14 @@ export default class Level1PlayScene extends Phaser.Scene {
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
             );
+            createArrowAnimation(
+                this,
+                this.arrows,
+                this.selectedTile.x,
+                425,
+                270,
+                "down"
+            );
             this.hasMoved = true;
             this.evaluateRowsAndColumns(5, 5);
             this.saveGameState();
@@ -430,11 +455,17 @@ export default class Level1PlayScene extends Phaser.Scene {
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
             );
+            createArrowAnimation(
+                this,
+                this.arrows,
+                this.selectedTile.x,
+                180,
+                270,
+                "up"
+            );
             this.hasMoved = true;
             this.evaluateRowsAndColumns(5, 5);
             this.saveGameState();
-            this.createArrowAnimation(this.selectedTile.x, 180, "up");
-            this.createArrowAnimation(this.selectedTile.x, 440, "up");
         }
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // Movement around board (WASD keys)
@@ -739,51 +770,5 @@ export default class Level1PlayScene extends Phaser.Scene {
         this.selectedTile.setTint(0xa9a9a9);
         this.rowSelector.setPosition(400, this.selectedTile.y);
         this.colSelector.setPosition(this.selectedTile.x, 300);
-    }
-
-    createArrowAnimation(x: number, y: number, direction: string) {
-        let dx = 0;
-        let dy = 0;
-
-        if (this.arrows[direction]) {
-            // If there's already an arrow in that direction
-            return;
-        }
-
-        let arrow: Phaser.GameObjects.Image | null = null;
-
-        switch (direction) {
-            case "up":
-                arrow = this.add.image(x, y, "UArrow");
-                dy = -20;
-                break;
-            case "down":
-                arrow = this.add.image(x, y, "DArrow");
-                dy = 20;
-                break;
-            case "left":
-                arrow = this.add.image(x, y, "LArrow");
-                dx = -20;
-                break;
-            case "right":
-                arrow = this.add.image(x, y, "RArrow");
-                dx = 20;
-                break;
-        }
-
-        this.arrows[direction] = arrow;
-
-        this.tweens.add({
-            targets: arrow,
-            x: x + dx,
-            y: y + dy,
-            yoyo: true,
-            repeat: 1,
-            duration: 200,
-            onComplete: () => {
-                arrow?.destroy();
-                this.arrows[direction] = null;
-            },
-        });
     }
 }

@@ -11,6 +11,7 @@ import {
     createControlDisplay,
     toggleControlDisplay,
 } from "../objects/controlsDisplay";
+import { createArrowAnimation } from "../objects/arrowAnimation";
 
 const globals = require("../objects/globalVars");
 
@@ -62,6 +63,14 @@ export default class Level2PlayScene extends Phaser.Scene {
 
     private rowSelector: Phaser.GameObjects.Image;
     private colSelector: Phaser.GameObjects.Image;
+
+    private arrows: { [key: string]: Phaser.GameObjects.Image[] } = {
+        up: [],
+        down: [],
+        left: [],
+        right: [],
+    };
+
     private tileTypes: string[];
 
     private recentMatch: string = "";
@@ -379,6 +388,14 @@ export default class Level2PlayScene extends Phaser.Scene {
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
             );
+            createArrowAnimation(
+                this,
+                this.arrows,
+                565,
+                this.selectedTile.y,
+                345,
+                "right"
+            );
             this.hasMoved = true;
             this.evaluateRowsAndColumns(7, 7); // Check if there's a match
             this.saveGameState(); // Same game state after each block shift
@@ -392,6 +409,14 @@ export default class Level2PlayScene extends Phaser.Scene {
                 this.board,
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
+            );
+            createArrowAnimation(
+                this,
+                this.arrows,
+                565,
+                this.selectedTile.y,
+                345,
+                "left"
             );
             this.hasMoved = true;
             this.evaluateRowsAndColumns(7, 7);
@@ -407,6 +432,14 @@ export default class Level2PlayScene extends Phaser.Scene {
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
             );
+            createArrowAnimation(
+                this,
+                this.arrows,
+                this.selectedTile.x,
+                505,
+                345,
+                "down"
+            );
             this.hasMoved = true;
             this.evaluateRowsAndColumns(7, 7);
             this.saveGameState();
@@ -420,6 +453,14 @@ export default class Level2PlayScene extends Phaser.Scene {
                 this.board,
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
+            );
+            createArrowAnimation(
+                this,
+                this.arrows,
+                this.selectedTile.x,
+                175,
+                345,
+                "up"
             );
             this.hasMoved = true;
             this.evaluateRowsAndColumns(7, 7);

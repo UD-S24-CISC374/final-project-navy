@@ -11,6 +11,7 @@ import {
     createControlDisplay,
     toggleControlDisplay,
 } from "../objects/controlsDisplay";
+import { createArrowAnimation } from "../objects/arrowAnimation";
 
 export default class P1PlayScene extends Phaser.Scene {
     constructor() {
@@ -60,6 +61,14 @@ export default class P1PlayScene extends Phaser.Scene {
 
     private rowSelector: Phaser.GameObjects.Image;
     private colSelector: Phaser.GameObjects.Image;
+
+    private arrows: { [key: string]: Phaser.GameObjects.Image[] } = {
+        up: [],
+        down: [],
+        left: [],
+        right: [],
+    };
+
     private tileTypes: string[];
 
     private recentMatch: string = "";
@@ -270,6 +279,14 @@ export default class P1PlayScene extends Phaser.Scene {
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
             );
+            createArrowAnimation(
+                this,
+                this.arrows,
+                525,
+                this.selectedTile.y,
+                270,
+                "right"
+            );
             this.evaluateRowsAndColumns(5, 5); // Check if there's a match
         } else if (this.cursors?.left.isDown && !this.prevKeyState["left"]) {
             shiftValues(
@@ -281,6 +298,14 @@ export default class P1PlayScene extends Phaser.Scene {
                 this.board,
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
+            );
+            createArrowAnimation(
+                this,
+                this.arrows,
+                275,
+                this.selectedTile.y,
+                270,
+                "left"
             );
             this.evaluateRowsAndColumns(5, 5);
         } else if (this.cursors?.down.isDown && !this.prevKeyState["down"]) {
@@ -294,6 +319,14 @@ export default class P1PlayScene extends Phaser.Scene {
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
             );
+            createArrowAnimation(
+                this,
+                this.arrows,
+                this.selectedTile.x,
+                425,
+                270,
+                "down"
+            );
             this.evaluateRowsAndColumns(5, 5);
         } else if (this.cursors?.up.isDown && !this.prevKeyState["up"]) {
             shiftValues(
@@ -305,6 +338,14 @@ export default class P1PlayScene extends Phaser.Scene {
                 this.board,
                 this.selectedTileIndex,
                 this.tilesGroup.getChildren() as Phaser.GameObjects.Sprite[]
+            );
+            createArrowAnimation(
+                this,
+                this.arrows,
+                this.selectedTile.x,
+                180,
+                270,
+                "up"
             );
             this.evaluateRowsAndColumns(5, 5);
         }
