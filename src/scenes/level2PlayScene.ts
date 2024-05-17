@@ -7,6 +7,10 @@ import { removeRow } from "../objects/removeRow";
 import { removeCol } from "../objects/removeCol";
 import { moveSelection } from "../objects/moveSelection";
 import { createHelpDisplay, toggleHelpDisplay } from "../objects/helpDisplay";
+import {
+    createControlDisplay,
+    toggleControlDisplay,
+} from "../objects/controlsDisplay";
 
 const globals = require("../objects/globalVars");
 
@@ -39,6 +43,9 @@ export default class Level2PlayScene extends Phaser.Scene {
 
     private helpDisplay: Phaser.GameObjects.Image;
     private helpContainer: Phaser.GameObjects.Container;
+
+    private controlDisplay: Phaser.GameObjects.Image;
+    private controlContainer: Phaser.GameObjects.Container;
 
     private board: string[][];
 
@@ -100,6 +107,33 @@ export default class Level2PlayScene extends Phaser.Scene {
         this.add.image(125, 322, "ReqBg");
         this.rowSelector = this.add.image(400, 220, "RS 7x7");
         this.colSelector = this.add.image(320, 340, "CS 7x7");
+
+        // Create control display
+        const { controlDisplay, controlContainer } = createControlDisplay(this);
+        this.controlDisplay = controlDisplay;
+        this.controlContainer = controlContainer;
+        //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        // Adding in buttons players can click in the level
+        //-----------------------------------------------------------------------------
+        // control button to toggle control display
+        const controlButton = this.add
+            .image(610, 50, "Help")
+            .setInteractive()
+            .on("pointerdown", () => {
+                toggleControlDisplay(
+                    this,
+                    this.controlDisplay,
+                    this.controlContainer
+                );
+            });
+
+        controlButton.on("pointerover", () => {
+            controlButton.setTint(0xaaaaaa); // Tint on hover
+        });
+
+        controlButton.on("pointerout", () => {
+            controlButton.clearTint(); // Clear tint on hover out
+        });
 
         // Create help display
         const { helpDisplay, helpContainer } = createHelpDisplay(this);
