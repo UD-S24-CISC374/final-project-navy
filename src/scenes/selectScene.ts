@@ -1,6 +1,6 @@
 import Phaser from "phaser";
-import { Button } from "../objects/button";
-import { playMusic, stopMusic } from "../objects/musicManager";
+// import { Button } from "../objects/button";
+// import { playMusic, stopMusic } from "../objects/musicManager";
 
 export default class SelectScene extends Phaser.Scene {
     constructor() {

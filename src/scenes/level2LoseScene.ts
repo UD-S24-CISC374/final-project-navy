@@ -1,5 +1,4 @@
 import Phaser from "phaser";
-import { Button } from "../objects/button";
 import { playMusic } from "../objects/musicManager";
 
 const globals = require("../objects/globalVars");
