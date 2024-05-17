@@ -1,18 +1,11 @@
 import Phaser from "phaser";
 import { Button } from "../objects/button";
 import { playMusic, stopMusic } from "../objects/musicManager";
-import { generateRandomBoard } from "../objects/generateBoard";
-// import { evaluateExpression } from "../objects/evaluateExpression";
-// import { shiftValues } from "../objects/shiftValues";
-// import { removeRow } from "../objects/removeRow";
-// import { removeCol } from "../objects/removeCol";
-// import { moveSelection } from "../objects/moveSelection";
 
 export default class TutScene extends Phaser.Scene {
     private storyText: Phaser.GameObjects.Text;
     private textContainer: Phaser.GameObjects.Container;
     private imageContainer: Phaser.GameObjects.Container;
-    private spriteContainer: Phaser.GameObjects.Container;
     private currentDialogue: string[] = [];
     private currentDialogueIndex: number = 0;
     private typingSpeed: number = 20;
@@ -22,40 +15,9 @@ export default class TutScene extends Phaser.Scene {
     private board: string[][];
 
     private tilesGroup: Phaser.GameObjects.Group;
-    // private selectedTile: Phaser.GameObjects.Sprite;
-    // private selectedTileIndex: number;
-
-    private keyW?: Phaser.Input.Keyboard.Key;
-    private keyA?: Phaser.Input.Keyboard.Key;
-    private keyS?: Phaser.Input.Keyboard.Key;
-    private keyD?: Phaser.Input.Keyboard.Key;
-    private cursors?: Phaser.Types.Input.Keyboard.CursorKeys;
-    private prevKeyState: { [key: string]: boolean } = {};
-
-    private rowSelector: Phaser.GameObjects.Image;
-    private colSelector: Phaser.GameObjects.Image;
-    private tileTypes: string[];
 
     constructor() {
         super({ key: "TutScene" });
-        this.tileTypes = [
-            "True",
-            "True",
-            "True",
-            "True",
-            "False",
-            "False",
-            "False",
-            "False",
-            "And",
-            "And",
-            "And",
-            "Or",
-            "Or",
-            "Or",
-            "Not",
-            "Not",
-        ];
     }
 
     init() {
@@ -71,25 +33,45 @@ export default class TutScene extends Phaser.Scene {
             color: "black",
         });
 
-        this.add.text(150, 250, "*Frog goes here*", {
-            fontSize: "25px",
-            color: "black",
-        });
+        this.add.image(250, 315, "Blurbus");
+        this.add.image(570, 270, "Board");
+
+        // this.add.image(530, 150, "DArrow");
+        // this.add.image(530, 390, "UArrow");
+        // this.add.image(690, 230, "LArrow");
+        // this.add.image(450, 230, "RArrow");
 
         this.imageContainer = this.add.container(450, 150);
 
         const imageContBackground = this.add.graphics();
-        //imageContBackground.fillStyle(0x00ff00, 0.5);
         imageContBackground.fillRect(0, 0, 250, 250);
         this.imageContainer.add(imageContBackground);
 
         this.imageContainer.setVisible(false);
 
-        this.board = generateRandomBoard(5, 5, this.tileTypes);
+        // Set the static board
+        this.board = [
+            ["And", "True", "False", "Or", "And"],
+            ["False", "Or", "True", "And", "True"],
+            ["True", "False", "True", "Not", "Or"],
+            ["And", "Or", "Not", "True", "True"],
+            ["False", "False", "Not", "True", "False"],
+        ];
+
         const startx = 0;
         const starty = 0;
         let newx = startx;
         let newy = starty;
+
+        // Highlight the second row
+        const highlightRow = this.add.graphics();
+        highlightRow.fillStyle(0xffd700, 0.4); // Gold color with 50% transparency
+        highlightRow.fillRect(473, 210, 194, 40); // Adjust width and y position to fit the row
+
+        // Highlight the second column
+        const highlight = this.add.graphics();
+        highlight.fillStyle(0xffd700, 0.4); // Gold color with 50% transparency
+        highlight.fillRect(510, 173, 40, 194); // Positioned to cover the second column
 
         this.tilesGroup = this.add.group();
         for (let row = 0; row < this.board.length; row++) {
@@ -138,7 +120,7 @@ export default class TutScene extends Phaser.Scene {
             .setTint(0x7b5e57);
         arrowButton.setInteractive();
 
-        this.add.text(156, 418, "Greebus", {
+        this.add.text(156, 418, "Blurbus", {
             fontSize: "25px",
             color: "white",
             align: "center",
@@ -159,7 +141,6 @@ export default class TutScene extends Phaser.Scene {
 
         arrowButton.on("pointerdown", () => {
             if (this.isTyping) {
-                // If typing animation is in progress, stop the animation and display all the text
                 if (this.timer) {
                     this.timer.destroy();
                 }
@@ -168,14 +149,12 @@ export default class TutScene extends Phaser.Scene {
                 );
                 this.isTyping = false;
             } else {
-                // If not typing, show next dialogue segment or start typing animation
                 if (this.currentDialogueIndex < this.currentDialogue.length) {
                     this.typeDialogue(
                         this.currentDialogue[this.currentDialogueIndex]
                     );
                     this.currentDialogueIndex++;
                 } else {
-                    // If there's no more dialogue left, reset variables and clear text
                     this.currentDialogue = [];
                     this.currentDialogueIndex = 0;
                     this.storyText.setText("");
@@ -192,9 +171,6 @@ export default class TutScene extends Phaser.Scene {
             }
         });
 
-        // this.dialogue(
-        //     "humans think is impossible. Yellow, black. Yellow, black. Yellow, black. Yellow, black. Ooh, black and yellow!"
-        // );
         this.dialogue(
             "You must be a bit confused with how to get started on fixing the lighting system."
         );
@@ -216,16 +192,26 @@ export default class TutScene extends Phaser.Scene {
             "In more advanced levels you'll also see newer blocks, but we don't have to worry about those for now"
         );
         this.dialogue(
-            "And so, each of these tiles can be combined together to form a logical sentence, or expression"
+            "And so, each of these tiles can be combined together to form a logical sentence, or expression to create a match"
         );
-
-        //ADD
         this.dialogue(
-            "Take this row of tiles, for example *image of row on screen*"
+            "Matches can only be made across a full row or full column and the expression must evaluate to true"
         );
-        this.dialogue('This row represents the sentence "*put sentence here*"');
+        this.dialogue("Let's look at the highlighted row above as an example");
         this.dialogue(
-            "The goal is to create expressions out of these tiles that will evaluate to true"
+            "The expression 'F | T & T' is the same as 'False or True and True' which is a true expression and counts as a valid match"
+        );
+        this.dialogue(
+            "Let's break that down a bit, 'False or True' is True and then 'True and True' also is True so the whole expression is True"
+        );
+        this.dialogue(
+            "We also can look at the example above of the highlighted column"
+        );
+        this.dialogue(
+            "The expression 'T | F | F' is the same as 'True or False or False' which is a true expression and counts as a valid match"
+        );
+        this.dialogue(
+            "Oh, I almost forgot to tell you how to make these sentences"
         );
         this.dialogue(
             "You can move around the board with the WASD keys to change the current block you're on"
@@ -234,22 +220,13 @@ export default class TutScene extends Phaser.Scene {
             "To make it easier to form sentences, you can shift tiles around with the arrow keys"
         );
         this.dialogue(
-            "Go ahead, try it out! Try moving to different blocks and switching their positions"
+            "Don't worry, there is a 'Controls' button on each level if you forget your way around the board"
         );
-        //ADD Implement a sort of counter that counts how many times someone moved and shifted blocks
-        // Next dialogue would show up once those numbers are reached
-        this.dialogue(
-            "*This would show up after player moves and shifts blocks x amount of times*"
-        );
-        this.dialogue("Great! Looks like you've figured it out!");
         this.dialogue(
             "Each level will have a requirement on the kind of matches that need to be made"
         );
         this.dialogue(
-            "For example, a level might require you to make 15 matches"
-        );
-        this.dialogue(
-            'Or a level might ask you to make 5 matches containing both "&" and "|" blocks'
+            "For example, a level might require you to make 5 matches containing both '&' and '|' blocks"
         );
         this.dialogue("You'll start each level with a limited number of moves");
         this.dialogue(
@@ -275,9 +252,6 @@ export default class TutScene extends Phaser.Scene {
         );
         this.dialogue(
             "You can learn more about the blocks and forming valid expressions by clicking the help button in the levels"
-        );
-        this.dialogue(
-            "My froggie friends will help explain any new blocks that appear in the levels before you start"
         );
         this.dialogue(
             "Well, that wraps up all you need to know for now! You can always come back here if you need help"
