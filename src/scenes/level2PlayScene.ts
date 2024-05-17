@@ -177,7 +177,7 @@ export default class Level2PlayScene extends Phaser.Scene {
                 this.cameras.main.on(
                     Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
                     () => {
-                        stopMusic("L1Song");
+                        stopMusic("L2Song");
                         playMusic(this, "MainSong");
                         this.scene.start("SelectScene");
                     }

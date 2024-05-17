@@ -143,7 +143,7 @@ export default class P3PlayScene extends Phaser.Scene {
                 this.cameras.main.on(
                     Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,
                     () => {
-                        stopMusic("L1Song");
+                        stopMusic("L3Song");
                         playMusic(this, "MainSong");
                         this.resetGameState();
                         this.scene.start("SelectScene");
