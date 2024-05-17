@@ -413,7 +413,7 @@ export default class Level2PlayScene extends Phaser.Scene {
             createArrowAnimation(
                 this,
                 this.arrows,
-                565,
+                235,
                 this.selectedTile.y,
                 345,
                 "left"
